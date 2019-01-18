@@ -15,6 +15,8 @@ public class DavRestServer {
 		URI baseUri = UriBuilder.fromUri("http://localhost/").port(9998).build();
 		ResourceConfig config = new ResourceConfig(OnlinedatenImpl.class, SystemobjekteImpl.class);
 
+//		SslContextFactory sslContextFactory = new SslContextFactory(true);
+//		Server server = JettyHttpContainerFactory.createServer(baseUri, sslContextFactory,config);
 		Server server = JettyHttpContainerFactory.createServer(baseUri, config);
 		server.start();
 	}
