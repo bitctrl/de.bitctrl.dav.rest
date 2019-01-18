@@ -25,8 +25,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-import de.bitctrl.dav.rest.api.SystemObject;
-import de.bitctrl.dav.rest.api.SystemObjectImpl;
+import de.bitctrl.dav.rest.api.SystemObjekt;
+import de.bitctrl.dav.rest.api.SystemObjektImpl;
 
 public class RestTest {
 	
@@ -51,15 +51,15 @@ public class RestTest {
 	
 	@Test
 	public void testSystemObjects() {
-		SystemObject obj = new SystemObjectImpl();
+		SystemObjekt obj = new SystemObjektImpl();
 		obj.setName("SystemObject1.");
 		obj.setId("bubub");
-		ArrayList<SystemObject> list = new ArrayList<>();
+		ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
 		target.path("/systemobjects").request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
 		
 		Response response = target.path("/systemobjects").request().get();
-		Collection<SystemObject> objecte = response.readEntity(new GenericType<List<SystemObject>>(){} );
+		Collection<SystemObjekt> objecte = response.readEntity(new GenericType<List<SystemObjekt>>(){} );
 		
 		Assert.assertTrue(objecte.contains(obj));		
 	}

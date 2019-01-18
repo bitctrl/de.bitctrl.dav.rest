@@ -8,16 +8,16 @@ mediaType:  application/json
 uses:
   types: types.raml
 
-/systemobjects:
+/systemobjekte:
   get:
     responses:
       200:
         body:
-          type: types.SystemObject[]
+          type: types.SystemObjekt[]
   post:
     body:
       application/json:
-        type: types.SystemObject []
+        type: types.SystemObjekt []
 /onlinedaten:
   post:
     body:
