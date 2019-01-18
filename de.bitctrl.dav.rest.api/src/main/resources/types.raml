@@ -1,0 +1,41 @@
+#%RAML 1.0 Library
+
+types:
+  SystemObject:
+    type: object
+    properties:
+      id: string
+      name: string
+  OnlineDatum:
+    type: object
+    properties:
+      systemObjectId: string
+      datenStatus: string
+      zeitstempel: datetime
+  VerkehrstaerkeStunde:
+    description: Anzahl der Fahrzeuge pro Stunde
+    type: object
+    properties:
+      wert: integer
+      status: string
+      guete: string
+  Geschwindigkeit:
+    description: Geschwindigkeit (von Fahrzeugen) mit	Statusinformationen.
+    type: object
+    properties:
+      wert: integer
+      status: string
+      guete: string
+  VerkehrsdatenKurzzeitMQ:
+    type: OnlineDatum
+    properties:
+      aspekt: string
+      qKfz: VerkehrstaerkeStunde
+      vKfz: Geschwindigkeit
+      qLkw: VerkehrstaerkeStunde
+      vLkw: Geschwindigkeit
+      qPkw: VerkehrstaerkeStunde
+      vPkw: Geschwindigkeit
+      b:
+        displayName: Belegung in Prozent
+        type: number
