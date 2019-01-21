@@ -7,11 +7,20 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Dav3 REST Client</name>
 
+	<repositories>
+		<repository>
+			<id>nerz.nexus</id>
+			<name>NERZ Nexus</name>
+			<url>http://h2727649.stratoserver.net:8081/repository/nerz-maven-public/</url>
+		</repository>
+	</repositories>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<jersey-version>2.27</jersey-version>
+		<nerz-version>3.12.0</nerz-version>
 	</properties>
 
 	<dependencies>
@@ -34,6 +43,36 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>27.0-jre</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.dav</groupId>
+			<artifactId>de.bsvrz.dav.daf</artifactId>
+			<version>${nerz-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.sys</groupId>
+			<artifactId>de.bsvrz.sys.funclib.application</artifactId>
+			<version>${nerz-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.sys</groupId>
+			<artifactId>de.bsvrz.sys.funclib.dataSerializer</artifactId>
+			<version>${nerz-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.bsvrz.sys</groupId>
+			<artifactId>de.bsvrz.sys.funclib.dataIdentificationSettings</artifactId>
+			<version>${nerz-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.11</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
