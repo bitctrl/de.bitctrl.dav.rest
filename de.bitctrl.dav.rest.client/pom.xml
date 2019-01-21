@@ -11,7 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<jersey-version>2.25</jersey-version>
+		<jersey-version>2.27</jersey-version>
 		<jackson-version>2.9.5</jackson-version>
 	</properties>
 
@@ -29,11 +29,6 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>${jersey-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.bundles.repackaged</groupId>
-			<artifactId>jersey-guava</artifactId>
 			<version>${jersey-version}</version>
 		</dependency>
 		<dependency>
