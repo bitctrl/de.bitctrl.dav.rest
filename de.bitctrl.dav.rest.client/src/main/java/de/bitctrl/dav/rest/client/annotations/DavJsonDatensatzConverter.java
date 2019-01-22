@@ -33,19 +33,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * {@link Annotation} für Converter zwischen DAV und REST Objekten.
+ * {@link Annotation} für Converter zwischen DAV Datensätzen und REST Objekten.
  * 
  * @author BitCtrl Systems GmbH, Christian Hösel
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface DavJsonObjektConverter {
-
+public @interface DavJsonDatensatzConverter {
 	/**
-	 * Die PID des DavTypes.
+	 * Die PID der Attributgruppe.
 	 */
-	String davTyp();
+	String davAttributGruppe();
 
-
+	
 }

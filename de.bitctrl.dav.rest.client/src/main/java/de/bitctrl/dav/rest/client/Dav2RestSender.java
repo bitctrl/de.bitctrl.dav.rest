@@ -1,9 +1,8 @@
 package de.bitctrl.dav.rest.client;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,10 +18,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import de.bitctrl.dav.rest.api.OnlineDatum;
 import de.bitctrl.dav.rest.api.SystemObjekt;
+import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bitctrl.dav.rest.client.converter.DavJsonConverter;
-import de.bitctrl.dav.rest.client.converter.SystemObjectJsonConverter;
 import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.ClientReceiverInterface;
 import de.bsvrz.dav.daf.main.Data;
@@ -32,8 +32,8 @@ import de.bsvrz.dav.daf.main.ReceiverRole;
 import de.bsvrz.dav.daf.main.ResultData;
 import de.bsvrz.dav.daf.main.config.Aspect;
 import de.bsvrz.dav.daf.main.config.AttributeGroup;
-import de.bsvrz.dav.daf.main.config.AttributeGroupUsage;
 import de.bsvrz.dav.daf.main.config.SystemObject;
+import de.bsvrz.dav.daf.main.config.SystemObjectType;
 import de.bsvrz.sys.funclib.dataIdentificationSettings.DataIdentification;
 import de.bsvrz.sys.funclib.dataIdentificationSettings.EndOfSettingsListener;
 import de.bsvrz.sys.funclib.dataIdentificationSettings.SettingsManager;
@@ -117,42 +117,21 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			}
 			neueAbmeldungen.clear();
 
-			for (DataIdentification id : neueAnmeldungen) {
+			neueAnmeldungen.parallelStream().forEach(id -> {
 				try {
 					connection.subscribeReceiver(Dav2RestSender.this, id.getObject(), id.getDataDescription(),
 							ReceiveOptions.delayed(), ReceiverRole.receiver());
-					konfigurationPersistieren(id.getObject());
-					mengenPersistieren(id.getObject());
+					objects2StoreList.add(id.getObject());
 				} catch (Exception e) {
-					// TODO: Fehlerbehandlung oder ignorieren!?!?
-					// LOGGER.warning("Anmeldung als Empfänger für "+id+" ist fehlgeschlagen.",
-					// e);
+					// geht halt nich
 				}
-			}
+			});
 			neueAnmeldungen.clear();
 			LOGGER.info("An- und Abmeldung für Archivdatensaetze abgeschlossen - "
 					+ (System.currentTimeMillis() - start) + " ms");
+			executor.execute(new RestSenderRunnable());
 		}
 
-		private void mengenPersistieren(SystemObject object) {
-			objects2StoreList.add(object);
-		}
-
-		/**
-		 * Konfigurationsdaten auslesen und zur Persistierung vormerken.
-		 */
-		private void konfigurationPersistieren(SystemObject object) {
-			for (AttributeGroupUsage usage : object.getUsedAttributeGroupUsages()) {
-				AttributeGroup attributeGroup = usage.getAttributeGroup();
-				Aspect asp = usage.getAspect();
-
-				Data data = object.getConfigurationData(attributeGroup);
-
-				ResultData rd = new ResultData(object, new DataDescription(attributeGroup, asp),
-						System.currentTimeMillis(), data);
-				data2StoreList.add(rd);
-			}
-		}
 	}
 
 	/**
@@ -165,19 +144,83 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 		@Override
 		public void run() {
+			// Injector für das ClientDavInterface
+			Injector injector = Guice.createInjector(new AbstractModule() {
+				@Override
+				protected void configure() {
+					bind(ClientDavInterface.class).toInstance(connection);
+				}
+			});
 
+			versendeSystemObjekte(injector);
+			versendeDatensaetze(injector);
+			
+
+		}
+
+		private void versendeDatensaetze(Injector injector) {
+			while (!data2StoreList.isEmpty()) {
+
+				try {
+					List<OnlineDatum> liste = getOnlineDaten(injector);
+					if (!liste.isEmpty()) {
+						target.path("/onlinedaten").request().post(Entity.entity(liste, MediaType.APPLICATION_JSON));
+					}
+				} catch (Exception ex) {
+					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);
+				} finally {
+
+				}
+
+				// LOGGER.info("Warteschlange = " + data2StoreList.size());
+			}
+		}
+
+		private List<OnlineDatum> getOnlineDaten(Injector injector) throws InterruptedException {
+			List<OnlineDatum> result = new ArrayList<>();
+			int i = 0;
+
+			Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonDatensatzConverter.class);
+
+			ResultData resultData = data2StoreList.take();
+
+			while (resultData != null && i++ < 1000) {
+
+				AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
+				Optional<Class<?>> findFirst = annotatedWith.stream().filter(
+						c -> atg.getPid().equals(c.getAnnotation(DavJsonDatensatzConverter.class).davAttributGruppe()))
+						.findFirst();
+
+				if (findFirst.isPresent()) {
+					Class<?> clazz = findFirst.get();
+					try {
+						Object newInstance = injector.getProvider(clazz).get();
+
+						if (newInstance instanceof DavJsonConverter) {
+							result.add((OnlineDatum) ((DavJsonConverter) newInstance).dav2Json(resultData));
+						}
+					} catch (final Exception e) {
+						LOGGER.error("Instanziierung und Konvertierung der Klasse " + clazz
+								+ " fehlgeschlagen (ResultData: " + resultData + ").", e);
+					}
+				} 
+
+				if (data2StoreList.isEmpty()) {
+					break;
+				}
+				resultData = data2StoreList.take();
+			}
+			return result;
+		}
+
+		private void versendeSystemObjekte(Injector injector) {
 			while (!objects2StoreList.isEmpty()) {
 
-				// Injector für das ClientDavInterface
-				Injector injector = Guice.createInjector(new AbstractModule() {
-					@Override
-					protected void configure() {
-						bind(ClientDavInterface.class).toInstance(connection);
-					}
-				});
 				try {
 					List<SystemObjekt> liste = getObjekte(injector);
-					target.path("/systemobjekte").request().post(Entity.entity(liste, MediaType.APPLICATION_JSON));
+					if (!liste.isEmpty()) {
+						target.path("/systemobjekte").request().post(Entity.entity(liste, MediaType.APPLICATION_JSON));
+					}
 				} catch (Exception ex) {
 					LOGGER.error("Dav Objekte konnten nicht versendet werden.", ex);
 				} finally {
@@ -186,7 +229,6 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 				// LOGGER.info("Warteschlange = " + data2StoreList.size());
 			}
-
 		}
 
 		private List<SystemObjekt> getObjekte(Injector injector) throws InterruptedException {
@@ -197,37 +239,27 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 			SystemObject sysObj = objects2StoreList.take();
 
-			while (sysObj != null && i++ < 500) {
+			while (sysObj != null && i++ < 1000) {
 
-				for (Class<?> clazz : annotatedWith) {
-					DavJsonObjektConverter annotation = ((DavJsonObjektConverter) clazz
-							.getAnnotation(DavJsonObjektConverter.class));
-					if (sysObj.getType().getPid().equals(annotation.davTyp())) {
+				SystemObjectType sysObjType = sysObj.getType();
+				Optional<Class<?>> findFirst = annotatedWith.stream()
+						.filter(c -> sysObjType.getPid().equals(c.getAnnotation(DavJsonObjektConverter.class).davTyp()))
+						.findFirst();
 
-						try {
-							Constructor<?> constructor = clazz.getConstructor();
-							Object newInstance = constructor.newInstance();
+				if (findFirst.isPresent()) {
+					Class<?> clazz = findFirst.get();
+					try {
+						Object newInstance = injector.getProvider(clazz).get();
 
-							// Wenn die Klasse einen EntityManager oder
-							// ClientDacInterface Injected, dann werden die hier
-							// initialisiert.
-							injector.injectMembers(newInstance);
-							injector.getProvider(clazz).get();
-
-							if (newInstance instanceof DavJsonConverter) {
-								result.add((SystemObjekt) ((DavJsonConverter) newInstance).dav2Json(sysObj));
-							}
-						} catch (NoSuchMethodException | SecurityException e) {
-							LOGGER.error("Es wurde kein Konstruktor für die Klasse " + clazz
-									+ " mit passenden Parametern gefunden.", e);
-						} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-								| InvocationTargetException e) {
-							LOGGER.error("Instanziierung der Klasse " + clazz + " fehlgeschlagen.", e);
+						if (newInstance instanceof DavJsonConverter) {
+							result.add((SystemObjekt) ((DavJsonConverter) newInstance).dav2Json(sysObj));
 						}
-					}else {
-						SystemObjectJsonConverter convert = new SystemObjectJsonConverter();
-						result.add(convert.dav2Json(sysObj));
+					} catch (final Exception e) {
+						LOGGER.error("Instanziierung der Klasse " + clazz + " fehlgeschlagen.", e);
 					}
+				} else {
+//					SystemObjectJsonConverter convert = new SystemObjectJsonConverter();
+//					result.add(convert.dav2Json(sysObj));
 				}
 
 				if (objects2StoreList.isEmpty()) {
@@ -242,19 +274,10 @@ public class Dav2RestSender implements ClientReceiverInterface {
 	}
 
 	public void anmelden() {
-//		LOGGER.info("Suche Entities im Package : "
-//				+ Archivator.class.getPackage().getName());
-
 		reflections = new Reflections(Dav2RestSender.class.getPackage().getName());
 		Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
 
 		LOGGER.info("Folgende Objekt-Converter wurden via Reflection gefunden: " + annotatedWith);
-//
-//		DBOjectStorageThread objectStorageThread = new DBOjectStorageThread();
-//		objectStorageThread.start();
-//
-//		DBStorageThread dataStorageThread = new DBStorageThread();
-//		dataStorageThread.start();
 
 		subscribeDavData();
 	}

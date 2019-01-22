@@ -6,6 +6,14 @@ types:
     properties:
       id: string
       name: string
+  PunktXY:
+    description: Georeferenziertes SystemObjekt. Die Koordinaten werden in WGS84 abgebildet.
+    type: SystemObjekt
+    properties:
+      breite: number
+      laenge: number
+  MessQuerschnitt:
+    type: PunktXY
   OnlineDatum:
     type: object
     properties:
@@ -17,15 +25,13 @@ types:
     type: object
     properties:
       wert: integer
-      status: string
-      guete: string
+      guete: number
   Geschwindigkeit:
-    description: Geschwindigkeit (von Fahrzeugen) mit	Statusinformationen.
+    description: Geschwindigkeit (von Fahrzeugen) in km/h.
     type: object
     properties:
       wert: integer
-      status: string
-      guete: string
+      guete: number
   VerkehrsdatenKurzzeit:
     description: Verkehrsdaten (Kurzzeit) mit Intervallwerten (normiert auf Stundenwerte).
     type: OnlineDatum
@@ -40,4 +46,3 @@ types:
       b:
         displayName: Belegung in Prozent
         type: number
-  
