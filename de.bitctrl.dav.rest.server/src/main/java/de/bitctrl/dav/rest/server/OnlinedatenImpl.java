@@ -9,9 +9,10 @@ import de.bitctrl.dav.rest.api.Onlinedaten;
 
 public class OnlinedatenImpl implements Onlinedaten {
 
-	public void postOnlinedaten(List<OnlineDatum> entity) {
-		Logger.getLogger(getClass().getName()).log(Level.FINE, entity.toString());
+	private Logger logger = Logger.getLogger(getClass().getName());
 
+	public void postOnlinedaten(List<OnlineDatum> entity) {
+		logger.log(Level.INFO, "Empfange Onlinedaten: " + entity);
 	}
 
 }

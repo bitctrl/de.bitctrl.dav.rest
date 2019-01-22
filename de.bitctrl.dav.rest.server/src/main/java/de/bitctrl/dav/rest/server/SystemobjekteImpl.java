@@ -23,9 +23,8 @@ public class SystemobjekteImpl implements Systemobjekte {
 
 	@Override
 	public void postSystemobjekte(List<SystemObjekt> entity) {
-		entity.stream().forEach(e -> logger.log(Level.INFO, "Empfange: " +e));
+		logger.log(Level.INFO, "Empfange: " +entity);
 		objectSet.addAll(entity);
-		
 	}
 
 }
