@@ -36,8 +36,8 @@ public class Client implements StandardApplication, DavConnectionListener {
 	@Override
 	public void parseArguments(ArgumentList argumentList) throws Exception {
 		archivObjektPid = argumentList.fetchArgument("-objekt=").asString();
-		serverUrl = argumentList.fetchArgument("-url=").asNonEmptyString();
-		port = argumentList.fetchArgument("-port=80").asString();
+		serverUrl = argumentList.fetchArgument("-url=http://localhost").asString();
+		port = argumentList.fetchArgument("-port=9998").asString();
 
 	}
 

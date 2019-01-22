@@ -202,10 +202,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				for (Class<?> clazz : annotatedWith) {
 					DavJsonObjektConverter annotation = ((DavJsonObjektConverter) clazz
 							.getAnnotation(DavJsonObjektConverter.class));
-					if (annotation == null) {
-						SystemObjectJsonConverter convert = new SystemObjectJsonConverter();
-						result.add(convert.dav2Json(sysObj));
-					} else if (sysObj.getType().getPid().equals(annotation.davTyp())) {
+					if (sysObj.getType().getPid().equals(annotation.davTyp())) {
 
 						try {
 							Constructor<?> constructor = clazz.getConstructor();
@@ -227,6 +224,9 @@ public class Dav2RestSender implements ClientReceiverInterface {
 								| InvocationTargetException e) {
 							LOGGER.error("Instanziierung der Klasse " + clazz + " fehlgeschlagen.", e);
 						}
+					}else {
+						SystemObjectJsonConverter convert = new SystemObjectJsonConverter();
+						result.add(convert.dav2Json(sysObj));
 					}
 				}
 
