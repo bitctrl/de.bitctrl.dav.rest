@@ -30,10 +30,11 @@
 						<value>jackson2</value>
 						<value>jsr303</value>
 						<value>equalsAndHashCode</value>
+						<value>toString</value>
 					</generateTypesWith>
 					<jsonMapperConfiguration>
 						<includeHashcodeAndEquals>true</includeHashcodeAndEquals>
-						<includeToString>true</includeToString>
+						<IncludeToString>true</IncludeToString>
 						<useLongIntegers>true</useLongIntegers>
 						<dateTimeType>java.time.LocalDateTime</dateTimeType>
 						<dateType>java.time.LocalDate</dateType>
