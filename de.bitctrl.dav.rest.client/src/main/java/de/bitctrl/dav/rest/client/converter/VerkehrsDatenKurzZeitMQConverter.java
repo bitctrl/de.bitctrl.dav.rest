@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 package de.bitctrl.dav.rest.client.converter;
 
 import java.util.Date;
@@ -19,43 +38,41 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 	@Override
 	public OnlineDatum dav2Json(ResultData resultData) {
 
-		VerkehrsdatenKurzzeit result = new VerkehrsdatenKurzzeitImpl();
+		final VerkehrsdatenKurzzeit result = new VerkehrsdatenKurzzeitImpl();
 		result.setSystemObjectId(resultData.getObject().getPid());
 		result.setAspekt(resultData.getDataDescription().getAspect().getName());
 		result.setDatenStatus(resultData.getDataState().toString());
 		result.setZeitstempel(new Date(resultData.getDataTime()));
-		Data data = resultData.getData();
+		final Data data = resultData.getData();
 		if (data != null) {
-			VerkehrstaerkeStunde qKfz = extraktVerkehrsStaerke(data.getItem("QKfz"));
+			final VerkehrstaerkeStunde qKfz = extraktVerkehrsStaerke(data.getItem("QKfz"));
 			result.setQKfz(qKfz);
-			Geschwindigkeit vKfz = extraktGeschwindigkeit(data.getItem("VKfz"));
+			final Geschwindigkeit vKfz = extraktGeschwindigkeit(data.getItem("VKfz"));
 			result.setVKfz(vKfz);
-			VerkehrstaerkeStunde qLkw = extraktVerkehrsStaerke(data.getItem("QLkw"));
+			final VerkehrstaerkeStunde qLkw = extraktVerkehrsStaerke(data.getItem("QLkw"));
 			result.setQLkw(qLkw);
-			Geschwindigkeit vLkw = extraktGeschwindigkeit(data.getItem("VLkw"));
+			final Geschwindigkeit vLkw = extraktGeschwindigkeit(data.getItem("VLkw"));
 			result.setVLkw(vLkw);
-			VerkehrstaerkeStunde qPkw = extraktVerkehrsStaerke(data.getItem("QPkw"));
+			final VerkehrstaerkeStunde qPkw = extraktVerkehrsStaerke(data.getItem("QPkw"));
 			result.setQPkw(qPkw);
-			Geschwindigkeit vPkw = extraktGeschwindigkeit(data.getItem("VPkw"));
+			final Geschwindigkeit vPkw = extraktGeschwindigkeit(data.getItem("VPkw"));
 			result.setVPkw(vPkw);
-			
-			Data b = data.getItem("B");
+
+			final Data b = data.getItem("B");
 			if (b.getUnscaledValue("Wert").isState()) {
 				result.setB(b.getUnscaledValue("Wert").doubleValue());
-			}else {
+			} else {
 				result.setB(b.getScaledValue("Wert").doubleValue());
 			}
 		}
 		return result;
 	}
 
-	
-	
 	private Geschwindigkeit extraktGeschwindigkeit(Data data) {
-		Geschwindigkeit vKfz = new GeschwindigkeitImpl();
-		if(data.getUnscaledValue("Wert").isState()) {
+		final Geschwindigkeit vKfz = new GeschwindigkeitImpl();
+		if (data.getUnscaledValue("Wert").isState()) {
 			vKfz.setWert(data.getUnscaledValue("Wert").intValue());
-		}else {
+		} else {
 			vKfz.setWert(data.getScaledValue("Wert").intValue());
 		}
 		vKfz.setGuete(data.getItem("Güte").getItem("Index").asScaledValue().doubleValue());
@@ -63,10 +80,10 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 	}
 
 	private VerkehrstaerkeStunde extraktVerkehrsStaerke(Data data) {
-		VerkehrstaerkeStunde qKfz = new VerkehrstaerkeStundeImpl();
-		if(data.getUnscaledValue("Wert").isState()){
+		final VerkehrstaerkeStunde qKfz = new VerkehrstaerkeStundeImpl();
+		if (data.getUnscaledValue("Wert").isState()) {
 			qKfz.setWert(data.getUnscaledValue("Wert").intValue());
-		}else {
+		} else {
 			qKfz.setWert(data.getScaledValue("Wert").intValue());
 		}
 		qKfz.setGuete(data.getItem("Güte").getItem("Index").asScaledValue().doubleValue());

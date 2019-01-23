@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 package de.bitctrl.dav.rest.client;
 
 import java.util.ArrayList;
@@ -42,24 +61,24 @@ import de.bsvrz.sys.funclib.debug.Debug;
 
 public class Dav2RestSender implements ClientReceiverInterface {
 
-	private WebTarget target;
-	private SystemObject archivObjekt;
-	private ClientDavInterface connection;
+	private final WebTarget target;
+	private final SystemObject archivObjekt;
+	private final ClientDavInterface connection;
 
 	private static final Debug LOGGER = Debug.getLogger();
 
 	/**
 	 * Queue in der die zu persistierenden ResultDatas gehalten werden.
 	 */
-	private LinkedBlockingDeque<ResultData> data2StoreList = new LinkedBlockingDeque<ResultData>();
+	private final LinkedBlockingDeque<ResultData> data2StoreList = new LinkedBlockingDeque<>();
 
 	/**
 	 * Queue in der die SystemObjecte enthalten sind, deren Mengen persistiert
 	 * werden sollen.
 	 */
-	private LinkedBlockingDeque<SystemObject> objects2StoreList = new LinkedBlockingDeque<SystemObject>();
+	private final LinkedBlockingDeque<SystemObject> objects2StoreList = new LinkedBlockingDeque<>();
 
-	private ExecutorService executor = Executors.newSingleThreadExecutor();
+	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 	private Reflections reflections;
 
 	public Dav2RestSender(WebTarget target, ClientDavInterface connection, SystemObject archivObjekt) {
@@ -71,14 +90,14 @@ public class Dav2RestSender implements ClientReceiverInterface {
 	/**
 	 * Reagiert bei Änderung der Archivparameter und organisiert die An- und
 	 * Abmeldungen für zu archivierende Datensätze.
-	 * 
+	 *
 	 * @author BitCtrl Systems GmbH, Christian Hösel
 	 *
 	 */
 	private final class SettingsManagerUpdateListener implements UpdateListener, EndOfSettingsListener {
 
-		private List<DataIdentification> neueAnmeldungen = new ArrayList<DataIdentification>();
-		private List<DataIdentification> neueAbmeldungen = new ArrayList<DataIdentification>();
+		private final List<DataIdentification> neueAnmeldungen = new ArrayList<>();
+		private final List<DataIdentification> neueAbmeldungen = new ArrayList<>();
 
 		@Override
 		public synchronized void update(DataIdentification dataIdentification, Data oldSettings, Data newSettings) {
@@ -95,7 +114,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 		private void neueArchivParameter(DataIdentification dataIdentification, Data newSettings) {
 
-			boolean archivieren = newSettings.getUnscaledValue("Archivieren").intValue() > 0;
+			final boolean archivieren = newSettings.getUnscaledValue("Archivieren").intValue() > 0;
 
 			if (archivieren) {
 				neueAnmeldungen.add(dataIdentification);
@@ -110,9 +129,9 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					"Neue Archivparameter eingelesen - Beginne mit Anmeldung/Ummeldung für Archivparameter. Es werden "
 							+ neueAnmeldungen.size() + " Anmeldungen und " + neueAbmeldungen.size()
 							+ " Abmeldungen vorgenommen.");
-			long start = System.currentTimeMillis();
+			final long start = System.currentTimeMillis();
 
-			for (DataIdentification id : neueAbmeldungen) {
+			for (final DataIdentification id : neueAbmeldungen) {
 				connection.unsubscribeReceiver(Dav2RestSender.this, id.getObject(), id.getDataDescription());
 			}
 			neueAbmeldungen.clear();
@@ -122,7 +141,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					connection.subscribeReceiver(Dav2RestSender.this, id.getObject(), id.getDataDescription(),
 							ReceiveOptions.delayed(), ReceiverRole.receiver());
 					objects2StoreList.add(id.getObject());
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					// geht halt nich
 				}
 			});
@@ -136,7 +155,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 	/**
 	 * {@link Runnable} zum asynchronen Versenden der SystemObjecte und Mengen.
-	 * 
+	 *
 	 * @author BitCtrl Systems GmbH, Christian Hösel
 	 *
 	 */
@@ -145,7 +164,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		@Override
 		public void run() {
 			// Injector für das ClientDavInterface
-			Injector injector = Guice.createInjector(new AbstractModule() {
+			final Injector injector = Guice.createInjector(new AbstractModule() {
 				@Override
 				protected void configure() {
 					bind(ClientDavInterface.class).toInstance(connection);
@@ -154,7 +173,6 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 			versendeSystemObjekte(injector);
 			versendeDatensaetze(injector);
-			
 
 		}
 
@@ -162,11 +180,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			while (!data2StoreList.isEmpty()) {
 
 				try {
-					List<OnlineDatum> liste = getOnlineDaten(injector);
+					final List<OnlineDatum> liste = getOnlineDaten(injector);
 					if (!liste.isEmpty()) {
 						target.path("/onlinedaten").request().post(Entity.entity(liste, MediaType.APPLICATION_JSON));
 					}
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);
 				} finally {
 
@@ -177,24 +195,24 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		}
 
 		private List<OnlineDatum> getOnlineDaten(Injector injector) throws InterruptedException {
-			List<OnlineDatum> result = new ArrayList<>();
+			final List<OnlineDatum> result = new ArrayList<>();
 			int i = 0;
 
-			Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonDatensatzConverter.class);
+			final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonDatensatzConverter.class);
 
 			ResultData resultData = data2StoreList.take();
 
 			while (resultData != null && i++ < 1000) {
 
-				AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
-				Optional<Class<?>> findFirst = annotatedWith.stream().filter(
+				final AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
+				final Optional<Class<?>> findFirst = annotatedWith.stream().filter(
 						c -> atg.getPid().equals(c.getAnnotation(DavJsonDatensatzConverter.class).davAttributGruppe()))
 						.findFirst();
 
 				if (findFirst.isPresent()) {
-					Class<?> clazz = findFirst.get();
+					final Class<?> clazz = findFirst.get();
 					try {
-						Object newInstance = injector.getProvider(clazz).get();
+						final Object newInstance = injector.getProvider(clazz).get();
 
 						if (newInstance instanceof DavJsonConverter) {
 							result.add((OnlineDatum) ((DavJsonConverter) newInstance).dav2Json(resultData));
@@ -203,7 +221,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 						LOGGER.error("Instanziierung und Konvertierung der Klasse " + clazz
 								+ " fehlgeschlagen (ResultData: " + resultData + ").", e);
 					}
-				} 
+				}
 
 				if (data2StoreList.isEmpty()) {
 					break;
@@ -217,11 +235,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			while (!objects2StoreList.isEmpty()) {
 
 				try {
-					List<SystemObjekt> liste = getObjekte(injector);
+					final List<SystemObjekt> liste = getObjekte(injector);
 					if (!liste.isEmpty()) {
 						target.path("/systemobjekte").request().post(Entity.entity(liste, MediaType.APPLICATION_JSON));
 					}
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					LOGGER.error("Dav Objekte konnten nicht versendet werden.", ex);
 				} finally {
 
@@ -232,24 +250,24 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		}
 
 		private List<SystemObjekt> getObjekte(Injector injector) throws InterruptedException {
-			List<SystemObjekt> result = new ArrayList<>();
+			final List<SystemObjekt> result = new ArrayList<>();
 			int i = 0;
 
-			Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
+			final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
 
 			SystemObject sysObj = objects2StoreList.take();
 
 			while (sysObj != null && i++ < 1000) {
 
-				SystemObjectType sysObjType = sysObj.getType();
-				Optional<Class<?>> findFirst = annotatedWith.stream()
+				final SystemObjectType sysObjType = sysObj.getType();
+				final Optional<Class<?>> findFirst = annotatedWith.stream()
 						.filter(c -> sysObjType.getPid().equals(c.getAnnotation(DavJsonObjektConverter.class).davTyp()))
 						.findFirst();
 
 				if (findFirst.isPresent()) {
-					Class<?> clazz = findFirst.get();
+					final Class<?> clazz = findFirst.get();
 					try {
-						Object newInstance = injector.getProvider(clazz).get();
+						final Object newInstance = injector.getProvider(clazz).get();
 
 						if (newInstance instanceof DavJsonConverter) {
 							result.add((SystemObjekt) ((DavJsonConverter) newInstance).dav2Json(sysObj));
@@ -275,7 +293,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 	public void anmelden() {
 		reflections = new Reflections(Dav2RestSender.class.getPackage().getName());
-		Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
+		final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
 
 		LOGGER.info("Folgende Objekt-Converter wurden via Reflection gefunden: " + annotatedWith);
 
@@ -284,13 +302,13 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 	private void subscribeDavData() {
 
-		AttributeGroup atgArchiv = connection.getDataModel().getAttributeGroup("atg.archiv");
-		Aspect aspParameterSoll = connection.getDataModel().getAspect("asp.parameterSoll");
-		DataDescription desc = new DataDescription(atgArchiv, aspParameterSoll);
-		DataIdentification dataId = new DataIdentification(archivObjekt, desc);
-		SettingsManager settingsManager = new SettingsManager(connection, dataId);
+		final AttributeGroup atgArchiv = connection.getDataModel().getAttributeGroup("atg.archiv");
+		final Aspect aspParameterSoll = connection.getDataModel().getAspect("asp.parameterSoll");
+		final DataDescription desc = new DataDescription(atgArchiv, aspParameterSoll);
+		final DataIdentification dataId = new DataIdentification(archivObjekt, desc);
+		final SettingsManager settingsManager = new SettingsManager(connection, dataId);
 
-		SettingsManagerUpdateListener settingsManagerUpdateListener = new SettingsManagerUpdateListener();
+		final SettingsManagerUpdateListener settingsManagerUpdateListener = new SettingsManagerUpdateListener();
 		settingsManager.addUpdateListener(settingsManagerUpdateListener);
 		settingsManager.addEndOfSettingsListener(settingsManagerUpdateListener);
 		settingsManager.start();
@@ -301,11 +319,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 	public void update(ResultData[] results) {
 		if (results != null) {
 			try {
-				for (ResultData rd : results) {
+				for (final ResultData rd : results) {
 					data2StoreList.add(rd);
 				}
 				executor.execute(new RestSenderRunnable());
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				LOGGER.error("Archiv kann Datensatz nicht der Warteschlange hinzufügen.", e);
 			}
 		}
