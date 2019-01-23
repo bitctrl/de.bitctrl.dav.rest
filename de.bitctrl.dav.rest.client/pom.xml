@@ -19,7 +19,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${maven-checkstyle-plugin-version}</version>
 				<configuration>
 					<propertyExpansion>basedir=${project.basedir}</propertyExpansion>
 					<configLocation>config/checkstyle.xml</configLocation>
