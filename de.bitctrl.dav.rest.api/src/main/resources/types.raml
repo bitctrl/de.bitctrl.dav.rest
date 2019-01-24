@@ -15,9 +15,16 @@ types:
   MessQuerschnitt:
     description: Ein Messquerschnitt.
     type: PunktXY
+  Anzeige:
+    description: Eine Anzeige an einem Anzeigequerschnitt.
+    type: SystemObjekt
   AnzeigeQuerschnitt:
     description: Ein Anzeigequerschnitt.
     type: PunktXY
+    properties:
+      anzeigen:
+        description: Menge aller Anzeigen an diesem Anzeigequerschnitt (Referenziert via id)
+        type: string[]
   OnlineDatum:
     type: object
     properties:
@@ -40,7 +47,9 @@ types:
     description: Verkehrsdaten (Kurzzeit) mit Intervallwerten (normiert auf Stundenwerte).
     type: OnlineDatum
     properties:
-      aspekt: string
+      aspekt:
+        description: Die Variante der Kurzzeitdaten. Möglich sind  Analyse', 'Agregation1Minute', 'Agregation5Minuten', 'Agregation15Minuten', 'Agregation30Minuten', 'Agregation60Minuten' und 'AnalyseHB'
+        type: string
       qKfz: VerkehrstaerkeStunde
       vKfz: Geschwindigkeit
       qLkw: VerkehrstaerkeStunde

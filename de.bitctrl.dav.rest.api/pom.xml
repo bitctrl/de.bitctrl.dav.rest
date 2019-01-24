@@ -36,14 +36,14 @@
                         <value>jerseyMultipartFormData</value> -->
 						<!-- <value>simpleResponseObjects</value> -->
 					</generateTypesWith>
-					<jsonMapperConfiguration>
+					<!-- <jsonMapperConfiguration>
 						<includeHashcodeAndEquals>true</includeHashcodeAndEquals>
 						<IncludeToString>true</IncludeToString>
 						<useLongIntegers>true</useLongIntegers>
 						<dateTimeType>java.time.LocalDateTime</dateTimeType>
 						<dateType>java.time.LocalDate</dateType>
 						<timeType>java.time.LocalTime</timeType>
-					</jsonMapperConfiguration>
+					</jsonMapperConfiguration> -->
 				</configuration>
 				<executions>
 					<execution>
