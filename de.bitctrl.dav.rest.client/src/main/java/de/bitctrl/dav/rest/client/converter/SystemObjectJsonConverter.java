@@ -24,6 +24,12 @@ import de.bitctrl.dav.rest.api.SystemObjektImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
+/**
+ * Konverter von {@link SystemObject} in {@link SystemObjekt}.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 @DavJsonObjektConverter(davTyp = "typ.systemObjekt")
 public class SystemObjectJsonConverter implements DavJsonConverter<SystemObject, SystemObjekt> {
 

@@ -35,13 +35,17 @@ import de.bsvrz.sys.funclib.application.StandardApplication;
 import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
 import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
 
+/**
+ * REST Client Applikation, die sich am Datenverteiler anmeldet und gemäß der entsprechenden
+ * Parametrierung die Daten aus dem Datenverteiler an einen REST Server
+ * versendet.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 public class Client implements StandardApplication, DavConnectionListener {
 
-	private static ClientDavInterface davConnection;
-
-	public static ClientDavInterface getDavConnection() {
-		return davConnection;
-	}
+	private ClientDavInterface davConnection;
 
 	public static void main(final String[] args) {
 		StandardApplicationRunner.run(new Client(), args);

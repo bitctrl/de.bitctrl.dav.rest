@@ -59,6 +59,13 @@ import de.bsvrz.sys.funclib.dataIdentificationSettings.SettingsManager;
 import de.bsvrz.sys.funclib.dataIdentificationSettings.UpdateListener;
 import de.bsvrz.sys.funclib.debug.Debug;
 
+/**
+ * Controller Klasse für die Anmeldung am DAV und das Versenden via HTTP REST
+ * API.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 public class Dav2RestSender implements ClientReceiverInterface {
 
 	private final WebTarget target;
@@ -142,7 +149,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 							ReceiveOptions.delayed(), ReceiverRole.receiver());
 					objects2StoreList.add(id.getObject());
 				} catch (final Exception e) {
-					// geht halt nich
+					// ungültige Anmeldungen ignorieren wir
 				}
 			});
 			neueAnmeldungen.clear();

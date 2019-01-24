@@ -32,6 +32,12 @@ import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.ResultData;
 
+/**
+ * Konverter von {@link ResultData} in ein {@link OnlineDatum}.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 @DavJsonDatensatzConverter(davAttributGruppe = "atg.verkehrsDatenKurzZeitMq")
 public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<ResultData, OnlineDatum> {
 

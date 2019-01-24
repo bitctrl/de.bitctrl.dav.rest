@@ -27,6 +27,12 @@ import de.bsvrz.dav.daf.main.config.AttributeGroup;
 import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
+/**
+ * Konverter von {@link SystemObject} in einen {@link MessQuerschnitt}.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 @DavJsonObjektConverter(davTyp = "typ.messQuerschnitt")
 public class MessQuerschnittJsonConverter implements DavJsonConverter<SystemObject, MessQuerschnitt> {
 
