@@ -1,5 +1,4 @@
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,13 +18,19 @@ import de.bitctrl.dav.rest.api.SystemObjekt;
 import de.bitctrl.dav.rest.api.SystemObjektImpl;
 import de.bitctrl.dav.rest.server.SystemobjekteImpl;
 
-public class RestTest extends JerseyTest  {
-	
+/**
+ * Tests der REST Schnittstelle des Servers.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
+public class RestTest extends JerseyTest {
+
 	@Override
 	protected Application configure() {
 		return new ResourceConfig(SystemobjekteImpl.class);
 	}
-	
+
 	@Test
 	public void testSystemObjects() {
 		SystemObjekt obj = new SystemObjektImpl();
@@ -34,13 +39,12 @@ public class RestTest extends JerseyTest  {
 		ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
 		target("/systemobjekte").request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
-		
+
 		Response response = target("/systemobjekte").request().get();
-		Collection<SystemObjekt> objecte = response.readEntity(new GenericType<List<SystemObjekt>>(){} );
-		
-		Assert.assertTrue(objecte.contains(obj));		
+		Collection<SystemObjekt> objecte = response.readEntity(new GenericType<List<SystemObjekt>>() {
+		});
+
+		Assert.assertTrue(objecte.contains(obj));
 	}
-
-
 
 }
