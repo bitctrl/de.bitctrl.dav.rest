@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>de.bitctrl.dav.rest</groupId>
 			<artifactId>de.bitctrl.dav.rest.api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>

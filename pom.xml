@@ -62,5 +62,27 @@
 		</pluginManagement>
 
 	</build>
+	
+	<scm>
+		<connection>scm:git:http://GitLab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest.git</connection>
+		<url>http://GitLab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest.git</url>
+	</scm>
+	
+	<distributionManagement>
+		<repository>
+			<id>bitctrl.nexus.snapshots</id>
+			<name>BitCtrl Nexus Snapshots Repository</name>
+			<url>http://bitctrlbuildserver:8081/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</distributionManagement>
 
+	<issueManagement>
+		<url>http://gitlab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest/issues</url>
+		<system>GitLab</system>
+	</issueManagement>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://bitctrlbuildserver:8080/job/Datenverteiler/job/DAV%20REST%20API%20Testfeld%20NI/</url>
+	</ciManagement>
+	<url>http://GitLab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest.git</url>
 </project>

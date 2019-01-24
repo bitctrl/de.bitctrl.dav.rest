@@ -45,7 +45,7 @@
 						</goals>
 						<phase>verify</phase>
 						<configuration>
-							<finalName>SWE_${project.artifactId}_V${project.version}_${maven.build.timestamp}</finalName>
+							<finalName>${project.artifactId}_${project.version}</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 							<descriptors>
 								<descriptor>src/main/assembly/swe.xml</descriptor>
@@ -91,13 +91,11 @@
 
 
 
-
-
 	<dependencies>
 		<dependency>
 			<groupId>de.bitctrl.dav.rest</groupId>
 			<artifactId>de.bitctrl.dav.rest.api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
@@ -115,11 +113,6 @@
 			<version>${jersey-version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>27.0-jre</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 			<version>4.2.2</version>
@@ -132,11 +125,6 @@
 		<dependency>
 			<groupId>de.bsvrz.sys</groupId>
 			<artifactId>de.bsvrz.sys.funclib.application</artifactId>
-			<version>${nerz-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.bsvrz.sys</groupId>
-			<artifactId>de.bsvrz.sys.funclib.dataSerializer</artifactId>
 			<version>${nerz-version}</version>
 		</dependency>
 		<dependency>

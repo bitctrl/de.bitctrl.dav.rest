@@ -10,9 +10,9 @@
 		<dependencySet>
 			<outputDirectory>${artifactId}/lib</outputDirectory>
 			<useProjectArtifact>true</useProjectArtifact>
-			<excludes>
+			<!-- <excludes>
 				<exclude>de.bsvrz*</exclude>
-			</excludes>
+			</excludes> -->
 		</dependencySet>
 	</dependencySets>
 
@@ -24,6 +24,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>${project.basedir}</directory>
+			<outputDirectory>${artifactId}</outputDirectory>
 			<includes>
 				<include>README*</include>
 				<include>LICENSE*</include>
