@@ -68,6 +68,15 @@
 		<url>http://GitLab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest.git</url>
 	</scm>
 	
+	<distributionManagement>
+		<repository>
+			<id>bitctrl.nexus.snapshots</id>
+			<name>BitCtrl Nexus Snapshots Repository</name>
+			<url>http://bitctrlbuildserver:8081/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</distributionManagement>
+	
+
 	<issueManagement>
 		<url>http://gitlab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest/issues</url>
 		<system>GitLab</system>
