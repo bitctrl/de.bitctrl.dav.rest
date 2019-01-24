@@ -29,8 +29,12 @@
 					<generateTypesWith>
 						<value>jackson2</value>
 						<value>jsr303</value>
-						<value>equalsAndHashCode</value>
 						<value>toString</value>
+						<value>javadoc</value>
+						<value>equalsAndHashCodeWithSubclasses</value>
+                        <!-- <value>throwExceptions</value>
+                        <value>jerseyMultipartFormData</value> -->
+						<!-- <value>simpleResponseObjects</value> -->
 					</generateTypesWith>
 					<jsonMapperConfiguration>
 						<includeHashcodeAndEquals>true</includeHashcodeAndEquals>
