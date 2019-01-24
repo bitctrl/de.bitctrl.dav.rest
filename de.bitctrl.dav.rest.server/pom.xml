@@ -14,6 +14,27 @@
 		<jersey-version>2.27</jersey-version>
 	</properties>
 
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<configuration>
+					<includeTests>false</includeTests>
+					<failOnError>false</failOnError>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>de.bitctrl.dav.rest</groupId>
@@ -72,7 +93,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>bitctrl.nexus.snapshots</id>
