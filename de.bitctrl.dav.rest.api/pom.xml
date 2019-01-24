@@ -31,7 +31,7 @@
 						<value>jsr303</value>
 						<value>toString</value>
 						<value>javadoc</value>
-						<value>equalsAndHashCodeWithSubclasses</value>
+						<value>equalsAndHashCode</value>
                         <!-- <value>throwExceptions</value>
                         <value>jerseyMultipartFormData</value> -->
 						<!-- <value>simpleResponseObjects</value> -->
