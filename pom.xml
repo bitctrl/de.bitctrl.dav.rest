@@ -34,17 +34,23 @@
 					<artifactId>spotbugs-maven-plugin</artifactId>
 					<version>${spotbugs-version}</version>
 				</plugin>
+
+				<plugin>
+					<groupId>biz.aQute.bnd</groupId>
+					<artifactId>bnd-maven-plugin</artifactId>
+					<version>4.1.0</version>
+				</plugin>
 			</plugins>
 
 		</pluginManagement>
 
 	</build>
-	
+
 	<scm>
 		<connection>scm:git:http://GitLab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest.git</connection>
 		<url>http://GitLab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest.git</url>
 	</scm>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>bitctrl.nexus.snapshots</id>
@@ -52,7 +58,7 @@
 			<url>http://bitctrlbuildserver:8081/nexus/content/repositories/snapshots/</url>
 		</repository>
 	</distributionManagement>
-	
+
 
 	<issueManagement>
 		<url>http://gitlab/datenverteiler/testfeld-niedersachsen/de.bitctrl.dav.rest/issues</url>
