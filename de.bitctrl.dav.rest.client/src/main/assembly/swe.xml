@@ -33,7 +33,7 @@
 	</fileSets>
 	<files>
 		<file>
-			<source>${project.build.directory}/${artifactId}.jar</source>
+			<source>${project.build.directory}/${artifactId}-${version}.jar</source>
 			<outputDirectory>${artifactId}</outputDirectory>
 			<destName>${artifactId}.jar</destName>
 		</file>

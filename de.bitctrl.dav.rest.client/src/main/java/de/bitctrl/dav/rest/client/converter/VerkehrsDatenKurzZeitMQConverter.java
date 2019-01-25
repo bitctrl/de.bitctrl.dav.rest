@@ -25,6 +25,7 @@ import de.bitctrl.dav.rest.api.Geschwindigkeit;
 import de.bitctrl.dav.rest.api.GeschwindigkeitImpl;
 import de.bitctrl.dav.rest.api.OnlineDatum;
 import de.bitctrl.dav.rest.api.VerkehrsdatenKurzzeit;
+import de.bitctrl.dav.rest.api.VerkehrsdatenKurzzeit.AspektType;
 import de.bitctrl.dav.rest.api.VerkehrsdatenKurzzeitImpl;
 import de.bitctrl.dav.rest.api.VerkehrstaerkeStunde;
 import de.bitctrl.dav.rest.api.VerkehrstaerkeStundeImpl;
@@ -46,7 +47,10 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 
 		final VerkehrsdatenKurzzeit result = new VerkehrsdatenKurzzeitImpl();
 		result.setSystemObjectId(resultData.getObject().getPid());
-		result.setAspekt(resultData.getDataDescription().getAspect().getName());
+
+		AspektType aspektType = VerkehrsdatenKurzzeit.AspektType
+				.valueOf(resultData.getDataDescription().getAspect().getName());
+		result.setAspekt(aspektType);
 		result.setDatenStatus(resultData.getDataState().toString());
 		result.setZeitstempel(new Date(resultData.getDataTime()));
 		final Data data = resultData.getData();
