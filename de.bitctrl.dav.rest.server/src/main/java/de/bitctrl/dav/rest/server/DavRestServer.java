@@ -45,5 +45,9 @@ public class DavRestServer {
 		final Server server = JettyHttpContainerFactory.createServer(baseUri, config);
 		server.start();
 	}
+	
+	private DavRestServer() {
+		//Konstruktor verstecken
+	}
 
 }

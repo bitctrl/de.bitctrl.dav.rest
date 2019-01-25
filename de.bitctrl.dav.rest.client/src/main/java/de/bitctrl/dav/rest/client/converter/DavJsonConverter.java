@@ -22,7 +22,7 @@ package de.bitctrl.dav.rest.client.converter;
 /**
  * Schnittstelle die alle Konverter Implementiergen müssen.
  * 
- * @author ChHoesel
+ * @author BitCtrl Systems GmbH, ChHoesel
  *
  * @param <D> der Quelldatentype
  * @param <J> der Zeildatentyp
