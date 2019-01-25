@@ -32,18 +32,13 @@
 						<value>toString</value>
 						<value>javadoc</value>
 						<value>equalsAndHashCode</value>
-                        <!-- <value>throwExceptions</value>
-                        <value>jerseyMultipartFormData</value> -->
+						<!-- <value>throwExceptions</value> <value>jerseyMultipartFormData</value> -->
 						<!-- <value>simpleResponseObjects</value> -->
 					</generateTypesWith>
-					<!-- <jsonMapperConfiguration>
-						<includeHashcodeAndEquals>true</includeHashcodeAndEquals>
-						<IncludeToString>true</IncludeToString>
-						<useLongIntegers>true</useLongIntegers>
-						<dateTimeType>java.time.LocalDateTime</dateTimeType>
-						<dateType>java.time.LocalDate</dateType>
-						<timeType>java.time.LocalTime</timeType>
-					</jsonMapperConfiguration> -->
+					<!-- <jsonMapperConfiguration> <includeHashcodeAndEquals>true</includeHashcodeAndEquals> 
+						<IncludeToString>true</IncludeToString> <useLongIntegers>true</useLongIntegers> 
+						<dateTimeType>java.time.LocalDateTime</dateTimeType> <dateType>java.time.LocalDate</dateType> 
+						<timeType>java.time.LocalTime</timeType> </jsonMapperConfiguration> -->
 				</configuration>
 				<executions>
 					<execution>
@@ -64,6 +59,19 @@
 					<propertyExpansion>basedir=${project.basedir}</propertyExpansion>
 					<configLocation>config/checkstyle.xml</configLocation>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
