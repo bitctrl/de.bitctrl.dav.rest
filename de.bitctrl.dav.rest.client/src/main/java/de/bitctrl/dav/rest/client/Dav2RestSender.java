@@ -262,7 +262,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					final List<SystemObjekt> messquerschnitte = liste.stream().filter(o -> o instanceof MessQuerschnitt)
 							.collect(Collectors.toList());
 					if (!messquerschnitte.isEmpty()) {
-						target.path("/systemobjekte/messquerschnitte").request()
+						target.path("/systemobjekte/messquerschnitt").request()
 								.post(Entity.entity(messquerschnitte, MediaType.APPLICATION_JSON));
 					}
 					final List<SystemObjekt> anzeigen = liste.stream().filter(o -> o instanceof Anzeige)

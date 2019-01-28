@@ -9,26 +9,36 @@ uses:
   types: types.raml
 
 /systemobjekte:
-  get:
-    responses:
-      200:
-        body:
-          type: types.SystemObjekt[]
-  /messquerschnitte:
+  /messquerschnitt:
     post:
       body:
         application/json:
           type: types.MessQuerschnitt []
+    get:
+      responses:
+        200:
+          body:
+            type: types.MessQuerschnitt[]
   /anzeigequerschnitt:
     post:
       body:
         application/json:
           type: types.AnzeigeQuerschnitt []
+    get:
+        responses:
+         200:
+            body:
+              type: types.AnzeigeQuerschnitt[]
   /anzeige:
     post:
       body:
         application/json:
           type: types.Anzeige []
+    get:
+        responses:
+          200:
+            body:
+              type: types.Anzeige[]
 /onlinedaten:
   /messquerschnitt:
     /verkehrsdatenkurzzeit:

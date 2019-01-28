@@ -19,12 +19,12 @@
  */
 package de.bitctrl.dav.rest.server;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -47,12 +47,7 @@ public class SystemobjekteImpl implements Systemobjekte {
 	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	@Override
-	public GetSystemobjekteResponse getSystemobjekte() {
-		return GetSystemobjekteResponse.respond200WithApplicationJson(new ArrayList<>(objectSet));
-	}
-
-	@Override
-	public void postSystemobjekteMessquerschnitte(@Valid List<MessQuerschnitt> entity) {
+	public void postSystemobjekteMessquerschnitt(@Valid List<MessQuerschnitt> entity) {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " Messquerschnitte: " + entity);
 		objectSet.addAll(entity);
 
@@ -70,6 +65,25 @@ public class SystemobjekteImpl implements Systemobjekte {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " Anzeigen" + entity);
 		objectSet.addAll(entity);
 
+	}
+
+	@Override
+	public GetSystemobjekteMessquerschnittResponse getSystemobjekteMessquerschnitt() {
+		return GetSystemobjekteMessquerschnittResponse.respond200WithApplicationJson(objectSet.stream()
+				.filter(o -> o instanceof MessQuerschnitt).map(o -> (MessQuerschnitt) o).collect(Collectors.toList()));
+	}
+
+	@Override
+	public GetSystemobjekteAnzeigequerschnittResponse getSystemobjekteAnzeigequerschnitt() {
+		return GetSystemobjekteAnzeigequerschnittResponse
+				.respond200WithApplicationJson(objectSet.stream().filter(o -> o instanceof AnzeigeQuerschnitt)
+						.map(o -> (AnzeigeQuerschnitt) o).collect(Collectors.toList()));
+	}
+
+	@Override
+	public GetSystemobjekteAnzeigeResponse getSystemobjekteAnzeige() {
+		return GetSystemobjekteAnzeigeResponse.respond200WithApplicationJson(objectSet.stream()
+				.filter(o -> o instanceof Anzeige).map(o -> (Anzeige) o).collect(Collectors.toList()));
 	}
 
 }

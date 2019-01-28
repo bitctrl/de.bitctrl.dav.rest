@@ -1,9 +1,11 @@
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -14,8 +16,13 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.bitctrl.dav.rest.api.model.Anzeige;
+import de.bitctrl.dav.rest.api.model.AnzeigeImpl;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittImpl;
+import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
+import de.bitctrl.dav.rest.api.model.MessQuerschnittImpl;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
-import de.bitctrl.dav.rest.api.model.SystemObjektImpl;
 import de.bitctrl.dav.rest.server.SystemobjekteImpl;
 
 /**
@@ -32,19 +39,70 @@ public class RestTest extends JerseyTest {
 	}
 
 	@Test
-	public void testSystemObjects() {
-		SystemObjekt obj = new SystemObjektImpl();
-		obj.setName("SystemObject1.");
-		obj.setId("bubub");
+	public void testMessquerschnitt() {
+		
+		WebTarget target = target("/systemobjekte/messquerschnitt");
+		
+		MessQuerschnitt obj = new MessQuerschnittImpl();
+		obj.setName("Mein Messquerschnitt");
+		obj.setId("my.mq");
+		obj.setBreite(1d);
+		obj.setLaenge(12d);
 		ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
-		target("/systemobjekte").request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
 
-		Response response = target("/systemobjekte").request().get();
-		Collection<SystemObjekt> objecte = response.readEntity(new GenericType<List<SystemObjekt>>() {
+		Response response = target.request().get();
+		response.bufferEntity();
+		response.readEntity(String.class);
+		Collection<MessQuerschnitt> objecte = response.readEntity(new GenericType<List<MessQuerschnitt>>() {
 		});
 
 		Assert.assertTrue(objecte.contains(obj));
+
+	}
+
+	@Test
+	public void testAnzeige() {
+
+		WebTarget target = target("/systemobjekte/messquerschnitt");
+
+		Anzeige obj = new AnzeigeImpl();
+		obj.setName("Test Anzeige");
+		obj.setId("test.anzeige");
+
+		ArrayList<SystemObjekt> list = new ArrayList<>();
+		list.add(obj);
+		target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+
+		Response response = target.request().get();
+		Collection<Anzeige> objecte = response.readEntity(new GenericType<List<Anzeige>>() {
+		});
+
+		Assert.assertTrue(objecte.contains(obj));
+
+	}
+	
+	@Test
+	public void testAnzeigequerschnitt() {
+
+		WebTarget target = target("/systemobjekte/anzeigequerschnitt");
+
+		AnzeigeQuerschnitt obj = new AnzeigeQuerschnittImpl();
+		obj.setName("Test AQ");
+		obj.setId("test.aq");
+		obj.setAnzeigen(Arrays.asList("test.anezige"));
+
+		ArrayList<SystemObjekt> list = new ArrayList<>();
+		list.add(obj);
+		target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+
+		Response response = target.request().get();
+		Collection<AnzeigeQuerschnitt> objecte = response.readEntity(new GenericType<List<AnzeigeQuerschnitt>>() {
+		});
+
+		Assert.assertTrue(objecte.contains(obj));
+
 	}
 
 }
