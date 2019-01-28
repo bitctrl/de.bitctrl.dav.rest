@@ -14,8 +14,8 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.bitctrl.dav.rest.api.SystemObjekt;
-import de.bitctrl.dav.rest.api.SystemObjektImpl;
+import de.bitctrl.dav.rest.api.model.SystemObjekt;
+import de.bitctrl.dav.rest.api.model.SystemObjektImpl;
 import de.bitctrl.dav.rest.server.SystemobjekteImpl;
 
 /**

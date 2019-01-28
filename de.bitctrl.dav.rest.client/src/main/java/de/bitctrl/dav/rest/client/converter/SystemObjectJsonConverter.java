@@ -19,14 +19,14 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
-import de.bitctrl.dav.rest.api.SystemObjekt;
-import de.bitctrl.dav.rest.api.SystemObjektImpl;
+import de.bitctrl.dav.rest.api.model.SystemObjekt;
+import de.bitctrl.dav.rest.api.model.SystemObjektImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
 /**
  * Konverter von {@link SystemObject} in {@link SystemObjekt}.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */

@@ -26,6 +26,7 @@
 				<configuration>
 					<ramlFile>${raml.file}</ramlFile>
 					<resourcePackage>de.bitctrl.dav.rest.api</resourcePackage>
+					<modelPackage>de.bitctrl.dav.rest.api.model</modelPackage>
 					<jsonMapper>jackson2</jsonMapper>
 					<removeOldOutput>true</removeOldOutput>
 					<generateTypesWith>

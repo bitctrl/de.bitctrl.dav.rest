@@ -36,10 +36,10 @@ import de.bsvrz.sys.funclib.application.StandardApplicationRunner;
 import de.bsvrz.sys.funclib.commandLineArgs.ArgumentList;
 
 /**
- * REST Client Applikation, die sich am Datenverteiler anmeldet und gemäß der entsprechenden
- * Parametrierung die Daten aus dem Datenverteiler an einen REST Server
- * versendet.
- * 
+ * REST Client Applikation, die sich am Datenverteiler anmeldet und gemäß der
+ * entsprechenden Parametrierung die Daten aus dem Datenverteiler an einen REST
+ * Server versendet.
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */

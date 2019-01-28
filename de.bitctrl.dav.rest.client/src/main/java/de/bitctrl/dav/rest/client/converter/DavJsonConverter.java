@@ -21,7 +21,7 @@ package de.bitctrl.dav.rest.client.converter;
 
 /**
  * Schnittstelle die alle Konverter Implementiergen müssen.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  * @param <D> der Quelldatentype
@@ -31,7 +31,7 @@ public interface DavJsonConverter<D, J> {
 
 	/**
 	 * Konvertiert von einem Modell in das andere.
-	 * 
+	 *
 	 * @param davObj das Quellobjekt, üblicherweise aus der DAV API
 	 * @return das Zielobjekt
 	 */

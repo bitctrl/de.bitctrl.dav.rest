@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.bitctrl.dav.rest.api.AnzeigeQuerschnitt;
-import de.bitctrl.dav.rest.api.AnzeigeQuerschnittImpl;
-import de.bitctrl.dav.rest.api.MessQuerschnitt;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.config.AttributeGroup;
@@ -35,7 +34,7 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
 
 /**
  * Konverter von {@link SystemObject} in einen {@link AnzeigeQuerschnitt}.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
@@ -50,11 +49,11 @@ public class AnzeigeQuerschnittJsonConverter implements DavJsonConverter<SystemO
 
 		extractedAtgPunkKoordinaten(davObj, result);
 
-		ConfigurationObject ko = (ConfigurationObject) davObj;
+		final ConfigurationObject ko = (ConfigurationObject) davObj;
 		if (ko.getObjectSet("Anzeigen") == null) {
 			result.setAnzeigen(new ArrayList<>());
 		} else {
-			List<String> anzeigen = ko.getObjectSet("Anzeigen").getElements().stream()
+			final List<String> anzeigen = ko.getObjectSet("Anzeigen").getElements().stream()
 					.map(s -> s.getPidOrNameOrId()).collect(Collectors.toList());
 			result.setAnzeigen(anzeigen);
 		}

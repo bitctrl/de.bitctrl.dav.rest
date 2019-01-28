@@ -26,8 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.bitctrl.dav.rest.api.SystemObjekt;
 import de.bitctrl.dav.rest.api.Systemobjekte;
+import de.bitctrl.dav.rest.api.model.SystemObjekt;
 
 /**
  * Verarbeiten der {@link Systemobjekte}.

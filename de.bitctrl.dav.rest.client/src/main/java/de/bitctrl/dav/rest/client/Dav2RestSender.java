@@ -37,8 +37,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import de.bitctrl.dav.rest.api.OnlineDatum;
-import de.bitctrl.dav.rest.api.SystemObjekt;
+import de.bitctrl.dav.rest.api.model.OnlineDatum;
+import de.bitctrl.dav.rest.api.model.SystemObjekt;
 import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bitctrl.dav.rest.client.converter.DavJsonConverter;
@@ -62,7 +62,7 @@ import de.bsvrz.sys.funclib.debug.Debug;
 /**
  * Controller Klasse für die Anmeldung am DAV und das Versenden via HTTP REST
  * API.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */

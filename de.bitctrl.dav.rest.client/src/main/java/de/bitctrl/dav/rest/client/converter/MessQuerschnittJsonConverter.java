@@ -19,8 +19,8 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
-import de.bitctrl.dav.rest.api.MessQuerschnitt;
-import de.bitctrl.dav.rest.api.MessQuerschnittImpl;
+import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
+import de.bitctrl.dav.rest.api.model.MessQuerschnittImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.config.AttributeGroup;
@@ -29,7 +29,7 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
 
 /**
  * Konverter von {@link SystemObject} in einen {@link MessQuerschnitt}.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */

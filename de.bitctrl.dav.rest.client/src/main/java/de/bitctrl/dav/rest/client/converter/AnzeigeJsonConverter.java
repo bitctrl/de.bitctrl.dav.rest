@@ -19,14 +19,14 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
-import de.bitctrl.dav.rest.api.Anzeige;
-import de.bitctrl.dav.rest.api.AnzeigeImpl;
+import de.bitctrl.dav.rest.api.model.Anzeige;
+import de.bitctrl.dav.rest.api.model.AnzeigeImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
 /**
  * Konverter von {@link SystemObject} in {@link Anzeige}.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */

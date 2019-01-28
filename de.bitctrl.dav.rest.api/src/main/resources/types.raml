@@ -49,7 +49,15 @@ types:
     properties:
       aspekt:
         description: Die Variante der Kurzzeitdaten.
-        enum: [Analyse,Agregation1Minute,Agregation5Minuten,Agregation15Minuten,Agregation30Minuten,Agregation60Minuten,AnalyseHB]
+        type: string
+        enum:
+          - Analyse
+          - Agregation1Minute
+          - Agregation5Minuten
+          - Agregation15Minuten
+          - Agregation30Minuten
+          - Agregation60Minuten
+          - AnalyseHB
       qKfz: VerkehrstaerkeStunde
       vKfz: Geschwindigkeit
       qLkw: VerkehrstaerkeStunde
@@ -63,8 +71,18 @@ types:
     type: OnlineDatum
     properties:
       aspekt:
-        enum: [AqZustand]
+        type: string
+        enum:
+          - AqZustand
         description: Die Variante der AnzeigeEigenschaft.
       status:
         description: Der Status der Anzeige.
-        enum: [Undefiniert,OK,Gestört,Teilstörung,Stromausfall,Kommunikationsausfall,Türkontakt]
+        type: string
+        enum:
+          - Undefiniert
+          - OK
+          - Gestört
+          - Teilstörung
+          - Stromausfall
+          - Kommunikationsausfall
+          - Türkontakt

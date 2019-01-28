@@ -21,21 +21,21 @@ package de.bitctrl.dav.rest.client.converter;
 
 import java.util.Date;
 
-import de.bitctrl.dav.rest.api.Geschwindigkeit;
-import de.bitctrl.dav.rest.api.GeschwindigkeitImpl;
-import de.bitctrl.dav.rest.api.OnlineDatum;
-import de.bitctrl.dav.rest.api.VerkehrsdatenKurzzeit;
-import de.bitctrl.dav.rest.api.VerkehrsdatenKurzzeit.AspektType;
-import de.bitctrl.dav.rest.api.VerkehrsdatenKurzzeitImpl;
-import de.bitctrl.dav.rest.api.VerkehrstaerkeStunde;
-import de.bitctrl.dav.rest.api.VerkehrstaerkeStundeImpl;
+import de.bitctrl.dav.rest.api.model.Geschwindigkeit;
+import de.bitctrl.dav.rest.api.model.GeschwindigkeitImpl;
+import de.bitctrl.dav.rest.api.model.OnlineDatum;
+import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
+import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit.AspektType;
+import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeitImpl;
+import de.bitctrl.dav.rest.api.model.VerkehrstaerkeStunde;
+import de.bitctrl.dav.rest.api.model.VerkehrstaerkeStundeImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.ResultData;
 
 /**
  * Konverter von {@link ResultData} in ein {@link OnlineDatum}.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
@@ -48,7 +48,7 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 		final VerkehrsdatenKurzzeit result = new VerkehrsdatenKurzzeitImpl();
 		result.setSystemObjectId(resultData.getObject().getPid());
 
-		AspektType aspektType = VerkehrsdatenKurzzeit.AspektType
+		final AspektType aspektType = VerkehrsdatenKurzzeit.AspektType
 				.valueOf(resultData.getDataDescription().getAspect().getName());
 		result.setAspekt(aspektType);
 		result.setDatenStatus(resultData.getDataState().toString());
