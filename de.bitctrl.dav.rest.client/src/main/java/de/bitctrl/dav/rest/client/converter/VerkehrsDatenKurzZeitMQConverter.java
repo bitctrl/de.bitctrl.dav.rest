@@ -32,6 +32,7 @@ import de.bitctrl.dav.rest.api.model.VerkehrstaerkeStundeImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.ResultData;
+import de.bsvrz.dav.daf.main.config.Aspect;
 
 /**
  * Konverter von {@link ResultData} in ein {@link OnlineDatum}.
@@ -48,9 +49,31 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 		final VerkehrsdatenKurzzeit result = new VerkehrsdatenKurzzeitImpl();
 		result.setSystemObjectId(resultData.getObject().getPid());
 
-		final AspektType aspektType = VerkehrsdatenKurzzeit.AspektType
-				.valueOf(resultData.getDataDescription().getAspect().getName());
-		result.setAspekt(aspektType);
+		Aspect aspect = resultData.getDataDescription().getAspect();
+		switch (aspect.getPid()) {
+		case "asp.agregation1Minute":
+			result.setAspekt(AspektType.AGGREGATION1MINUTE);
+			break;
+		case "asp.agregation5Minuten":
+			result.setAspekt(AspektType.AGGREGATION5MINUTEN);
+			break;
+		case "asp.agregation15Minuten":
+			result.setAspekt(AspektType.AGGREGATION15MINUTEN);
+			break;
+		case "asp.agregation30Minuten":
+			result.setAspekt(AspektType.AGGREGATION30MINUTEN);
+			break;
+		case "asp.agregation60Minuten":
+			result.setAspekt(AspektType.AGGREGATION60MINUTEN);
+			break;
+		case "asp.analyseHB":
+			result.setAspekt(AspektType.ANALYSEHB);
+			break;
+		default:
+			result.setAspekt(AspektType.ANALYSE);
+
+		}
+
 		result.setDatenStatus(resultData.getDataState().toString());
 		result.setZeitstempel(new Date(resultData.getDataTime()));
 		final Data data = resultData.getData();
