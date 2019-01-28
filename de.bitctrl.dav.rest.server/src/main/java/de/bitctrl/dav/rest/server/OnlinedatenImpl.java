@@ -23,8 +23,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.validation.Valid;
+
 import de.bitctrl.dav.rest.api.Onlinedaten;
-import de.bitctrl.dav.rest.api.model.OnlineDatum;
+import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
+import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
 
 /**
  * Verarbeiten der {@link Onlinedaten}.
@@ -37,8 +40,15 @@ public class OnlinedatenImpl implements Onlinedaten {
 	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	@Override
-	public void postOnlinedaten(List<OnlineDatum> entity) {
-		logger.log(Level.INFO, "Empfange Onlinedaten: " + entity);
+	public void postOnlinedatenMessquerschnittVerkehrsdatenkurzzeit(@Valid List<VerkehrsdatenKurzzeit> entity) {
+		logger.log(Level.INFO, "Empfange MQ VerkehrsdatenKurzzeit: " + entity);
+
+	}
+
+	@Override
+	public void postOnlinedatenAnzeigeAnzeigeeigenschaft(@Valid List<AnzeigeEigenschaft> entity) {
+		logger.log(Level.INFO, "Empfange AnzeigeEigenschaft: " + entity);
+
 	}
 
 }

@@ -14,12 +14,31 @@ uses:
       200:
         body:
           type: types.SystemObjekt[]
-  post:
-    body:
-      application/json:
-        type: types.SystemObjekt []
+  /messquerschnitte:
+    post:
+      body:
+        application/json:
+          type: types.MessQuerschnitt []
+  /anzeigequerschnitt:
+    post:
+      body:
+        application/json:
+          type: types.AnzeigeQuerschnitt []
+  /anzeige:
+    post:
+      body:
+        application/json:
+          type: types.Anzeige []
 /onlinedaten:
-  post:
-    body:
-      application/json:
-        type: types.OnlineDatum []
+  /messquerschnitt:
+    /verkehrsdatenkurzzeit:
+      post:
+        body:
+          application/json:
+            type: types.VerkehrsdatenKurzzeit []
+  /anzeige:
+    /anzeigeeigenschaft:
+      post:
+        body:
+          application/json:
+            type: types.AnzeigeEigenschaft []

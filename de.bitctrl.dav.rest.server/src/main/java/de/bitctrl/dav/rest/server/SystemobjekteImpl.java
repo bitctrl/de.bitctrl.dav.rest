@@ -26,7 +26,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.validation.Valid;
+
 import de.bitctrl.dav.rest.api.Systemobjekte;
+import de.bitctrl.dav.rest.api.model.Anzeige;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
+import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
 
 /**
@@ -47,9 +52,24 @@ public class SystemobjekteImpl implements Systemobjekte {
 	}
 
 	@Override
-	public void postSystemobjekte(List<SystemObjekt> entity) {
-		logger.log(Level.INFO, "Empfange: " + entity);
+	public void postSystemobjekteMessquerschnitte(@Valid List<MessQuerschnitt> entity) {
+		logger.log(Level.INFO, "Empfange " + entity.size() + " Messquerschnitte: " + entity);
 		objectSet.addAll(entity);
+
+	}
+
+	@Override
+	public void postSystemobjekteAnzeigequerschnitt(@Valid List<AnzeigeQuerschnitt> entity) {
+		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeQuerschnitt" + entity);
+		objectSet.addAll(entity);
+
+	}
+
+	@Override
+	public void postSystemobjekteAnzeige(@Valid List<Anzeige> entity) {
+		logger.log(Level.INFO, "Empfange " + entity.size() + " Anzeigen" + entity);
+		objectSet.addAll(entity);
+
 	}
 
 }

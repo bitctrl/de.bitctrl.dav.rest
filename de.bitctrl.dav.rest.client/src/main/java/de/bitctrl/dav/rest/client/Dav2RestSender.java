@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -37,8 +38,13 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import de.bitctrl.dav.rest.api.model.Anzeige;
+import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
+import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.OnlineDatum;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
+import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
 import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bitctrl.dav.rest.client.converter.DavJsonConverter;
@@ -188,8 +194,18 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 				try {
 					final List<OnlineDatum> liste = getOnlineDaten(injector);
-					if (!liste.isEmpty()) {
-						target.path("/onlinedaten").request().post(Entity.entity(liste, MediaType.APPLICATION_JSON));
+
+					final List<OnlineDatum> mqVerkehrsdatenKurzzeit = liste.stream()
+							.filter(o -> o instanceof VerkehrsdatenKurzzeit).collect(Collectors.toList());
+					if (!mqVerkehrsdatenKurzzeit.isEmpty()) {
+						target.path("/onlinedaten/messquerschnitt/verkehrsdatenkurzzeit").request()
+								.post(Entity.entity(mqVerkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
+					}
+					final List<OnlineDatum> anzeigeEigenschaften = liste.stream()
+							.filter(o -> o instanceof AnzeigeEigenschaft).collect(Collectors.toList());
+					if (!anzeigeEigenschaften.isEmpty()) {
+						target.path("/onlinedaten/anzeige/anzeigeeigenschaft").request()
+								.post(Entity.entity(mqVerkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
 					}
 				} catch (final Exception ex) {
 					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);
@@ -243,8 +259,23 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 				try {
 					final List<SystemObjekt> liste = getObjekte(injector);
-					if (!liste.isEmpty()) {
-						target.path("/systemobjekte").request().post(Entity.entity(liste, MediaType.APPLICATION_JSON));
+					final List<SystemObjekt> messquerschnitte = liste.stream().filter(o -> o instanceof MessQuerschnitt)
+							.collect(Collectors.toList());
+					if (!messquerschnitte.isEmpty()) {
+						target.path("/systemobjekte/messquerschnitte").request()
+								.post(Entity.entity(messquerschnitte, MediaType.APPLICATION_JSON));
+					}
+					final List<SystemObjekt> anzeigen = liste.stream().filter(o -> o instanceof Anzeige)
+							.collect(Collectors.toList());
+					if (!anzeigen.isEmpty()) {
+						target.path("/systemobjekte/anzeige").request()
+								.post(Entity.entity(messquerschnitte, MediaType.APPLICATION_JSON));
+					}
+					final List<SystemObjekt> anzeigequerschnitte = liste.stream()
+							.filter(o -> o instanceof AnzeigeQuerschnitt).collect(Collectors.toList());
+					if (!anzeigequerschnitte.isEmpty()) {
+						target.path("/systemobjekte/anzeigequerschnitt").request()
+								.post(Entity.entity(messquerschnitte, MediaType.APPLICATION_JSON));
 					}
 				} catch (final Exception ex) {
 					LOGGER.error("Dav Objekte konnten nicht versendet werden.", ex);
