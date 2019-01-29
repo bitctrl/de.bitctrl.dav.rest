@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>de.bitctrl.dav.rest.api</artifactId>
 	<name>Dav3 REST API</name>
-	
+
 	<parent>
 		<groupId>de.bitctrl.dav.rest</groupId>
 		<artifactId>de.bitctrl.dav.rest</artifactId>
@@ -127,11 +127,17 @@
 		</dependency>
 	</dependencies>
 
-	<distributionManagement>
-		<repository>
-			<id>bitctrl.nexus.snapshots</id>
-			<name>BitCtrl Nexus Snapshots Repository</name>
-			<url>http://bitctrlbuildserver:8081/nexus/content/repositories/snapshots/</url>
-		</repository>
-	</distributionManagement>
+	<profiles>
+		<profile>
+			<id>bitctrl</id>
+			<distributionManagement>
+				<repository>
+					<id>bitctrl.nexus.snapshots</id>
+					<name>BitCtrl Nexus Snapshots Repository</name>
+					<url>http://bitctrlbuildserver:8081/nexus/content/repositories/snapshots/</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+
+	</profiles>
 </project>
