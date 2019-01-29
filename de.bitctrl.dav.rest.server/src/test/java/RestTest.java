@@ -91,7 +91,7 @@ public class RestTest extends JerseyTest {
 		AnzeigeQuerschnitt obj = new AnzeigeQuerschnittImpl();
 		obj.setName("Test AQ");
 		obj.setId("test.aq");
-		obj.setAnzeigen(Arrays.asList("test.anezige"));
+		obj.setAnzeigen(Arrays.asList("test.anzeige"));
 
 		ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
