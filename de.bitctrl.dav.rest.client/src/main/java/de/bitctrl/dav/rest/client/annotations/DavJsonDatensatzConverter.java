@@ -38,6 +38,6 @@ public @interface DavJsonDatensatzConverter {
 	/**
 	 * Die PID der Attributgruppe.
 	 */
-	String davAttributGruppe();
+	String[] davAttributGruppe() default "{}";
 
 }

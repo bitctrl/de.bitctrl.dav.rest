@@ -20,6 +20,7 @@
 package de.bitctrl.dav.rest.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -229,8 +230,9 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			while (resultData != null && i++ < 1000) {
 
 				final AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
-				final Optional<Class<?>> findFirst = annotatedWith.stream().filter(
-						c -> atg.getPid().equals(c.getAnnotation(DavJsonDatensatzConverter.class).davAttributGruppe()))
+				final Optional<Class<?>> findFirst = annotatedWith.stream()
+						.filter(c -> Arrays.asList(c.getAnnotation(DavJsonDatensatzConverter.class).davAttributGruppe())
+								.contains(atg.getPid()))
 						.findFirst();
 
 				if (findFirst.isPresent()) {

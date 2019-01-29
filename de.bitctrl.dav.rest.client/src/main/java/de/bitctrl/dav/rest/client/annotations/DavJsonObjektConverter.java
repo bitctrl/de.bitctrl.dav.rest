@@ -39,6 +39,6 @@ public @interface DavJsonObjektConverter {
 	/**
 	 * Die PID des DavTypes.
 	 */
-	String davTyp();
+	String davTyp() default "";
 
 }

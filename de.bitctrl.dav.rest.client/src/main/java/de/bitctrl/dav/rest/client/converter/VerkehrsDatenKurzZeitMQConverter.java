@@ -26,10 +26,10 @@ import de.bitctrl.dav.rest.api.model.GeschwindigkeitImpl;
 import de.bitctrl.dav.rest.api.model.OnlineDatum;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit.AspektType;
+import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeitImpl;
 import de.bitctrl.dav.rest.api.model.VerkehrstaerkeStunde;
 import de.bitctrl.dav.rest.api.model.VerkehrstaerkeStundeImpl;
-import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.ResultData;
 import de.bsvrz.dav.daf.main.config.Aspect;
@@ -40,7 +40,7 @@ import de.bsvrz.dav.daf.main.config.Aspect;
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
-@DavJsonDatensatzConverter(davAttributGruppe = "atg.verkehrsDatenKurzZeitMq")
+@DavJsonDatensatzConverter(davAttributGruppe = {"atg.verkehrsDatenKurzZeitMq"})
 public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<ResultData, OnlineDatum> {
 
 	@Override
