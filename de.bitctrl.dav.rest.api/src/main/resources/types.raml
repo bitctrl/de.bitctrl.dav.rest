@@ -15,9 +15,28 @@ types:
   MessQuerschnitt:
     description: Ein Messquerschnitt.
     type: PunktXY
+    properties:
+      fahrstreifen:
+        description: Die Menge aller Fahrstreigen an diesem Messquerschnitt (Referenziert via id)
+        type: string[]
   Anzeige:
     description: Eine Anzeige an einem Anzeigequerschnitt.
     type: SystemObjekt
+  FahrStreifen:
+    description: Ein Fahrstreifen auf einem Messquerschnitt.
+    type: SystemObjekt
+    properties:
+      lage:
+        description: die Lage des Fahrstreifens auf der Straße.
+        type: string
+        enum:
+          - HFS
+          - 1ÜFS
+          - 2ÜFS
+          - 3ÜFS
+          - 4ÜFS
+          - 5ÜFS
+          - 6ÜFS
   AnzeigeQuerschnitt:
     description: Ein Anzeigequerschnitt.
     type: PunktXY

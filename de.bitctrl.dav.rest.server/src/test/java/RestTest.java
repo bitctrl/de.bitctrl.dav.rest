@@ -20,6 +20,8 @@ import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeImpl;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittImpl;
+import de.bitctrl.dav.rest.api.model.FahrStreifen;
+import de.bitctrl.dav.rest.api.model.FahrStreifenImpl;
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.MessQuerschnittImpl;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
@@ -99,6 +101,27 @@ public class RestTest extends JerseyTest {
 
 		Response response = target.request().get();
 		Collection<AnzeigeQuerschnitt> objecte = response.readEntity(new GenericType<List<AnzeigeQuerschnitt>>() {
+		});
+
+		Assert.assertTrue(objecte.contains(obj));
+
+	}
+	
+	@Test
+	public void testFahrstreifen() {
+
+		WebTarget target = target("/systemobjekte/fahrstreifen");
+
+		FahrStreifen obj = new FahrStreifenImpl();
+		obj.setName("Test Fahrstreifen");
+		obj.setId("test.fs");
+
+		ArrayList<SystemObjekt> list = new ArrayList<>();
+		list.add(obj);
+		target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+
+		Response response = target.request().get();
+		Collection<FahrStreifen> objecte = response.readEntity(new GenericType<List<FahrStreifen>>() {
 		});
 
 		Assert.assertTrue(objecte.contains(obj));

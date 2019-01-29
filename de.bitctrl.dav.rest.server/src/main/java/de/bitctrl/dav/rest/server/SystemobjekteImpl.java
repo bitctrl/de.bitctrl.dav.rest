@@ -31,6 +31,7 @@ import javax.validation.Valid;
 import de.bitctrl.dav.rest.api.Systemobjekte;
 import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
+import de.bitctrl.dav.rest.api.model.FahrStreifen;
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
 
@@ -84,6 +85,19 @@ public class SystemobjekteImpl implements Systemobjekte {
 	public GetSystemobjekteAnzeigeResponse getSystemobjekteAnzeige() {
 		return GetSystemobjekteAnzeigeResponse.respond200WithApplicationJson(objectSet.stream()
 				.filter(o -> o instanceof Anzeige).map(o -> (Anzeige) o).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void postSystemobjekteFahrstreifen(@Valid List<FahrStreifen> entity) {
+		logger.log(Level.INFO, "Empfange " + entity.size() + " Fahrstreifen" + entity);
+		objectSet.addAll(entity);
+
+	}
+
+	@Override
+	public GetSystemobjekteFahrstreifenResponse getSystemobjekteFahrstreifen() {
+		return GetSystemobjekteFahrstreifenResponse.respond200WithApplicationJson(objectSet.stream()
+				.filter(o -> o instanceof FahrStreifen).map(o -> (FahrStreifen) o).collect(Collectors.toList()));
 	}
 
 }

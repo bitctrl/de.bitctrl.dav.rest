@@ -19,54 +19,58 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
-import de.bitctrl.dav.rest.api.model.MessQuerschnittImpl;
+import de.bitctrl.dav.rest.api.model.FahrStreifen;
+import de.bitctrl.dav.rest.api.model.FahrStreifenImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.config.AttributeGroup;
-import de.bsvrz.dav.daf.main.config.ConfigurationObject;
 import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
 /**
- * Konverter von {@link SystemObject} in einen {@link MessQuerschnitt}.
+ * Konverter von {@link SystemObject} in {@link FahrStreifen}.
  *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
-@DavJsonObjektConverter(davTyp = "typ.messQuerschnitt")
-public class MessQuerschnittJsonConverter implements DavJsonConverter<SystemObject, MessQuerschnitt> {
+@DavJsonObjektConverter(davTyp = "typ.anzeige")
+public class FahrstreigenJsonConverter implements DavJsonConverter<SystemObject, FahrStreifen> {
 
 	@Override
-	public MessQuerschnitt dav2Json(SystemObject davObj) {
-		final MessQuerschnitt result = new MessQuerschnittImpl();
+	public FahrStreifen dav2Json(SystemObject davObj) {
+		final FahrStreifen result = new FahrStreifenImpl();
 		result.setId(davObj.getPid());
 		result.setName(davObj.getName());
 
-		final DataModel dataModel = davObj.getDataModel();
-		final AttributeGroup atg = dataModel.getAttributeGroup("atg.punktKoordinaten");
-		final Data daten = davObj.getConfigurationData(atg);
-		if (daten != null && !daten.getUnscaledValue("x").isState()) {
-			result.setLaenge(daten.getScaledValue("x").doubleValue());
-		}
-		if (daten != null && !daten.getUnscaledValue("y").isState()) {
-			result.setBreite(daten.getScaledValue("y").doubleValue());
-		}
-
-		final ConfigurationObject ko = (ConfigurationObject) davObj;
-		if (ko.getObjectSet("FahrStreifen") == null) {
-			result.setFahrstreifen(new ArrayList<>());
-		} else {
-			final List<String> fahrstreifenIds = ko.getObjectSet("FahrStreifen").getElements().stream()
-					.map(s -> s.getPidOrNameOrId()).collect(Collectors.toList());
-			result.setFahrstreifen(fahrstreifenIds);
-		}
-
+		final FahrStreifen.LageType lage = bestimmeLage(davObj);
+		result.setLage(lage);
 		return result;
+	}
+
+	private FahrStreifen.LageType bestimmeLage(SystemObject davObj) {
+		final DataModel dataModel = davObj.getDataModel();
+		final AttributeGroup atg = dataModel.getAttributeGroup("atg.fahrStreifen");
+		final Data daten = davObj.getConfigurationData(atg);
+		if (daten.getUnscaledValue("Lage").isState()) {
+			final String lage = daten.getScaledValue("Lage").getText();
+			switch (lage) {
+			case "1ÜFS":
+				return FahrStreifen.LageType._1FS;
+			case "2ÜFS":
+				return FahrStreifen.LageType._2FS;
+			case "3ÜFS":
+				return FahrStreifen.LageType._3FS;
+			case "4ÜFS":
+				return FahrStreifen.LageType._4FS;
+			case "5ÜFS":
+				return FahrStreifen.LageType._5FS;
+			case "6ÜFS":
+				return FahrStreifen.LageType._6FS;
+			default:
+				return FahrStreifen.LageType.HFS;
+			}
+		}
+		return FahrStreifen.LageType.HFS;
 	}
 
 }

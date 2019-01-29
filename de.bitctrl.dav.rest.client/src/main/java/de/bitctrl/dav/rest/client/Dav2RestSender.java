@@ -41,6 +41,7 @@ import com.google.inject.Injector;
 import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
+import de.bitctrl.dav.rest.api.model.FahrStreifen;
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.OnlineDatum;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
@@ -256,34 +257,69 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 		private void versendeSystemObjekte(Injector injector) {
 			while (!objects2StoreList.isEmpty()) {
-
 				try {
 					final List<SystemObjekt> liste = getObjekte(injector);
-					final List<SystemObjekt> messquerschnitte = liste.stream().filter(o -> o instanceof MessQuerschnitt)
-							.collect(Collectors.toList());
-					if (!messquerschnitte.isEmpty()) {
-						target.path("/systemobjekte/messquerschnitt").request()
-								.post(Entity.entity(messquerschnitte, MediaType.APPLICATION_JSON));
-					}
-					final List<SystemObjekt> anzeigen = liste.stream().filter(o -> o instanceof Anzeige)
-							.collect(Collectors.toList());
-					if (!anzeigen.isEmpty()) {
-						target.path("/systemobjekte/anzeige").request()
-								.post(Entity.entity(messquerschnitte, MediaType.APPLICATION_JSON));
-					}
-					final List<SystemObjekt> anzeigequerschnitte = liste.stream()
-							.filter(o -> o instanceof AnzeigeQuerschnitt).collect(Collectors.toList());
-					if (!anzeigequerschnitte.isEmpty()) {
-						target.path("/systemobjekte/anzeigequerschnitt").request()
-								.post(Entity.entity(messquerschnitte, MediaType.APPLICATION_JSON));
-					}
-				} catch (final Exception ex) {
-					LOGGER.error("Dav Objekte konnten nicht versendet werden.", ex);
-				} finally {
-
+					versendeFahrStreifen(liste);
+					versendeMessQuerschnitte(liste);
+					versendeAnzeigen(liste);
+					versendeAnzeigeQuerschnitte(liste);
+				} catch (final InterruptedException e) {
+					LOGGER.error("DAV Objekte konnten nicht versendet werden.", e);
 				}
 
 				// LOGGER.info("Warteschlange = " + data2StoreList.size());
+			}
+		}
+
+		private void versendeFahrStreifen(final List<SystemObjekt> liste) {
+			try {
+				final List<SystemObjekt> anzeigequerschnitte = liste.stream().filter(o -> o instanceof FahrStreifen)
+						.collect(Collectors.toList());
+				if (!anzeigequerschnitte.isEmpty()) {
+					target.path("/systemobjekte/fahrstreifen").request()
+							.post(Entity.entity(anzeigequerschnitte, MediaType.APPLICATION_JSON));
+				}
+			} catch (final Exception ex) {
+				LOGGER.error("FahrStreifen konnten nicht versendet werden.", ex);
+			}
+		}
+
+		private void versendeAnzeigeQuerschnitte(final List<SystemObjekt> liste) {
+			try {
+				final List<SystemObjekt> anzeigequerschnitte = liste.stream()
+						.filter(o -> o instanceof AnzeigeQuerschnitt).collect(Collectors.toList());
+				if (!anzeigequerschnitte.isEmpty()) {
+					target.path("/systemobjekte/anzeigequerschnitt").request()
+							.post(Entity.entity(anzeigequerschnitte, MediaType.APPLICATION_JSON));
+				}
+			} catch (final Exception ex) {
+				LOGGER.error("AnzeigeQuerschnitte konnten nicht versendet werden.", ex);
+			}
+		}
+
+		private void versendeAnzeigen(final List<SystemObjekt> liste) {
+			try {
+				final List<SystemObjekt> anzeigen = liste.stream().filter(o -> o instanceof Anzeige)
+						.collect(Collectors.toList());
+				if (!anzeigen.isEmpty()) {
+					target.path("/systemobjekte/anzeige").request()
+							.post(Entity.entity(anzeigen, MediaType.APPLICATION_JSON));
+				}
+			} catch (final Exception ex) {
+				LOGGER.error("Anzeigen konnten nicht versendet werden.", ex);
+			}
+		}
+
+		private void versendeMessQuerschnitte(final List<SystemObjekt> liste) {
+			try {
+				final List<SystemObjekt> messquerschnitte = liste.stream().filter(o -> o instanceof MessQuerschnitt)
+						.collect(Collectors.toList());
+				if (!messquerschnitte.isEmpty()) {
+					target.path("/systemobjekte/messquerschnitt").request()
+							.post(Entity.entity(messquerschnitte, MediaType.APPLICATION_JSON));
+				}
+			} catch (final Exception ex) {
+				LOGGER.error("MessQuerschnitte konnten nicht versendet werden.", ex);
 			}
 		}
 
