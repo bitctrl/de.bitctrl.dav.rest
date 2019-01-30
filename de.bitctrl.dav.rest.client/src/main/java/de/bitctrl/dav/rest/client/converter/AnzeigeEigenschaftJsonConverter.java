@@ -22,7 +22,6 @@ package de.bitctrl.dav.rest.client.converter;
 import java.util.Date;
 
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
-import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft.AspektType;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft.StatusType;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaftImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
@@ -46,7 +45,6 @@ public class AnzeigeEigenschaftJsonConverter implements DavJsonConverter<ResultD
 		final SystemObject object = resultData.getObject();
 		final DataModel dataModel = object.getDataModel();
 		result.setSystemObjectId(object.getPid());
-		result.setAspekt(AspektType.AQZUSTAND);
 
 		result.setDatenStatus(resultData.getDataState().toString());
 		result.setZeitstempel(new Date(resultData.getDataTime()));

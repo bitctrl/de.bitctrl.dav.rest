@@ -89,11 +89,6 @@ types:
   AnzeigeEigenschaft:
     type: OnlineDatum
     properties:
-      aspekt:
-        type: string
-        enum:
-          - AqZustand
-        description: Die Variante der AnzeigeEigenschaft.
       status:
         description: Der Status der Anzeige.
         type: string
@@ -108,6 +103,8 @@ types:
       wvzInhalt:
         description: Grafischer Anzeigeinhalt, textuell abgebildet.
         type: string
+        required: false
       text:
         description: Der Freitext, wenn die Anzeige Texte darstellen kann.
         type: string
+        required: false
