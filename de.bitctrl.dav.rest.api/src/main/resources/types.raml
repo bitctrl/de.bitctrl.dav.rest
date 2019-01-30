@@ -13,17 +13,20 @@ types:
       breite: number
       laenge: number
   MessQuerschnitt:
-    description: Ein Messquerschnitt.
+    description: |
+      Ein Messquerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.messQuerschnittAllgemein">typ.messQuerschnittAllgemein</>  ).
     type: PunktXY
     properties:
       fahrstreifen:
         description: Die Menge aller Fahrstreigen an diesem Messquerschnitt (Referenziert via id)
         type: string[]
   Anzeige:
-    description: Eine Anzeige an einem Anzeigequerschnitt.
+    description: |
+      Eine Anzeige an einem Anzeigequerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#typ.anzeige">typ.anzeige</>  ).
     type: SystemObjekt
   FahrStreifen:
-    description: Ein Fahrstreifen auf einem Messquerschnitt.
+    description: |
+      Ein Fahrstreifen auf einem Messquerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.fahrStreifen">typ.fahrStreifen</>  ).
     type: SystemObjekt
     properties:
       lage:
@@ -38,7 +41,8 @@ types:
           - 5ÜFS
           - 6ÜFS
   AnzeigeQuerschnitt:
-    description: Ein Anzeigequerschnitt.
+    description: |
+      Ein Anzeigequerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.fahrStreifen">typ.fahrStreifen</>  ).
     type: PunktXY
     properties:
       anzeigen:
@@ -63,7 +67,8 @@ types:
       wert: integer
       guete: number
   VerkehrsdatenKurzzeit:
-    description: Verkehrsdaten (Kurzzeit) mit Intervallwerten (normiert auf Stundenwerte) für Messquerschnitte und Fahrstreifen.
+    description: |
+      Verkehrsdaten (Kurzzeit) mit Intervallwerten (normiert auf Stundenwerte) für Messquerschnitte und Fahrstreifen ( <a  href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitMq">atg.verkehrsDatenKurzZeitMq</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitFs">atg.verkehrsDatenKurzZeitFs</> ).
     type: OnlineDatum
     properties:
       aspekt:
@@ -87,6 +92,8 @@ types:
         displayName: Belegung in Prozent
         type: number
   AnzeigeEigenschaft:
+    description: |
+        OnlineDatum einer Anzeige ( <a href=https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#atg.anzeigeEigenschaftIst">atg.anzeigeEigenschaftIst</> ).
     type: OnlineDatum
     properties:
       status:
