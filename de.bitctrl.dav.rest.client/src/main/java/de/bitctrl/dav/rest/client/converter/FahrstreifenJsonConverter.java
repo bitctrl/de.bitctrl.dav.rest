@@ -33,8 +33,8 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
-@DavJsonObjektConverter(davTyp = "typ.anzeige")
-public class FahrstreigenJsonConverter implements DavJsonConverter<SystemObject, FahrStreifen> {
+@DavJsonObjektConverter(davTyp = "typ.fahrStreifen")
+public class FahrstreifenJsonConverter implements DavJsonConverter<SystemObject, FahrStreifen> {
 
 	@Override
 	public FahrStreifen dav2Json(SystemObject davObj) {

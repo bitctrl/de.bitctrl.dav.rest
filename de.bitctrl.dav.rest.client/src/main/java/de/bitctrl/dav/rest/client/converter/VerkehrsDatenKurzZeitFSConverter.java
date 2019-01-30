@@ -35,8 +35,8 @@ import de.bsvrz.dav.daf.main.ResultData;
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
-@DavJsonDatensatzConverter(davAttributGruppe = { "atg.verkehrsDatenKurzZeitMq" })
-public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<ResultData, VerkehrsdatenKurzzeit> {
+@DavJsonDatensatzConverter(davAttributGruppe = { "atg.verkehrsDatenKurzZeitFs" })
+public class VerkehrsDatenKurzZeitFSConverter implements DavJsonConverter<ResultData, VerkehrsdatenKurzzeit> {
 
 	@Override
 	public VerkehrsdatenKurzzeit dav2Json(ResultData resultData) {
@@ -51,20 +51,20 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 		result.setZeitstempel(new Date(resultData.getDataTime()));
 		final Data data = resultData.getData();
 		if (data != null) {
-			final VerkehrstaerkeStunde qKfz = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QKfz"));
+			final VerkehrstaerkeStunde qKfz = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("qKfz"));
 			result.setQKfz(qKfz);
-			final Geschwindigkeit vKfz = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("VKfz"));
+			final Geschwindigkeit vKfz = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("vKfz"));
 			result.setVKfz(vKfz);
-			final VerkehrstaerkeStunde qLkw = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QLkw"));
+			final VerkehrstaerkeStunde qLkw = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("qLkw"));
 			result.setQLkw(qLkw);
-			final Geschwindigkeit vLkw = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("VLkw"));
+			final Geschwindigkeit vLkw = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("vLkw"));
 			result.setVLkw(vLkw);
-			final VerkehrstaerkeStunde qPkw = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QPkw"));
+			final VerkehrstaerkeStunde qPkw = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("qPkw"));
 			result.setQPkw(qPkw);
-			final Geschwindigkeit vPkw = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("VPkw"));
+			final Geschwindigkeit vPkw = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("vPkw"));
 			result.setVPkw(vPkw);
 
-			final Data b = data.getItem("B");
+			final Data b = data.getItem("b");
 			if (b.getUnscaledValue("Wert").isState()) {
 				result.setB(b.getUnscaledValue("Wert").doubleValue());
 			} else {
