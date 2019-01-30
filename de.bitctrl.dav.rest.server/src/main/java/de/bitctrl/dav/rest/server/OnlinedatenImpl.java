@@ -40,15 +40,15 @@ public class OnlinedatenImpl implements Onlinedaten {
 	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	@Override
-	public void postOnlinedatenMessquerschnittVerkehrsdatenkurzzeit(@Valid List<VerkehrsdatenKurzzeit> entity) {
+	public void postOnlinedatenVerkehrsdatenkurzzeit(@Valid List<VerkehrsdatenKurzzeit> entity) {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " VerkehrsdatenKurzzeit: " + entity);
-
+		
 	}
 
 	@Override
-	public void postOnlinedatenAnzeigeAnzeigeeigenschaft(@Valid List<AnzeigeEigenschaft> entity) {
+	public void postOnlinedatenAnzeigeeigenschaft(@Valid List<AnzeigeEigenschaft> entity) {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeEigenschaft: " + entity);
-
+		
 	}
 
 }

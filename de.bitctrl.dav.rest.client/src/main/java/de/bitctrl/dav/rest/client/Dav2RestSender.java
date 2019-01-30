@@ -200,13 +200,13 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					final List<OnlineDatum> mqVerkehrsdatenKurzzeit = liste.stream()
 							.filter(o -> o instanceof VerkehrsdatenKurzzeit).collect(Collectors.toList());
 					if (!mqVerkehrsdatenKurzzeit.isEmpty()) {
-						target.path("/onlinedaten/messquerschnitt/verkehrsdatenkurzzeit").request()
+						target.path("/onlinedaten/verkehrsdatenkurzzeit").request()
 								.post(Entity.entity(mqVerkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
 					}
 					final List<OnlineDatum> anzeigeEigenschaften = liste.stream()
 							.filter(o -> o instanceof AnzeigeEigenschaft).collect(Collectors.toList());
 					if (!anzeigeEigenschaften.isEmpty()) {
-						target.path("/onlinedaten/anzeige/anzeigeeigenschaft").request()
+						target.path("/onlinedaten/anzeigeeigenschaft").request()
 								.post(Entity.entity(mqVerkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
 					}
 				} catch (final Exception ex) {
