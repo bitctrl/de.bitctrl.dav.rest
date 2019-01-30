@@ -41,13 +41,13 @@ public class OnlinedatenImpl implements Onlinedaten {
 
 	@Override
 	public void postOnlinedatenMessquerschnittVerkehrsdatenkurzzeit(@Valid List<VerkehrsdatenKurzzeit> entity) {
-		logger.log(Level.INFO, "Empfange MQ VerkehrsdatenKurzzeit: " + entity);
+		logger.log(Level.INFO, "Empfange " + entity.size() + " VerkehrsdatenKurzzeit: " + entity);
 
 	}
 
 	@Override
 	public void postOnlinedatenAnzeigeAnzeigeeigenschaft(@Valid List<AnzeigeEigenschaft> entity) {
-		logger.log(Level.INFO, "Empfange AnzeigeEigenschaft: " + entity);
+		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeEigenschaft: " + entity);
 
 	}
 

@@ -44,7 +44,7 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 		final VerkehrsdatenKurzzeit result = new VerkehrsdatenKurzzeitImpl();
 		result.setSystemObjectId(resultData.getObject().getPid());
 
-		VerkehrsdatenKurzzeit.AspektType aspekt = VerkehrDatenKurzZeitUtil.extractAspekt(resultData);
+		final VerkehrsdatenKurzzeit.AspektType aspekt = VerkehrDatenKurzZeitUtil.extractAspekt(resultData);
 		result.setAspekt(aspekt);
 
 		result.setDatenStatus(resultData.getDataState().toString());
