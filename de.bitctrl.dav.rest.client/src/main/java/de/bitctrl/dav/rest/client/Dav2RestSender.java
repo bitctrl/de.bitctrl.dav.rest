@@ -207,7 +207,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 							.filter(o -> o instanceof AnzeigeEigenschaft).collect(Collectors.toList());
 					if (!anzeigeEigenschaften.isEmpty()) {
 						target.path("/onlinedaten/anzeigeeigenschaft").request()
-								.post(Entity.entity(mqVerkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
+								.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
 					}
 				} catch (final Exception ex) {
 					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);

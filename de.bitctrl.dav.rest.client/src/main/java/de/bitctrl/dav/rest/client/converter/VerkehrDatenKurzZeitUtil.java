@@ -31,7 +31,7 @@ import de.bsvrz.dav.daf.main.config.Aspect;
 
 public class VerkehrDatenKurzZeitUtil {
 
-	static VerkehrsdatenKurzzeit.AspektType extractAspekt(ResultData resultData) {
+	static VerkehrsdatenKurzzeit.AspektType extraktAspekt(ResultData resultData) {
 		final Aspect aspect = resultData.getDataDescription().getAspect();
 		switch (aspect.getPid()) {
 		case "asp.agregation1Minute":
