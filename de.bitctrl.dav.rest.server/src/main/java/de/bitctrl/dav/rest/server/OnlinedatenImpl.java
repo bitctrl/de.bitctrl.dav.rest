@@ -42,7 +42,6 @@ public class OnlinedatenImpl implements Onlinedaten {
 	@Override
 	public void postOnlinedatenVerkehrsdatenkurzzeit(@Valid List<VerkehrsdatenKurzzeit> entity) {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " VerkehrsdatenKurzzeit: " + entity);
-		
 	}
 
 	@Override

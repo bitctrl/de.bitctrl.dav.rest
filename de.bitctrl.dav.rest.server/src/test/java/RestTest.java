@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
@@ -17,6 +18,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.bitctrl.dav.rest.api.model.Anzeige;
+import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
+import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaftImpl;
 import de.bitctrl.dav.rest.api.model.AnzeigeImpl;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittImpl;
@@ -25,6 +28,9 @@ import de.bitctrl.dav.rest.api.model.FahrStreifenImpl;
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.MessQuerschnittImpl;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
+import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
+import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeitImpl;
+import de.bitctrl.dav.rest.server.OnlinedatenImpl;
 import de.bitctrl.dav.rest.server.SystemobjekteImpl;
 
 /**
@@ -37,14 +43,14 @@ public class RestTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		return new ResourceConfig(SystemobjekteImpl.class);
+		return new ResourceConfig(SystemobjekteImpl.class, OnlinedatenImpl.class);
 	}
 
 	@Test
 	public void testMessquerschnitt() {
-		
+
 		WebTarget target = target("/systemobjekte/messquerschnitt");
-		
+
 		MessQuerschnitt obj = new MessQuerschnittImpl();
 		obj.setName("Mein Messquerschnitt");
 		obj.setId("my.mq");
@@ -52,14 +58,15 @@ public class RestTest extends JerseyTest {
 		obj.setLaenge(12d);
 		ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
-		target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		Response response = target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
-		Response response = target.request().get();
+		response = target.request().get();
 		response.bufferEntity();
 		response.readEntity(String.class);
 		Collection<MessQuerschnitt> objecte = response.readEntity(new GenericType<List<MessQuerschnitt>>() {
 		});
-
+		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		Assert.assertTrue(objecte.contains(obj));
 
 	}
@@ -75,16 +82,17 @@ public class RestTest extends JerseyTest {
 
 		ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
-		target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		Response response = target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
-		Response response = target.request().get();
+		response = target.request().get();
 		Collection<Anzeige> objecte = response.readEntity(new GenericType<List<Anzeige>>() {
 		});
-
+		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		Assert.assertTrue(objecte.contains(obj));
 
 	}
-	
+
 	@Test
 	public void testAnzeigequerschnitt() {
 
@@ -97,16 +105,17 @@ public class RestTest extends JerseyTest {
 
 		ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
-		target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		Response response = target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
-		Response response = target.request().get();
+		response = target.request().get();
 		Collection<AnzeigeQuerschnitt> objecte = response.readEntity(new GenericType<List<AnzeigeQuerschnitt>>() {
 		});
-
+		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		Assert.assertTrue(objecte.contains(obj));
 
 	}
-	
+
 	@Test
 	public void testFahrstreifen() {
 
@@ -118,13 +127,38 @@ public class RestTest extends JerseyTest {
 
 		ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
-		target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		Response response = target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
-		Response response = target.request().get();
+		response = target.request().get();
 		Collection<FahrStreifen> objecte = response.readEntity(new GenericType<List<FahrStreifen>>() {
 		});
 
+		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		Assert.assertTrue(objecte.contains(obj));
+	}
+
+	@Test
+	public void testSendeVerkehrsDatenKurzZeit() {
+		WebTarget target = target("/onlinedaten/verkehrsdatenkurzzeit");
+
+		VerkehrsdatenKurzzeit daten = new VerkehrsdatenKurzzeitImpl();
+
+		Response response = target.request().post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
+
+	}
+	
+	@Test
+	public void testSendeAnzeigeEigenschaft() {
+		WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
+
+		AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
+
+		Response response = target.request().post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
 	}
 
