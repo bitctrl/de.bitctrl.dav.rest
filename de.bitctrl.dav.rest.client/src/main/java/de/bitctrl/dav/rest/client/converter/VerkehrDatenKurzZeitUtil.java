@@ -35,7 +35,7 @@ import de.bsvrz.dav.daf.main.config.Aspect;
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
-public class VerkehrDatenKurzZeitUtil {
+public final class VerkehrDatenKurzZeitUtil {
 
 	private VerkehrDatenKurzZeitUtil() {
 		// Default-Konstruktor verstecken
