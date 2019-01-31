@@ -19,7 +19,6 @@
  */
 
 /**
- * Konverter für die Umwandlung vom ERZ Datenmodell in das JSON Modell.
- * 
+ * Client für den Versand von ERZ Datensätzen via JSON REST API.
  */
-package de.bitctrl.dav.rest.client.converter;
+package de.bitctrl.dav.rest.client;

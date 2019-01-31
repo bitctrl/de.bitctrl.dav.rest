@@ -19,7 +19,6 @@
  */
 
 /**
- * Konverter für die Umwandlung vom ERZ Datenmodell in das JSON Modell.
- * 
+ * Beispielimplementierung eines REST Servers.
  */
-package de.bitctrl.dav.rest.client.converter;
+package de.bitctrl.dav.rest.server;

@@ -33,7 +33,7 @@ import org.glassfish.jersey.server.ResourceConfig;
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
-public class DavRestServer {
+public final class DavRestServer {
 
 	public static void main(String[] args) throws Exception {
 

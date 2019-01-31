@@ -29,7 +29,17 @@ import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.ResultData;
 import de.bsvrz.dav.daf.main.config.Aspect;
 
+/**
+ * Util Klasse für die Konvertierung in {@link VerkehrsdatenKurzzeit}.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 public class VerkehrDatenKurzZeitUtil {
+
+	private VerkehrDatenKurzZeitUtil() {
+		// Default-Konstruktor verstecken
+	}
 
 	static VerkehrsdatenKurzzeit.AspektType extraktAspekt(ResultData resultData) {
 		final Aspect aspect = resultData.getDataDescription().getAspect();
