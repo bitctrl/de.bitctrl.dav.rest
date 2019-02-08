@@ -68,7 +68,7 @@ types:
       guete: number
   VerkehrsdatenKurzzeit:
     description: |
-      Verkehrsdaten (Kurzzeit) mit Intervallwerten (normiert auf Stundenwerte) für Messquerschnitte und Fahrstreifen ( <a  href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitMq">atg.verkehrsDatenKurzZeitMq</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitFs">atg.verkehrsDatenKurzZeitFs</> ).
+      Verkehrsdaten (Kurzzeit) mit Intervallwerten (teilweise normiert auf Stundenwerte) für Messquerschnitte und Fahrstreifen ( <a  href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitMq">atg.verkehrsDatenKurzZeitMq</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitFs">atg.verkehrsDatenKurzZeitFs</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitIntervall">atg.verkehrsDatenKurzZeitIntervall</> ).
     type: OnlineDatum
     properties:
       aspekt:
@@ -82,6 +82,10 @@ types:
           - Aggregation30Minuten
           - Aggregation60Minuten
           - AnalyseHB
+          - ExterneErfassung
+          - MesswertErsetzung
+          - PlausibilitätsprüfungFormal
+          - PlausibilitätsprüfungLogisch
       qKfz: VerkehrstaerkeStunde
       vKfz: Geschwindigkeit
       qLkw: VerkehrstaerkeStunde

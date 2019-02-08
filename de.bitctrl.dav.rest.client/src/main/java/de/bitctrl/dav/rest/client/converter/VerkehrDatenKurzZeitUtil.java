@@ -56,6 +56,14 @@ public final class VerkehrDatenKurzZeitUtil {
 			return AspektType.AGGREGATION60MINUTEN;
 		case "asp.analyseHB":
 			return AspektType.ANALYSEHB;
+		case "asp.externeErfassung":
+			return AspektType.EXTERNEERFASSUNG;
+		case "asp.messWertErsetzung":
+			return AspektType.MESSWERTERSETZUNG;
+		case "asp.plausibilitätsPrüfungFormal":
+			return AspektType.PLAUSIBILITTSPRFUNGFORMAL;
+		case "asp.plausibilitätsPrüfungLogisch":
+			return AspektType.PLAUSIBILITTSPRFUNGLOGISCH;
 		default:
 			return AspektType.ANALYSE;
 
