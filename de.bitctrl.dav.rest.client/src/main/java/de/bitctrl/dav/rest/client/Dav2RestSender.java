@@ -230,13 +230,12 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			while (resultData != null && i++ < 1000) {
 
 				final AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
-				final Optional<Class<?>> findFirst = annotatedWith.stream()
+				final List<Class<?>> converterKlassen = annotatedWith.stream()
 						.filter(c -> Arrays.asList(c.getAnnotation(DavJsonDatensatzConverter.class).davAttributGruppe())
 								.contains(atg.getPid()))
-						.findFirst();
+						.collect(Collectors.toList());
 
-				if (findFirst.isPresent()) {
-					final Class<?> clazz = findFirst.get();
+				for (Class<?> clazz : converterKlassen) {
 					try {
 						final Object newInstance = injector.getProvider(clazz).get();
 
@@ -336,12 +335,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			while (sysObj != null && i++ < 1000) {
 
 				final SystemObjectType sysObjType = sysObj.getType();
-				final Optional<Class<?>> findFirst = annotatedWith.stream()
+				final List<Class<?>> konverterKlassen = annotatedWith.stream()
 						.filter(c -> sysObjType.getPid().equals(c.getAnnotation(DavJsonObjektConverter.class).davTyp()))
-						.findFirst();
+						.collect(Collectors.toList());
 
-				if (findFirst.isPresent()) {
-					final Class<?> clazz = findFirst.get();
+				for (Class<?> clazz : konverterKlassen) {
 					try {
 						final Object newInstance = injector.getProvider(clazz).get();
 
@@ -351,9 +349,6 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					} catch (final Exception e) {
 						LOGGER.error("Instanziierung der Klasse " + clazz + " fehlgeschlagen.", e);
 					}
-				} else {
-//					SystemObjectJsonConverter convert = new SystemObjectJsonConverter();
-//					result.add(convert.dav2Json(sysObj));
 				}
 
 				if (objects2StoreList.isEmpty()) {
