@@ -54,8 +54,8 @@ types:
       systemObjectId: string
       datenStatus: string
       zeitstempel: datetime
-  VerkehrstaerkeStunde:
-    description: Anzahl der Fahrzeuge pro Stunde
+  Verkehrstaerke:
+    description: Anzahl der Fahrzeuge pro Intervall
     type: object
     properties:
       wert: integer
@@ -86,11 +86,11 @@ types:
           - MesswertErsetzung
           - PlausibilitätsprüfungFormal
           - PlausibilitätsprüfungLogisch
-      qKfz: VerkehrstaerkeStunde
+      qKfz: Verkehrstaerke
       vKfz: Geschwindigkeit
-      qLkw: VerkehrstaerkeStunde
+      qLkw: Verkehrstaerke
       vLkw: Geschwindigkeit
-      qPkw: VerkehrstaerkeStunde
+      qPkw: Verkehrstaerke
       vPkw: Geschwindigkeit
       b:
         displayName: Belegung in Prozent
