@@ -32,6 +32,7 @@ import de.bitctrl.dav.rest.api.Systemobjekte;
 import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
 import de.bitctrl.dav.rest.api.model.FahrStreifen;
+import de.bitctrl.dav.rest.api.model.Glaettemeldeanlage;
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
 
@@ -98,6 +99,18 @@ public class SystemobjekteImpl implements Systemobjekte {
 	public GetSystemobjekteFahrstreifenResponse getSystemobjekteFahrstreifen() {
 		return GetSystemobjekteFahrstreifenResponse.respond200WithApplicationJson(objectSet.stream()
 				.filter(o -> o instanceof FahrStreifen).map(o -> (FahrStreifen) o).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void postSystemobjekteGlaettemeldeanlage(@Valid List<Glaettemeldeanlage> entity) {
+		logger.log(Level.INFO, "Empfange " + entity.size() + " Glättemeldeanlagen" + entity);
+		objectSet.addAll(entity);
+	}
+
+	@Override
+	public GetSystemobjekteGlaettemeldeanlageResponse getSystemobjekteGlaettemeldeanlage() {
+		return GetSystemobjekteGlaettemeldeanlageResponse.respond200WithApplicationJson(objectSet.stream()
+				.filter(o -> o instanceof Glaettemeldeanlage).map(o -> (Glaettemeldeanlage) o).collect(Collectors.toList()));
 	}
 
 }

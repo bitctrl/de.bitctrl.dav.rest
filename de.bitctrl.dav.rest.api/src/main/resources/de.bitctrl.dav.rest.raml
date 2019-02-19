@@ -44,12 +44,21 @@ uses:
           body:
             application/json:
               type: types.FahrStreifen []
-        
       get:
           responses:
             200:
               body:
                 type: types.FahrStreifen[]
+  /glaettemeldeanlage:
+      post:
+         body:
+           application/json:
+             type: types.Glaettemeldeanlage[]
+      get:
+         responses:
+           200:
+             body:
+               type: types.Glaettemeldeanlage[]
 /onlinedaten:
   /verkehrsdatenkurzzeit:
       post:
