@@ -23,8 +23,8 @@ import de.bitctrl.dav.rest.api.model.Geschwindigkeit;
 import de.bitctrl.dav.rest.api.model.GeschwindigkeitImpl;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit.AspektType;
-import de.bitctrl.dav.rest.api.model.Verkehrstaerke;
-import de.bitctrl.dav.rest.api.model.VerkehrstaerkeImpl;
+import de.bitctrl.dav.rest.api.model.Verkehrsstaerke;
+import de.bitctrl.dav.rest.api.model.VerkehrsstaerkeImpl;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.ResultData;
 import de.bsvrz.dav.daf.main.config.Aspect;
@@ -81,8 +81,8 @@ public final class VerkehrDatenKurzZeitUtil {
 		return vKfz;
 	}
 
-	static Verkehrstaerke extraktVerkehrsStaerke(Data data) {
-		final Verkehrstaerke qKfz = new VerkehrstaerkeImpl();
+	static Verkehrsstaerke extraktVerkehrsStaerke(Data data) {
+		final Verkehrsstaerke qKfz = new VerkehrsstaerkeImpl();
 		if (data.getUnscaledValue("Wert").isState()) {
 			qKfz.setWert(data.getUnscaledValue("Wert").intValue());
 		} else {

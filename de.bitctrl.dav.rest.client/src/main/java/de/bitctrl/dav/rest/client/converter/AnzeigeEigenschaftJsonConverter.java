@@ -44,7 +44,7 @@ public class AnzeigeEigenschaftJsonConverter implements DavJsonConverter<ResultD
 		final AnzeigeEigenschaft result = new AnzeigeEigenschaftImpl();
 		final SystemObject object = resultData.getObject();
 		final DataModel dataModel = object.getDataModel();
-		result.setSystemObjectId(object.getPid());
+		result.setSystemObjektId(object.getPid());
 
 		result.setDatenStatus(resultData.getDataState().toString());
 		result.setZeitstempel(new Date(resultData.getDataTime()));

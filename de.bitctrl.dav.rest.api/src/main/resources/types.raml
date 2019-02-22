@@ -7,7 +7,7 @@ types:
       id: string
       name: string
   PunktXY:
-    description: Georeferenziertes SystemObjekt. Die Koordinaten werden in WGS84 abgebildet.
+    description: (statisch) Georeferenziertes SystemObjekt. Die Koordinaten werden in WGS84 abgebildet. Für Niedersachsen sind die WGS Koordinaten geprüft und valide.
     type: SystemObjekt
     properties:
       breite: number
@@ -30,7 +30,7 @@ types:
     type: SystemObjekt
     properties:
       lage:
-        description: die Lage des Fahrstreifens auf der Straße.
+        description: die Lage des Fahrstreifens auf der Straße. (1ÜFS => 1. Überholfahrstreifen)
         type: string
         enum:
           - HFS
@@ -49,12 +49,13 @@ types:
         description: Menge aller Anzeigen an diesem Anzeigequerschnitt (Referenziert via id)
         type: string[]
   OnlineDatum:
+    description: TODO
     type: object
     properties:
-      systemObjectId: string
+      systemObjektId: string
       datenStatus: string
       zeitstempel: datetime
-  Verkehrstaerke:
+  Verkehrsstaerke:
     description: Anzahl der Fahrzeuge pro Intervall
     type: object
     properties:
@@ -69,6 +70,7 @@ types:
   VerkehrsdatenKurzzeit:
     description: |
       Verkehrsdaten (Kurzzeit) mit Intervallwerten (teilweise normiert auf Stundenwerte) für Messquerschnitte und Fahrstreifen ( <a  href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitMq">atg.verkehrsDatenKurzZeitMq</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitFs">atg.verkehrsDatenKurzZeitFs</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitIntervall">atg.verkehrsDatenKurzZeitIntervall</> ).
+      Der Zeitstempel ist vom Anfang des Intervalls.
     type: OnlineDatum
     properties:
       aspekt:
@@ -86,14 +88,14 @@ types:
           - MesswertErsetzung
           - PlausibilitätsprüfungFormal
           - PlausibilitätsprüfungLogisch
-      qKfz: Verkehrstaerke
+      qKfz: Verkehrsstaerke
       vKfz: Geschwindigkeit
-      qLkw: Verkehrstaerke
+      qLkw: Verkehrsstaerke
       vLkw: Geschwindigkeit
-      qPkw: Verkehrstaerke
+      qPkw: Verkehrsstaerke
       vPkw: Geschwindigkeit
       b:
-        displayName: Belegung in Prozent
+        displayName: Belegungsgrad in Prozent 0-100%
         type: number
   AnzeigeEigenschaft:
     description: |
@@ -121,7 +123,7 @@ types:
         required: false
   Glaettemeldeanlage:
       description: |
-        Beschreibung einer Glättemeldeanlage (GMA) zur Abbildung der logischen Struktur eines SWIS Netzwerkes. Dieser Typ ist Anlagenspezifisch und kein Standard ERZ Typ.
+       TODO Beschreibung einer Glättemeldeanlage (GMA) zur Abbildung der logischen Struktur eines SWIS Netzwerkes. Dieser Typ ist Anlagenspezifisch und kein Standard ERZ Typ.
       type: PunktXY
       properties:
         dwdKennung: string
@@ -131,7 +133,7 @@ types:
           type: integer
   GmaUmfelddaten:
     description: |
-     Umfelddaten einer Glaettemeldeanlage, zusammengefasst für maßgebliche Sensoren.
+     Umfelddaten einer Glaettemeldeanlage, zusammengefasst für maßgebliche Sensoren. Der Zeitstempel ist der Messzeitpunkt.
     type: OnlineDatum
     properties:
       atmosphaerendaten: Atmosphaerendaten
@@ -159,48 +161,48 @@ types:
      Umfelddaten einer GMA, die genau einem Fahrstreifen zugeordnet sind.
     type: object
     properties:
-      fahrBahnOberflaechenTemperatur: number
-      fahrBahnFeuchte: number
-      restsalz: number
-      gefrierTemperatur: number
-      temperaturInTiefe1: number
-      temperaturInTiefe2: number
-      temperaturInTiefe3: number
-      # fahrBahnOberFlaechenZustand:
-      #   type: string
-      #   enum:
-      #     - trocken
-      #     - feucht
-      #     - nass
-      #     - gefrorenesWasser
-      #     - Schnee/Schneematsch
-      #     - Eis
-      #     - Raureif
-      wasserFilmDicke: number
-      tauStoffKonzentration: number
-      # fahrBahnGlaette:
-      #   type: string
-      #   enum:
-      #     - keine Glättegefahr
-      #     - Eisglätte möglich
-      #     - Tendenzberechnung nicht möglich
-      #     - Schneeglätte oder Glatteis bei Niederschlag möglich
-      #     - Schneeglätte oder Glatteis bei Niederschlag sofort möglich
-      #     - Eisglätte sofort möglich
-      #     - Glätte vorhanden
-      #     - Eis oder Schnee auf der Fahrbahn
-      # zeitreserveEisglaette:
-      #   type: string
-      #   enum:
-      #     - Alarm Glatteis
-      #     - keine Eisglätte vorhersehbar
-      #     - Eisglätte nicht ermittelbar
-      # zeitreserveReifglaette:
-      #   type: string
-      #   enum:
-      #     - Alarm Glatteis
-      #     - keine Reifglätte vorhersehbar
-      #     - Reifglätte nicht ermittelbar
+       fahrBahnOberflaechenTemperatur: number
+       fahrBahnFeuchte: number
+       restsalz: number
+       gefrierTemperatur: number
+       temperaturInTiefe1: number
+       temperaturInTiefe2: number
+       temperaturInTiefe3: number
+       fahrBahnOberFlaechenZustand:
+         type: string
+         enum:
+           - trocken
+           - feucht
+           - nass
+           - gefrorenesWasser
+           - Schnee/Schneematsch
+           - Eis
+           - Raureif
+       wasserFilmDicke: number
+       tauStoffKonzentration: number
+       fahrBahnGlaette:
+         type: string
+         enum:
+           - keine Glättegefahr
+           - Eisglätte möglich
+           - Tendenzberechnung nicht möglich
+           - Schneeglätte oder Glatteis bei Niederschlag möglich
+           - Schneeglätte oder Glatteis bei Niederschlag sofort möglich
+           - Eisglätte sofort möglich
+           - Glätte vorhanden
+           - Eis oder Schnee auf der Fahrbahn
+       zeitreserveEisglaette:
+         type: string
+         enum:
+           - Alarm Glatteis
+           - keine Eisglätte vorhersehbar
+           - Eisglätte nicht ermittelbar
+       zeitreserveReifglaette:
+         type: string
+         enum:
+           - Alarm Glatteis
+           - keine Reifglätte vorhersehbar
+           - Reifglätte nicht ermittelbar
       #glättewarnungHersteller
       #aktuellerZustand
       #prognoseZustandIn5Minunten

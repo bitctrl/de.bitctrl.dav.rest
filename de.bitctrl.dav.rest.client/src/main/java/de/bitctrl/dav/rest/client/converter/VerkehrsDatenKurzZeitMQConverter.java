@@ -24,7 +24,7 @@ import java.util.Date;
 import de.bitctrl.dav.rest.api.model.Geschwindigkeit;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeitImpl;
-import de.bitctrl.dav.rest.api.model.Verkehrstaerke;
+import de.bitctrl.dav.rest.api.model.Verkehrsstaerke;
 import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.ResultData;
@@ -42,7 +42,7 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 	public VerkehrsdatenKurzzeit dav2Json(ResultData resultData) {
 
 		final VerkehrsdatenKurzzeit result = new VerkehrsdatenKurzzeitImpl();
-		result.setSystemObjectId(resultData.getObject().getPid());
+		result.setSystemObjektId(resultData.getObject().getPid());
 
 		final VerkehrsdatenKurzzeit.AspektType aspekt = VerkehrDatenKurzZeitUtil.extraktAspekt(resultData);
 		result.setAspekt(aspekt);
@@ -51,15 +51,15 @@ public class VerkehrsDatenKurzZeitMQConverter implements DavJsonConverter<Result
 		result.setZeitstempel(new Date(resultData.getDataTime()));
 		final Data data = resultData.getData();
 		if (data != null) {
-			final Verkehrstaerke qKfz = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QKfz"));
+			final Verkehrsstaerke qKfz = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QKfz"));
 			result.setQKfz(qKfz);
 			final Geschwindigkeit vKfz = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("VKfz"));
 			result.setVKfz(vKfz);
-			final Verkehrstaerke qLkw = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QLkw"));
+			final Verkehrsstaerke qLkw = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QLkw"));
 			result.setQLkw(qLkw);
 			final Geschwindigkeit vLkw = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("VLkw"));
 			result.setVLkw(vLkw);
-			final Verkehrstaerke qPkw = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QPkw"));
+			final Verkehrsstaerke qPkw = VerkehrDatenKurzZeitUtil.extraktVerkehrsStaerke(data.getItem("QPkw"));
 			result.setQPkw(qPkw);
 			final Geschwindigkeit vPkw = VerkehrDatenKurzZeitUtil.extraktGeschwindigkeit(data.getItem("VPkw"));
 			result.setVPkw(vPkw);
