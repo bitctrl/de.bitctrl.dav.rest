@@ -137,42 +137,136 @@ types:
           type: integer
   GmaUmfelddaten:
     description: |
-     Umfelddaten einer Glaettemeldeanlage (dynamische Daten), zusammengefasst für maßgebliche Sensoren. Der Zeitstempel ist der Messzeitpunkt.
+     Umfelddaten einer Glättemeldeanlage (dynamische Daten), zusammengefasst für maßgebliche Sensoren. Der Zeitstempel ist der Messzeitpunkt.
     type: OnlineDatum
     properties:
-      atmosphaerendaten: Atmosphaerendaten
-      umfeldatenFuerFahrstreifen: UmfelddatenFuerFahrstreifen[]
+      atmosphärendaten: Atmosphaerendaten
+      umfeldatenFürFahrstreifen: UmfelddatenFuerFahrstreifen[]
   Atmosphaerendaten:
     description: |
      Umfelddaten an einer GMA, die keinem Fahrstreifen zugeordnet werden.
     type: object
     properties:
-      luftTemperatur: number
-      niederschlagsIntensität: number
-      luftDruck: number
-      relativeLuftfeuchte: number
-      windRichtung: number
-      windGeschwindigkeitMittelWert: number
-      schneeHöhe: number
-      sichtWeite: number
-      helligkeit: number
-      windGeschwindkeitSpitzenWert: number
-      taupunktTemperatur: number
-      niederschlagsArt: string
-      niederschlagsMenge: number
+      luftTemperatur:
+        description: |
+         Die Lufttemperatur in °C.
+        type: number
+        maximum: 100
+        minimum: -100
+      niederschlagsIntensität:
+        description: |
+         Die Niederschlagsintensität in mm/h.
+        type: number
+        maximum: 20
+        minimum: 0
+      luftDruck:
+        description: |
+         Der Luftdruck in hPa.
+        type: number
+        maximum: 2000
+        minimum: 0
+      relativeLuftfeuchte:
+        description: |
+         Relative Luftfeuchte der in Nähe der Fahrbahnmessstelle befindlichen Umgebungsluft in %.
+        type: number
+        maximum: 100
+        minimum: 0
+      windRichtung:
+        description: |
+         Richtung aus der der Wind weht in Grad (°). Die Windrichtung wird als vektorieller Mittelwert (Windrichtung und - geschwindigkeit) über ein gleitendes Zeitintervall von 10 Minuten ermittelt.
+        type: number
+        maximum: 359
+        minimum: 0
+      windGeschwindigkeitMittelWert:
+        description: |
+         Geschwindigkeit des Windes in horizontaler Ebene (Komponente) in Meter pro Sekunde (m/s). Windgeschwindigkeit (Mittel) wird als vektorieller Mittelwert über ein gleitendes Zeitintervall von 10 Minuten ermittelt.
+        type: number
+        maximum: 1000
+        minimum: 0
+      schneeHöhe:
+        description: |
+         Gibt die Höhe der Schneebedeckung in cm an einer definierten Messstelle in Bezug zu einer ebenen, senkrechten Fläche an. 0 cm wird gemeldet, wenn die ebene senkrechte Fläche völlig unbedeckt ist. Die Schneeoberfläche sollte durch die Messung nicht beeinflusst werden. Die Schneehöhe hat nichts mit der Bedeckung der Straßenoberfläche von Fahrspuren zu tun.
+        type: number
+        maximum: 500
+        minimum: 0
+      sichtWeite:
+        description: |
+         Sichtweite bezogen auf eine Kontrastschwelle von 5% an der Messstelle in Meter.
+        type: number
+        maximum: 2000
+        minimum: 10
+      helligkeit:
+        description: |
+         Helligkeit ist definiert als Beleuchtungsstärke (Anteil des auf eine ebene Messfläche senkrecht auftreffenden Komponente des Lichtstroms im sichtbaren Spektralbereich) in Lux angegeben.
+        type: number
+        maximum: 60000
+        minimum: 0
+      windGeschwindigkeitSpitzenWert:
+        description: |
+         Geschwindigkeit des Windes in horizontaler Ebene (Komponente) in Meter pro Sekunde (m/s). Windgeschwindigkeit (Spitze) ist die maximale Windgeschwindigkeit der letzten 10 Minuten.
+        type: number
+        maximum: 100
+        minimum: 0
+      taupunktTemperatur:
+        description: |
+         Taupunkttemperatur ist diejenige Temperatur, bei der die in der Umgebungsluft der Messstelle (am Ort der Temperatur und Feuchte-Sensorik) befindliche Feuchte zu kondensieren beginnt in °C.
+        type: number
+        maximum: 100
+        minimum: -100
+      niederschlagsArt:
+        description: |
+         In der Atmosphäre fallender Niederschlag.
+        type: string
+      niederschlagsMenge:
+        description: |
+         Die Intensität wird in Bezug auf Niederschlag in flüssiger Form durch Volumen (1 l/m2 = 1 mm) pro Zeiteinheit (mm/h) angegeben.
+        type: number
+        maximum: 200
+        minimum: 0
   UmfelddatenFuerFahrstreifen:
     description: |
      Umfelddaten einer GMA, die genau einem Fahrstreifen zugeordnet sind.
     type: object
     properties:
-       fahrBahnOberflaechenTemperatur: number
-       fahrBahnFeuchte: number
-       restsalz: number
-       gefrierTemperatur: number
-       temperaturInTiefe1: number
-       temperaturInTiefe2: number
-       temperaturInTiefe3: number
-       fahrBahnOberFlaechenZustand:
+       fahrBahnOberflächenTemperatur:
+         description: |
+          Die Fahrbahnoberflächentemperatur wird in Grad Celsius (°C) angegeben.
+         type: number
+         maximum: 100
+         minimum: -100
+       restsalz:
+         description: |
+          Sättigungsgrad des gelösten Salzes auf der Fahrbahn (bzw. auf der Fahrbahnsensorik). SR wird in Prozent (%) angegeben.
+         type: number
+         maximum: 100
+         minimum: 0
+       gefrierTemperatur:
+         description: |
+          Die Gefriertemperatur ist diejenige Temperatur in Grad Celsius (°C), bei der die an der Oberfläche der Sonde vorhandene wässrige Taumittel-Lösung gefrieren (Übergang in den festen Aggregatszustand) könnte.
+         type: number
+         maximum: 100
+         minimum: -100
+       temperaturInTiefe1:
+         description: |
+          Temperatur in °C
+         type: number
+         maximum: 100
+         minimum: -100
+       temperaturInTiefe2:
+         description: |
+          Temperatur in °C
+         type: number
+         maximum: 100
+         minimum: -100
+       temperaturInTiefe3:
+         description: |
+          Temperatur in °C
+         type: number
+         maximum: 100
+         minimum: -100
+       fahrBahnOberFlächenZustand:
+         description: |
+          Der Zustand der Fahrbahnoberfläche.
          type: string
          enum:
            - trocken
@@ -182,9 +276,16 @@ types:
            - Schnee/Schneematsch
            - Eis
            - Raureif
-       wasserFilmDicke: number
+       wasserFilmDicke:
+         description: |
+          Bei wasserfildicken (WFD) oberhalb 0,1 mm wird nur eine Messgenauigkeit im 1/10 mm Bereich erreicht. Bei WFD oberhalb 2 mm liegt die Messgenauigkeit in der Regel im mm Bereich. Die rechnerische Wasserfilmdicke gibt die Fahrbahnbenetzung in mm (= Liter/m2 ) mit Wasser oder wässriger Lösung (Salzgemisch) an, welche sich am Messort bzw. auf der in der Fahrbahn eingelassenen Sonde befindet. Die Wasserfilmdicke ist immer bezogen auf eine glatte ebene Fläche.
+         type: number
+         maximum: 200
+         minimum: 0
        tauStoffKonzentration: number
-       fahrBahnGlaette:
+       fahrBahnGlätte:
+         description: |
+          Ergebnisse der Glättewarnung und Prognose.
          type: string
          enum:
            - keine Glättegefahr
@@ -195,22 +296,15 @@ types:
            - Eisglätte sofort möglich
            - Glätte vorhanden
            - Eis oder Schnee auf der Fahrbahn
-       zeitreserveEisglaette:
+       zeitreserveEisglätte:
          type: string
          enum:
            - Alarm Glatteis
            - keine Eisglätte vorhersehbar
            - Eisglätte nicht ermittelbar
-       zeitreserveReifglaette:
+       zeitreserveReifglätte:
          type: string
          enum:
            - Alarm Glatteis
            - keine Reifglätte vorhersehbar
            - Reifglätte nicht ermittelbar
-      #glättewarnungHersteller
-      #aktuellerZustand
-      #prognoseZustandIn5Minunten
-      #prognoseZustandIn15Minunten
-      #prognoseZustandIn30Minunten
-      #prognoseZustandIn60Minunten
-      #prognoseZustandIn90Minunten
