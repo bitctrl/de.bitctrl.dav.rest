@@ -2,19 +2,22 @@
 
 types:
   SystemObjekt:
+    description: |
+     Basistyp für statische Daten.
     type: object
     properties:
       id: string
       name: string
   PunktXY:
-    description: (statisch) Georeferenziertes SystemObjekt. Die Koordinaten werden in WGS84 abgebildet. Für Niedersachsen sind die WGS Koordinaten geprüft und valide.
+    description: |
+     Georeferenziertes SystemObjekt (statische Daten). Die Koordinaten werden in WGS84 abgebildet. Für Niedersachsen sind die WGS Koordinaten geprüft und valide.
     type: SystemObjekt
     properties:
       breite: number
       laenge: number
   MessQuerschnitt:
     description: |
-      Ein Messquerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.messQuerschnittAllgemein">typ.messQuerschnittAllgemein</>  ).
+      Ein Messquerschnitt (statische Daten) ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.messQuerschnittAllgemein">typ.messQuerschnittAllgemein</>  ).
     type: PunktXY
     properties:
       fahrstreifen:
@@ -22,11 +25,11 @@ types:
         type: string[]
   Anzeige:
     description: |
-      Eine Anzeige an einem Anzeigequerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#typ.anzeige">typ.anzeige</>  ).
+      Eine Anzeige (statische Daten) an einem Anzeigequerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#typ.anzeige">typ.anzeige</>  ).
     type: SystemObjekt
   FahrStreifen:
     description: |
-      Ein Fahrstreifen auf einem Messquerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.fahrStreifen">typ.fahrStreifen</>  ).
+      Ein Fahrstreifen (statische Daten) auf einem Messquerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.fahrStreifen">typ.fahrStreifen</>  ).
     type: SystemObjekt
     properties:
       lage:
@@ -42,14 +45,15 @@ types:
           - 6ÜFS
   AnzeigeQuerschnitt:
     description: |
-      Ein Anzeigequerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#typ.anzeigeQuerschnitt">typ.anzeigeQuerschnitt</>  ).
+      Ein Anzeigequerschnitt (statische Daten) ( <a href="https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#typ.anzeigeQuerschnitt">typ.anzeigeQuerschnitt</>  ).
     type: PunktXY
     properties:
       anzeigen:
         description: Menge aller Anzeigen an diesem Anzeigequerschnitt (Referenziert via id)
         type: string[]
   OnlineDatum:
-    description: TODO
+    description: |
+     Basistyp für dynamische Daten.
     type: object
     properties:
       systemObjektId: string
@@ -69,7 +73,7 @@ types:
       guete: number
   VerkehrsdatenKurzzeit:
     description: |
-      Verkehrsdaten (Kurzzeit) mit Intervallwerten (teilweise normiert auf Stundenwerte) für Messquerschnitte und Fahrstreifen ( <a  href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitMq">atg.verkehrsDatenKurzZeitMq</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitFs">atg.verkehrsDatenKurzZeitFs</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitIntervall">atg.verkehrsDatenKurzZeitIntervall</> ).
+      Verkehrsdaten ( dynamische Kurzzeitdaten) mit Intervallwerten (teilweise normiert auf Stundenwerte) für Messquerschnitte und Fahrstreifen ( <a  href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitMq">atg.verkehrsDatenKurzZeitMq</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitFs">atg.verkehrsDatenKurzZeitFs</> & <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#atg.verkehrsDatenKurzZeitIntervall">atg.verkehrsDatenKurzZeitIntervall</> ).
       Der Zeitstempel ist vom Anfang des Intervalls.
     type: OnlineDatum
     properties:
@@ -99,7 +103,7 @@ types:
         type: number
   AnzeigeEigenschaft:
     description: |
-        OnlineDatum einer Anzeige ( <a href=https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#atg.anzeigeEigenschaftIst">atg.anzeigeEigenschaftIst</> ).
+        OnlineDatum einer Anzeige (dynamische Daten) ( <a href=https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#atg.anzeigeEigenschaftIst">atg.anzeigeEigenschaftIst</> ).
     type: OnlineDatum
     properties:
       status:
@@ -123,7 +127,7 @@ types:
         required: false
   Glaettemeldeanlage:
       description: |
-       TODO Beschreibung einer Glättemeldeanlage (GMA) zur Abbildung der logischen Struktur eines SWIS Netzwerkes. Dieser Typ ist Anlagenspezifisch und kein Standard ERZ Typ.
+       Beschreibung einer Glättemeldeanlage (statische Daten) zur Abbildung der logischen Struktur eines SWIS Netzwerkes. Dieser Typ ist Anlagenspezifisch und kein Standard ERZ Typ.
       type: PunktXY
       properties:
         dwdKennung: string
@@ -133,7 +137,7 @@ types:
           type: integer
   GmaUmfelddaten:
     description: |
-     Umfelddaten einer Glaettemeldeanlage, zusammengefasst für maßgebliche Sensoren. Der Zeitstempel ist der Messzeitpunkt.
+     Umfelddaten einer Glaettemeldeanlage (dynamische Daten), zusammengefasst für maßgebliche Sensoren. Der Zeitstempel ist der Messzeitpunkt.
     type: OnlineDatum
     properties:
       atmosphaerendaten: Atmosphaerendaten
