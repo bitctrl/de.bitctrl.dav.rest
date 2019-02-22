@@ -14,7 +14,7 @@
 
 	<properties>
 		<jersey-version>2.27</jersey-version>
-		<nerz-version>3.12.0</nerz-version>
+		<nerz-version>3.9.2</nerz-version>
 	</properties>
 
 
@@ -23,8 +23,14 @@
 			<id>ERZ Public Repository</id>
 			<url>http://h2727649.stratoserver.net:8081/repository/nerz-maven-public/</url>
 		</repository>
+		<repository>
+			<id>Bintray</id>
+			<url>https://dl.bintray.com/bitctrl/maven</url>
+		</repository>
 	</repositories>
 
+
+  
 
 	<build>
 		<plugins>
