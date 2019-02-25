@@ -105,6 +105,39 @@ types:
       b:
         displayName: Belegungsgrad in Prozent 0-100%
         type: number
+  AnzeigeQuerschnittEigenschaft:
+    description: |
+      OnlineDatum eines Anzeigequerschnitts (dynamische Daten) ( <a href="https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#atg.anzeigeQuerschnittEigenschaftIst">	atg.anzeigeQuerschnittEigenschaftIst</> )
+    type: OnlineDatum
+    properties:
+      status:
+        description: Der Status der Anzeige.
+        type: string
+        enum:
+          - Undefiniert
+          - OK
+          - Gestört
+          - Teilstörung
+          - Stromausfall
+          - Kommunikationsausfall
+          - Türkontakt
+      helligkeit:
+        description: |
+          Die Helligkeit der Anzeige des Anzeigequerschnittes in %.
+        type: number
+      betriebszustand:
+        description: Betriebsart, mit der der Anzeigequerschnitt betrieben wird.
+        type: string
+        enum:
+          - Undefiniert
+          - Normalbetrieb
+          - Blindbetrieb
+          - Vorortbetrieb
+          - Autarkbetrieb
+          - Testbetrieb
+          - Notbetrieb
+          - ExterneSteuerung
+          - Tunnelbetrieb
   AnzeigeEigenschaft:
     description: |
         OnlineDatum einer Anzeige (dynamische Daten) ( <a href=https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#atg.anzeigeEigenschaftIst">atg.anzeigeEigenschaftIst</> ).

@@ -29,7 +29,6 @@ import de.bitctrl.dav.rest.api.model.MessQuerschnittImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.config.AttributeGroup;
-import de.bsvrz.dav.daf.main.config.ConfigurationArea;
 import de.bsvrz.dav.daf.main.config.ConfigurationObject;
 import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;

@@ -41,6 +41,7 @@ import com.google.inject.Injector;
 import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittEigenschaft;
 import de.bitctrl.dav.rest.api.model.FahrStreifen;
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.OnlineDatum;
@@ -208,6 +209,14 @@ public class Dav2RestSender implements ClientReceiverInterface {
 						target.path("/onlinedaten/anzeigeeigenschaft").request()
 								.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
 					}
+
+					List<OnlineDatum> anzeigeQuerschnittEigenschaften = liste.stream()
+							.filter(o -> o instanceof AnzeigeQuerschnittEigenschaft).collect(Collectors.toList());
+					if (!anzeigeQuerschnittEigenschaften.isEmpty()) {
+						target.path("/onlinedaten/anzeigequerschnitteigenschaft").request()
+								.post(Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON));
+					}
+					
 				} catch (final Exception ex) {
 					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);
 				} finally {
