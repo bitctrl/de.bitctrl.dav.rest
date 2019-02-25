@@ -19,6 +19,8 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.util.Date;
+
 import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
@@ -38,6 +40,9 @@ public class AnzeigeJsonConverter implements DavJsonConverter<SystemObject, Anze
 		final Anzeige result = new AnzeigeImpl();
 		result.setId(davObj.getPid());
 		result.setName(davObj.getName());
+		
+		result.setVersion(new Date(davObj.getConfigurationArea().getTimeOfLastActiveConfigurationChange()));
+		
 		return result;
 	}
 

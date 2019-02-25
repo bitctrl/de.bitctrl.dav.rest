@@ -19,6 +19,8 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.util.Date;
+
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
 import de.bitctrl.dav.rest.api.model.SystemObjektImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
@@ -38,6 +40,8 @@ public class SystemObjectJsonConverter implements DavJsonConverter<SystemObject,
 		final SystemObjekt result = new SystemObjektImpl();
 		result.setId(davObj.getPid());
 		result.setName(davObj.getName());
+		result.setVersion(new Date(davObj.getConfigurationArea().getTimeOfLastActiveConfigurationChange()));
+		
 		return result;
 	}
 

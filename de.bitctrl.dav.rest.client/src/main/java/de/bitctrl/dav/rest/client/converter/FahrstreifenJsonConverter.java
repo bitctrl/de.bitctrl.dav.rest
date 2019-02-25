@@ -19,6 +19,8 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.util.Date;
+
 import de.bitctrl.dav.rest.api.model.FahrStreifen;
 import de.bitctrl.dav.rest.api.model.FahrStreifenImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
@@ -41,7 +43,8 @@ public class FahrstreifenJsonConverter implements DavJsonConverter<SystemObject,
 		final FahrStreifen result = new FahrStreifenImpl();
 		result.setId(davObj.getPid());
 		result.setName(davObj.getName());
-
+		result.setVersion(new Date(davObj.getConfigurationArea().getTimeOfLastActiveConfigurationChange()));
+		
 		final FahrStreifen.LageType lage = bestimmeLage(davObj);
 		result.setLage(lage);
 		return result;

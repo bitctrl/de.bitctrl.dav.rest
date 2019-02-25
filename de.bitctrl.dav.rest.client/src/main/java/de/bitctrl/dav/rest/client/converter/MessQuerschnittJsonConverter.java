@@ -20,6 +20,7 @@
 package de.bitctrl.dav.rest.client.converter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ import de.bitctrl.dav.rest.api.model.MessQuerschnittImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.config.AttributeGroup;
+import de.bsvrz.dav.daf.main.config.ConfigurationArea;
 import de.bsvrz.dav.daf.main.config.ConfigurationObject;
 import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;
@@ -46,6 +48,7 @@ public class MessQuerschnittJsonConverter implements DavJsonConverter<SystemObje
 		final MessQuerschnitt result = new MessQuerschnittImpl();
 		result.setId(davObj.getPid());
 		result.setName(davObj.getName());
+		result.setVersion(new Date(davObj.getConfigurationArea().getTimeOfLastActiveConfigurationChange()));
 
 		final DataModel dataModel = davObj.getDataModel();
 		final AttributeGroup atg = dataModel.getAttributeGroup("atg.punktKoordinaten");
