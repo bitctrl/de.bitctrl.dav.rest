@@ -19,6 +19,8 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.util.Collection;
+
 /**
  * Schnittstelle die alle Konverter Implementiergen müssen.
  *
@@ -35,6 +37,6 @@ public interface DavJsonConverter<D, J> {
 	 * @param davObj das Quellobjekt, üblicherweise aus der DAV API
 	 * @return das Zielobjekt
 	 */
-	J dav2Json(D davObj);
+	Collection<J> dav2Json(D davObj);
 
 }

@@ -42,6 +42,7 @@ import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittEigenschaft;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittHelligkeitsMeldung;
 import de.bitctrl.dav.rest.api.model.FahrStreifen;
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.OnlineDatum;
@@ -210,13 +211,21 @@ public class Dav2RestSender implements ClientReceiverInterface {
 								.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
 					}
 
-					List<OnlineDatum> anzeigeQuerschnittEigenschaften = liste.stream()
+					final List<OnlineDatum> anzeigeQuerschnittEigenschaften = liste.stream()
 							.filter(o -> o instanceof AnzeigeQuerschnittEigenschaft).collect(Collectors.toList());
 					if (!anzeigeQuerschnittEigenschaften.isEmpty()) {
 						target.path("/onlinedaten/anzeigequerschnitteigenschaft").request()
 								.post(Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON));
 					}
-					
+
+					final List<OnlineDatum> aqHelligkeitsMeldungen = liste.stream()
+							.filter(o -> o instanceof AnzeigeQuerschnittHelligkeitsMeldung)
+							.collect(Collectors.toList());
+					if (!aqHelligkeitsMeldungen.isEmpty()) {
+						target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request()
+								.post(Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON));
+					}
+
 				} catch (final Exception ex) {
 					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);
 				} finally {
@@ -243,12 +252,12 @@ public class Dav2RestSender implements ClientReceiverInterface {
 								.contains(atg.getPid()))
 						.collect(Collectors.toList());
 
-				for (Class<?> clazz : converterKlassen) {
+				for (final Class<?> clazz : converterKlassen) {
 					try {
 						final Object newInstance = injector.getProvider(clazz).get();
 
 						if (newInstance instanceof DavJsonConverter) {
-							result.add((OnlineDatum) ((DavJsonConverter) newInstance).dav2Json(resultData));
+							result.addAll(((DavJsonConverter) newInstance).dav2Json(resultData));
 						}
 					} catch (final Exception e) {
 						LOGGER.error("Instanziierung und Konvertierung der Klasse " + clazz
@@ -347,12 +356,12 @@ public class Dav2RestSender implements ClientReceiverInterface {
 						.filter(c -> sysObjType.getPid().equals(c.getAnnotation(DavJsonObjektConverter.class).davTyp()))
 						.collect(Collectors.toList());
 
-				for (Class<?> clazz : konverterKlassen) {
+				for (final Class<?> clazz : konverterKlassen) {
 					try {
 						final Object newInstance = injector.getProvider(clazz).get();
 
 						if (newInstance instanceof DavJsonConverter) {
-							result.add((SystemObjekt) ((DavJsonConverter) newInstance).dav2Json(sysObj));
+							result.addAll(((DavJsonConverter) newInstance).dav2Json(sysObj));
 						}
 					} catch (final Exception e) {
 						LOGGER.error("Instanziierung der Klasse " + clazz + " fehlgeschlagen.", e);

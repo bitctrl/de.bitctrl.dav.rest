@@ -28,6 +28,7 @@ import javax.validation.Valid;
 import de.bitctrl.dav.rest.api.Onlinedaten;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittEigenschaft;
+import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittHelligkeitsMeldung;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
 
 /**
@@ -54,6 +55,13 @@ public class OnlinedatenImpl implements Onlinedaten {
 	@Override
 	public void postOnlinedatenAnzeigequerschnitteigenschaft(@Valid List<AnzeigeQuerschnittEigenschaft> entity) {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeQuerschnittEigenschaft: " + entity);
+	}
+
+	@Override
+	public void postOnlinedatenAnzeigequerschnitthelligkeitsmeldung(
+			@Valid List<AnzeigeQuerschnittHelligkeitsMeldung> entity) {
+		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeQuerschnittHelligkeitsMeldung: " + entity);
+		
 	}
 
 }

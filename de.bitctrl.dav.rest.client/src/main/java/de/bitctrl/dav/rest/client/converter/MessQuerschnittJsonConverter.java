@@ -20,6 +20,8 @@
 package de.bitctrl.dav.rest.client.converter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +45,7 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
 public class MessQuerschnittJsonConverter implements DavJsonConverter<SystemObject, MessQuerschnitt> {
 
 	@Override
-	public MessQuerschnitt dav2Json(SystemObject davObj) {
+	public Collection<MessQuerschnitt> dav2Json(SystemObject davObj) {
 		final MessQuerschnitt result = new MessQuerschnittImpl();
 		result.setId(davObj.getPid());
 		result.setName(davObj.getName());
@@ -68,7 +70,7 @@ public class MessQuerschnittJsonConverter implements DavJsonConverter<SystemObje
 			result.setFahrstreifen(fahrstreifenIds);
 		}
 
-		return result;
+		return Arrays.asList(result);
 	}
 
 }

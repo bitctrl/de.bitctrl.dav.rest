@@ -17,8 +17,4 @@
  * under the License.
  *
  */
-
-/**
- * Client für den Versand von ERZ Datensätzen via JSON REST API.
- */
 package de.bitctrl.dav.rest.client;

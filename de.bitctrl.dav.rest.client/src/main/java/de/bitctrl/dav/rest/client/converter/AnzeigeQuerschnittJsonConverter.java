@@ -20,6 +20,8 @@
 package de.bitctrl.dav.rest.client.converter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +45,7 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
 public class AnzeigeQuerschnittJsonConverter implements DavJsonConverter<SystemObject, AnzeigeQuerschnitt> {
 
 	@Override
-	public AnzeigeQuerschnitt dav2Json(SystemObject davObj) {
+	public Collection<AnzeigeQuerschnitt> dav2Json(SystemObject davObj) {
 		final AnzeigeQuerschnitt result = new AnzeigeQuerschnittImpl();
 		result.setId(davObj.getPid());
 		result.setName(davObj.getName());
@@ -60,7 +62,7 @@ public class AnzeigeQuerschnittJsonConverter implements DavJsonConverter<SystemO
 			result.setAnzeigen(anzeigen);
 		}
 
-		return result;
+		return Arrays.asList(result);
 	}
 
 	private void extractedAtgPunkKoordinaten(SystemObject davObj, final AnzeigeQuerschnitt result) {

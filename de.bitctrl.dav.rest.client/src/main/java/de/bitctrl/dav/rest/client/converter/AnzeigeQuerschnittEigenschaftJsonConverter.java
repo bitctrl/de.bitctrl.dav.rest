@@ -19,6 +19,8 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittEigenschaft;
@@ -40,7 +42,7 @@ public class AnzeigeQuerschnittEigenschaftJsonConverter
 		implements DavJsonConverter<ResultData, AnzeigeQuerschnittEigenschaft> {
 
 	@Override
-	public AnzeigeQuerschnittEigenschaft dav2Json(ResultData resultData) {
+	public Collection<AnzeigeQuerschnittEigenschaft> dav2Json(ResultData resultData) {
 		final AnzeigeQuerschnittEigenschaft result = new AnzeigeQuerschnittEigenschaftImpl();
 		final SystemObject object = resultData.getObject();
 		result.setSystemObjektId(object.getPid());
@@ -54,18 +56,19 @@ public class AnzeigeQuerschnittEigenschaftJsonConverter
 			} else {
 				result.setStatus(StatusType.UNDEFINIERT);
 			}
-			
-			Data eigenschaft = data.getItem("Eigenschaft");
-			if(!eigenschaft.getUnscaledValue("Helligkeit").isState()) {
+
+			final Data eigenschaft = data.getItem("Eigenschaft");
+			if (!eigenschaft.getUnscaledValue("Helligkeit").isState()) {
 				result.setHelligkeit(eigenschaft.getScaledValue("Helligkeit").floatValue());
 			}
-			if(eigenschaft.getUnscaledValue("Betriebszustand").isState()) {
-				result.setBetriebszustand(extraktBetriebszustand(eigenschaft.getScaledValue("Betriebszustand").getText()));
+			if (eigenschaft.getUnscaledValue("Betriebszustand").isState()) {
+				result.setBetriebszustand(
+						extraktBetriebszustand(eigenschaft.getScaledValue("Betriebszustand").getText()));
 			}
-			
+
 		}
 
-		return result;
+		return Arrays.asList(result);
 	}
 
 	private static BetriebszustandType extraktBetriebszustand(String betriebszustand) {

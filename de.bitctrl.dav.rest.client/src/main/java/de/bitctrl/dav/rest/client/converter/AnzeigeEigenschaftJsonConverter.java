@@ -19,6 +19,8 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
@@ -40,7 +42,7 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
 public class AnzeigeEigenschaftJsonConverter implements DavJsonConverter<ResultData, AnzeigeEigenschaft> {
 
 	@Override
-	public AnzeigeEigenschaft dav2Json(ResultData resultData) {
+	public Collection<AnzeigeEigenschaft> dav2Json(ResultData resultData) {
 		final AnzeigeEigenschaft result = new AnzeigeEigenschaftImpl();
 		final SystemObject object = resultData.getObject();
 		final DataModel dataModel = object.getDataModel();
@@ -65,7 +67,7 @@ public class AnzeigeEigenschaftJsonConverter implements DavJsonConverter<ResultD
 
 		}
 
-		return result;
+		return Arrays.asList(result);
 	}
 
 	private static String extraktWvzInhalt(DataModel dataModel, final Data data) {

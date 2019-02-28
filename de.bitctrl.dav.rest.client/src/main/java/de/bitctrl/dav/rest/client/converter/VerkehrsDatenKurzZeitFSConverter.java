@@ -19,6 +19,8 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 import de.bitctrl.dav.rest.api.model.Geschwindigkeit;
@@ -39,7 +41,7 @@ import de.bsvrz.dav.daf.main.ResultData;
 public class VerkehrsDatenKurzZeitFSConverter implements DavJsonConverter<ResultData, VerkehrsdatenKurzzeit> {
 
 	@Override
-	public VerkehrsdatenKurzzeit dav2Json(ResultData resultData) {
+	public Collection<VerkehrsdatenKurzzeit> dav2Json(ResultData resultData) {
 
 		final VerkehrsdatenKurzzeit result = new VerkehrsdatenKurzzeitImpl();
 		result.setSystemObjektId(resultData.getObject().getPid());
@@ -71,7 +73,7 @@ public class VerkehrsDatenKurzZeitFSConverter implements DavJsonConverter<Result
 				result.setB(b.getScaledValue("Wert").doubleValue());
 			}
 		}
-		return result;
+		return Arrays.asList(result);
 	}
 
 }

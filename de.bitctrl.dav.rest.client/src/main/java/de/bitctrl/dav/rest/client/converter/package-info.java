@@ -17,9 +17,4 @@
  * under the License.
  *
  */
-
-/**
- * Konverter für die Umwandlung vom ERZ Datenmodell in das JSON Modell.
- * 
- */
 package de.bitctrl.dav.rest.client.converter;

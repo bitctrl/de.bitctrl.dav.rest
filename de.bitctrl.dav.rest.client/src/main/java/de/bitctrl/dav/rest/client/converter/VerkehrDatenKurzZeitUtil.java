@@ -31,7 +31,7 @@ import de.bsvrz.dav.daf.main.config.Aspect;
 
 /**
  * Util Klasse für die Konvertierung in {@link VerkehrsdatenKurzzeit}.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
