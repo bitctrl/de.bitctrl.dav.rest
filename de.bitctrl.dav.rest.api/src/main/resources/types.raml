@@ -19,6 +19,18 @@ types:
     properties:
       breite: number
       laenge: number
+  FahrstreifenLage:
+    description: |
+     die Lage des Fahrstreifens auf der Straße. (1ÜFS => 1.    Überholfahrstreifen)
+    type: string
+    enum:
+      - HFS
+      - 1ÜFS
+      - 2ÜFS
+      - 3ÜFS
+      - 4ÜFS
+      - 5ÜFS
+      - 6ÜFS
   MessQuerschnitt:
     description: |
       Ein Messquerschnitt (statische Daten) ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.messQuerschnittAllgemein">typ.messQuerschnittAllgemein</>  ).
@@ -31,22 +43,14 @@ types:
     description: |
       Eine Anzeige (statische Daten) an einem Anzeigequerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#typ.anzeige">typ.anzeige</>  ).
     type: SystemObjekt
+    properties:
+      fahrstreifen: FahrstreifenLage []
   FahrStreifen:
     description: |
       Ein Fahrstreifen (statische Daten) auf einem Messquerschnitt ( <a href="https://www.nerz-ev.de/datkat/kb.tmVerkehrGlobal.html#typ.fahrStreifen">typ.fahrStreifen</>  ).
     type: SystemObjekt
     properties:
-      lage:
-        description: die Lage des Fahrstreifens auf der Straße. (1ÜFS => 1. Überholfahrstreifen)
-        type: string
-        enum:
-          - HFS
-          - 1ÜFS
-          - 2ÜFS
-          - 3ÜFS
-          - 4ÜFS
-          - 5ÜFS
-          - 6ÜFS
+      lage: FahrstreifenLage
   AnzeigeQuerschnitt:
     description: |
       Ein Anzeigequerschnitt (statische Daten) ( <a href="https://www.nerz-ev.de/datkat/kb.tmAnzeigenGlobal.html#typ.anzeigeQuerschnitt">typ.anzeigeQuerschnitt</>  ).

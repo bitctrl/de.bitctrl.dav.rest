@@ -19,12 +19,15 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeImpl;
+import de.bitctrl.dav.rest.api.model.FahrstreifenLage;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
@@ -45,7 +48,44 @@ public class AnzeigeJsonConverter implements DavJsonConverter<SystemObject, Anze
 
 		result.setVersion(new Date(davObj.getConfigurationArea().getTimeOfLastActiveConfigurationChange()));
 
+		result.setFahrstreifen(fahrstreifenErmitteln(davObj));
 		return Arrays.asList(result);
+	}
+
+	/**
+	 * Ermittelt die Fahrstreifen, zu denen die Anzeige gehört anhand der PID der
+	 * Anzeige.
+	 */
+	private List<FahrstreifenLage> fahrstreifenErmitteln(SystemObject davObj) {
+		final List<FahrstreifenLage> lage = new ArrayList<>();
+
+		final String pid = davObj.getPid();
+		if (pid.contains("hfs") || pid.contains("rechts")) {
+			lage.add(FahrstreifenLage.HFS);
+		}
+		if (pid.contains("1ufs") || pid.contains("links")) {
+			lage.add(FahrstreifenLage._1FS);
+		}
+		if (pid.contains("2ufs")) {
+			lage.add(FahrstreifenLage._2FS);
+		}
+		if (pid.contains("3ufs")) {
+			lage.add(FahrstreifenLage._3FS);
+		}
+		if (pid.contains("4ufs")) {
+			lage.add(FahrstreifenLage._4FS);
+		}
+		if (pid.contains("5ufs")) {
+			lage.add(FahrstreifenLage._5FS);
+		}
+		if (pid.contains("6ufs")) {
+			lage.add(FahrstreifenLage._6FS);
+		}
+
+		if (lage.isEmpty()) {
+			lage.addAll(Arrays.asList(FahrstreifenLage.values()));
+		}
+		return lage;
 	}
 
 }

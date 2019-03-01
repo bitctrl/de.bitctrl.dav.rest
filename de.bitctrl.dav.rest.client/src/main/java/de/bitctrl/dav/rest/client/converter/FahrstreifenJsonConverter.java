@@ -25,6 +25,7 @@ import java.util.Date;
 
 import de.bitctrl.dav.rest.api.model.FahrStreifen;
 import de.bitctrl.dav.rest.api.model.FahrStreifenImpl;
+import de.bitctrl.dav.rest.api.model.FahrstreifenLage;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
 import de.bsvrz.dav.daf.main.Data;
 import de.bsvrz.dav.daf.main.config.AttributeGroup;
@@ -47,12 +48,12 @@ public class FahrstreifenJsonConverter implements DavJsonConverter<SystemObject,
 		result.setName(davObj.getName());
 		result.setVersion(new Date(davObj.getConfigurationArea().getTimeOfLastActiveConfigurationChange()));
 
-		final FahrStreifen.LageType lage = bestimmeLage(davObj);
+		final FahrstreifenLage lage = bestimmeLage(davObj);
 		result.setLage(lage);
 		return Arrays.asList(result);
 	}
 
-	private FahrStreifen.LageType bestimmeLage(SystemObject davObj) {
+	private FahrstreifenLage bestimmeLage(SystemObject davObj) {
 		final DataModel dataModel = davObj.getDataModel();
 		final AttributeGroup atg = dataModel.getAttributeGroup("atg.fahrStreifen");
 		final Data daten = davObj.getConfigurationData(atg);
@@ -60,22 +61,22 @@ public class FahrstreifenJsonConverter implements DavJsonConverter<SystemObject,
 			final String lage = daten.getScaledValue("Lage").getText();
 			switch (lage) {
 			case "1ÜFS":
-				return FahrStreifen.LageType._1FS;
+				return FahrstreifenLage._1FS;
 			case "2ÜFS":
-				return FahrStreifen.LageType._2FS;
+				return FahrstreifenLage._2FS;
 			case "3ÜFS":
-				return FahrStreifen.LageType._3FS;
+				return FahrstreifenLage._3FS;
 			case "4ÜFS":
-				return FahrStreifen.LageType._4FS;
+				return FahrstreifenLage._4FS;
 			case "5ÜFS":
-				return FahrStreifen.LageType._5FS;
+				return FahrstreifenLage._5FS;
 			case "6ÜFS":
-				return FahrStreifen.LageType._6FS;
+				return FahrstreifenLage._6FS;
 			default:
-				return FahrStreifen.LageType.HFS;
+				return FahrstreifenLage.HFS;
 			}
 		}
-		return FahrStreifen.LageType.HFS;
+		return FahrstreifenLage.HFS;
 	}
 
 }
