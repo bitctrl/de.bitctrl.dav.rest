@@ -86,15 +86,15 @@ public class Dav2RestSender implements ClientReceiverInterface {
 	/**
 	 * Queue in der die zu persistierenden ResultDatas gehalten werden.
 	 */
-	private final LinkedBlockingDeque<ResultData> data2StoreList = new LinkedBlockingDeque<>();
+	private final LinkedBlockingDeque<ResultData> data2StoreQueue = new LinkedBlockingDeque<>();
 
 	/**
-	 * Queue in der die SystemObjecte enthalten sind, deren Mengen persistiert
+	 * Queue in der die SystemObjecte enthalten sind zu denen OnlineDaten versandt
 	 * werden sollen.
 	 */
-	private final LinkedBlockingDeque<SystemObject> objects2StoreList = new LinkedBlockingDeque<>();
+	private final LinkedBlockingDeque<SystemObject> objects2StoreQueue = new LinkedBlockingDeque<>();
 
-	private final ExecutorService executor = Executors.newSingleThreadExecutor();
+	private final ExecutorService executor = Executors.newWorkStealingPool();
 	private Reflections reflections;
 
 	public Dav2RestSender(WebTarget target, ClientDavInterface connection, SystemObject archivObjekt) {
@@ -156,7 +156,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				try {
 					connection.subscribeReceiver(Dav2RestSender.this, id.getObject(), id.getDataDescription(),
 							ReceiveOptions.delayed(), ReceiverRole.receiver());
-					objects2StoreList.add(id.getObject());
+					objects2StoreQueue.add(id.getObject());
 				} catch (final Exception e) {
 					// ungültige Anmeldungen ignorieren wir
 				}
@@ -164,19 +164,12 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			neueAnmeldungen.clear();
 			LOGGER.info("An- und Abmeldung für Archivdatensaetze abgeschlossen - "
 					+ (System.currentTimeMillis() - start) + " ms");
-			executor.execute(new RestSenderRunnable());
+			executor.execute(new RestSystemObjektSender());
 		}
 
 	}
 
-	/**
-	 * {@link Runnable} zum asynchronen Versenden der SystemObjecte und Mengen.
-	 *
-	 * @author BitCtrl Systems GmbH, Christian Hösel
-	 *
-	 */
-	private class RestSenderRunnable implements Runnable {
-
+	private class RestSystemObjektSender implements Runnable {
 		@Override
 		public void run() {
 			// Injector für das ClientDavInterface
@@ -186,95 +179,47 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					bind(ClientDavInterface.class).toInstance(connection);
 				}
 			});
-
 			versendeSystemObjekte(injector);
-			versendeDatensaetze(injector);
-
 		}
 
-		private void versendeDatensaetze(Injector injector) {
-			while (!data2StoreList.isEmpty()) {
-
-				try {
-					final List<OnlineDatum> liste = getOnlineDaten(injector);
-
-					final List<OnlineDatum> mqVerkehrsdatenKurzzeit = liste.stream()
-							.filter(o -> o instanceof VerkehrsdatenKurzzeit).collect(Collectors.toList());
-					if (!mqVerkehrsdatenKurzzeit.isEmpty()) {
-						target.path("/onlinedaten/verkehrsdatenkurzzeit").request()
-								.post(Entity.entity(mqVerkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
-					}
-					final List<OnlineDatum> anzeigeEigenschaften = liste.stream()
-							.filter(o -> o instanceof AnzeigeEigenschaft).collect(Collectors.toList());
-					if (!anzeigeEigenschaften.isEmpty()) {
-						target.path("/onlinedaten/anzeigeeigenschaft").request()
-								.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
-					}
-
-					final List<OnlineDatum> anzeigeQuerschnittEigenschaften = liste.stream()
-							.filter(o -> o instanceof AnzeigeQuerschnittEigenschaft).collect(Collectors.toList());
-					if (!anzeigeQuerschnittEigenschaften.isEmpty()) {
-						target.path("/onlinedaten/anzeigequerschnitteigenschaft").request()
-								.post(Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON));
-					}
-
-					final List<OnlineDatum> aqHelligkeitsMeldungen = liste.stream()
-							.filter(o -> o instanceof AnzeigeQuerschnittHelligkeitsMeldung)
-							.collect(Collectors.toList());
-					if (!aqHelligkeitsMeldungen.isEmpty()) {
-						target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request()
-								.post(Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON));
-					}
-
-				} catch (final Exception ex) {
-					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);
-				} finally {
-
-				}
-
-				// LOGGER.info("Warteschlange = " + data2StoreList.size());
-			}
-		}
-
-		private List<OnlineDatum> getOnlineDaten(Injector injector) throws InterruptedException {
-			final List<OnlineDatum> result = new ArrayList<>();
+		private List<SystemObjekt> getObjekte(Injector injector) throws InterruptedException {
+			final List<SystemObjekt> result = new ArrayList<>();
 			int i = 0;
 
-			final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonDatensatzConverter.class);
+			final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
 
-			ResultData resultData = data2StoreList.take();
+			SystemObject sysObj = objects2StoreQueue.take();
 
-			while (resultData != null && i++ < 1000) {
+			while (sysObj != null && i++ < 1000) {
 
-				final AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
-				final List<Class<?>> converterKlassen = annotatedWith.stream()
-						.filter(c -> Arrays.asList(c.getAnnotation(DavJsonDatensatzConverter.class).davAttributGruppe())
-								.contains(atg.getPid()))
+				final SystemObjectType sysObjType = sysObj.getType();
+				final List<Class<?>> konverterKlassen = annotatedWith.stream()
+						.filter(c -> sysObjType.getPid().equals(c.getAnnotation(DavJsonObjektConverter.class).davTyp()))
 						.collect(Collectors.toList());
 
-				for (final Class<?> clazz : converterKlassen) {
+				for (final Class<?> clazz : konverterKlassen) {
 					try {
 						final Object newInstance = injector.getProvider(clazz).get();
 
 						if (newInstance instanceof DavJsonConverter) {
-							result.addAll(((DavJsonConverter) newInstance).dav2Json(resultData));
+							result.addAll(((DavJsonConverter) newInstance).dav2Json(sysObj));
 						}
 					} catch (final Exception e) {
-						LOGGER.error("Instanziierung und Konvertierung der Klasse " + clazz
-								+ " fehlgeschlagen (ResultData: " + resultData + ").", e);
+						LOGGER.error("Instanziierung der Klasse " + clazz + " fehlgeschlagen.", e);
 					}
 				}
 
-				if (data2StoreList.isEmpty()) {
+				if (objects2StoreQueue.isEmpty()) {
 					break;
 				}
-				resultData = data2StoreList.take();
+				sysObj = objects2StoreQueue.take();
 			}
 			return result;
+
 		}
 
 		private void versendeSystemObjekte(Injector injector) {
-			while (!objects2StoreList.isEmpty()) {
+			while (!objects2StoreQueue.isEmpty()) {
 				try {
 					final List<SystemObjekt> liste = getObjekte(injector);
 					versendeFahrStreifen(liste);
@@ -284,8 +229,6 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				} catch (final InterruptedException e) {
 					LOGGER.error("DAV Objekte konnten nicht versendet werden.", e);
 				}
-
-				// LOGGER.info("Warteschlange = " + data2StoreList.size());
 			}
 		}
 
@@ -341,40 +284,116 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			}
 		}
 
-		private List<SystemObjekt> getObjekte(Injector injector) throws InterruptedException {
-			final List<SystemObjekt> result = new ArrayList<>();
+	}
+
+	/**
+	 * {@link Runnable} zum Versenden der {@link OnlineDatum}.
+	 *
+	 * @author BitCtrl Systems GmbH, Christian Hösel
+	 *
+	 */
+	private class RestOnlineDatenSender implements Runnable {
+
+		@Override
+		public void run() {
+			// Injector für das ClientDavInterface
+			final Injector injector = Guice.createInjector(new AbstractModule() {
+				@Override
+				protected void configure() {
+					bind(ClientDavInterface.class).toInstance(connection);
+				}
+			});
+			versendeDatensaetze(injector);
+		}
+
+		private void versendeDatensaetze(Injector injector) {
+			while (!data2StoreQueue.isEmpty()) {
+
+				try {
+					final List<OnlineDatum> liste = getOnlineDaten(injector);
+					versendeMQVerkehrsDatenKurzzeit(liste);
+					versendeAnzeigeEigenschaften(liste);
+					versendeAQAnzeigeEigenschaften(liste);
+					versendeAQHelligkeitsMeldungen(liste);
+				} catch (final Exception ex) {
+					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);
+				} finally {
+
+				}
+			}
+		}
+
+		private void versendeAQHelligkeitsMeldungen(final List<OnlineDatum> liste) {
+			final List<OnlineDatum> aqHelligkeitsMeldungen = liste.stream()
+					.filter(o -> o instanceof AnzeigeQuerschnittHelligkeitsMeldung).collect(Collectors.toList());
+			if (!aqHelligkeitsMeldungen.isEmpty()) {
+				target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request()
+						.post(Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON));
+			}
+		}
+
+		private void versendeAQAnzeigeEigenschaften(final List<OnlineDatum> liste) {
+			final List<OnlineDatum> anzeigeQuerschnittEigenschaften = liste.stream()
+					.filter(o -> o instanceof AnzeigeQuerschnittEigenschaft).collect(Collectors.toList());
+			if (!anzeigeQuerschnittEigenschaften.isEmpty()) {
+				target.path("/onlinedaten/anzeigequerschnitteigenschaft").request()
+						.post(Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON));
+			}
+		}
+
+		private void versendeAnzeigeEigenschaften(final List<OnlineDatum> liste) {
+			final List<OnlineDatum> anzeigeEigenschaften = liste.stream().filter(o -> o instanceof AnzeigeEigenschaft)
+					.collect(Collectors.toList());
+			if (!anzeigeEigenschaften.isEmpty()) {
+				target.path("/onlinedaten/anzeigeeigenschaft").request()
+						.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
+			}
+		}
+
+		private void versendeMQVerkehrsDatenKurzzeit(final List<OnlineDatum> liste) {
+			final List<OnlineDatum> mqVerkehrsdatenKurzzeit = liste.stream()
+					.filter(o -> o instanceof VerkehrsdatenKurzzeit).collect(Collectors.toList());
+			if (!mqVerkehrsdatenKurzzeit.isEmpty()) {
+				target.path("/onlinedaten/verkehrsdatenkurzzeit").request()
+						.post(Entity.entity(mqVerkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
+			}
+		}
+
+		private List<OnlineDatum> getOnlineDaten(Injector injector) throws InterruptedException {
+			final List<OnlineDatum> result = new ArrayList<>();
 			int i = 0;
 
-			final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
+			final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonDatensatzConverter.class);
 
-			SystemObject sysObj = objects2StoreList.take();
+			ResultData resultData = data2StoreQueue.take();
 
-			while (sysObj != null && i++ < 1000) {
+			while (resultData != null && i++ < 1000) {
 
-				final SystemObjectType sysObjType = sysObj.getType();
-				final List<Class<?>> konverterKlassen = annotatedWith.stream()
-						.filter(c -> sysObjType.getPid().equals(c.getAnnotation(DavJsonObjektConverter.class).davTyp()))
+				final AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
+				final List<Class<?>> converterKlassen = annotatedWith.stream()
+						.filter(c -> Arrays.asList(c.getAnnotation(DavJsonDatensatzConverter.class).davAttributGruppe())
+								.contains(atg.getPid()))
 						.collect(Collectors.toList());
 
-				for (final Class<?> clazz : konverterKlassen) {
+				for (final Class<?> clazz : converterKlassen) {
 					try {
 						final Object newInstance = injector.getProvider(clazz).get();
 
 						if (newInstance instanceof DavJsonConverter) {
-							result.addAll(((DavJsonConverter) newInstance).dav2Json(sysObj));
+							result.addAll(((DavJsonConverter) newInstance).dav2Json(resultData));
 						}
 					} catch (final Exception e) {
-						LOGGER.error("Instanziierung der Klasse " + clazz + " fehlgeschlagen.", e);
+						LOGGER.error("Instanziierung und Konvertierung der Klasse " + clazz
+								+ " fehlgeschlagen (ResultData: " + resultData + ").", e);
 					}
 				}
 
-				if (objects2StoreList.isEmpty()) {
+				if (data2StoreQueue.isEmpty()) {
 					break;
 				}
-				sysObj = objects2StoreList.take();
+				resultData = data2StoreQueue.take();
 			}
 			return result;
-
 		}
 
 	}
@@ -408,9 +427,9 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		if (results != null) {
 			try {
 				for (final ResultData rd : results) {
-					data2StoreList.add(rd);
+					data2StoreQueue.add(rd);
 				}
-				executor.execute(new RestSenderRunnable());
+				executor.execute(new RestOnlineDatenSender());
 			} catch (final Exception e) {
 				LOGGER.error("Archiv kann Datensatz nicht der Warteschlange hinzufügen.", e);
 			}
