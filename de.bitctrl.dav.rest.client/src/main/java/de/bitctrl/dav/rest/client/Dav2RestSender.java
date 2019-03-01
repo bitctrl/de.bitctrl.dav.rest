@@ -19,13 +19,18 @@
  */
 package de.bitctrl.dav.rest.client;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Entity;
@@ -86,13 +91,13 @@ public class Dav2RestSender implements ClientReceiverInterface {
 	/**
 	 * Queue in der die zu persistierenden ResultDatas gehalten werden.
 	 */
-	private final LinkedBlockingDeque<ResultData> data2StoreQueue = new LinkedBlockingDeque<>();
+	private final LinkedBlockingDeque<ResultData> data2Store = new LinkedBlockingDeque<>();
 
 	/**
-	 * Queue in der die SystemObjecte enthalten sind zu denen OnlineDaten versandt
-	 * werden sollen.
+	 * Menge in der die {@link DataIdentification}s enthalten sind zu denen
+	 * OnlineDaten versandt werden sollen.
 	 */
-	private final LinkedBlockingDeque<SystemObject> objects2StoreQueue = new LinkedBlockingDeque<>();
+	private final Set<DataIdentification> objects2Store = new ConcurrentSkipListSet<>();
 
 	private final ExecutorService executor = Executors.newWorkStealingPool();
 	private Reflections reflections;
@@ -149,6 +154,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 			for (final DataIdentification id : neueAbmeldungen) {
 				connection.unsubscribeReceiver(Dav2RestSender.this, id.getObject(), id.getDataDescription());
+				objects2Store.remove(id);
 			}
 			neueAbmeldungen.clear();
 
@@ -156,7 +162,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				try {
 					connection.subscribeReceiver(Dav2RestSender.this, id.getObject(), id.getDataDescription(),
 							ReceiveOptions.delayed(), ReceiverRole.receiver());
-					objects2StoreQueue.add(id.getObject());
+					objects2Store.add(id);
 				} catch (final Exception e) {
 					// ungültige Anmeldungen ignorieren wir
 				}
@@ -164,12 +170,20 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			neueAnmeldungen.clear();
 			LOGGER.info("An- und Abmeldung für Archivdatensaetze abgeschlossen - "
 					+ (System.currentTimeMillis() - start) + " ms");
-			executor.execute(new RestSystemObjektSender());
+
+			executor.execute(new RestSystemObjektSender(objects2Store));
 		}
 
 	}
 
 	private class RestSystemObjektSender implements Runnable {
+
+		private final LinkedBlockingDeque<SystemObject> systemObjekte = new LinkedBlockingDeque<>();
+
+		public RestSystemObjektSender(Collection<DataIdentification> objects2StoreQueue) {
+			systemObjekte.addAll(objects2StoreQueue.stream().map(d -> d.getObject()).collect(Collectors.toSet()));
+		}
+
 		@Override
 		public void run() {
 			// Injector für das ClientDavInterface
@@ -188,7 +202,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 			final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
 
-			SystemObject sysObj = objects2StoreQueue.take();
+			SystemObject sysObj = systemObjekte.take();
 
 			while (sysObj != null && i++ < 1000) {
 
@@ -209,17 +223,17 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					}
 				}
 
-				if (objects2StoreQueue.isEmpty()) {
+				if (systemObjekte.isEmpty()) {
 					break;
 				}
-				sysObj = objects2StoreQueue.take();
+				sysObj = systemObjekte.take();
 			}
 			return result;
 
 		}
 
 		private void versendeSystemObjekte(Injector injector) {
-			while (!objects2StoreQueue.isEmpty()) {
+			while (!systemObjekte.isEmpty()) {
 				try {
 					final List<SystemObjekt> liste = getObjekte(injector);
 					versendeFahrStreifen(liste);
@@ -307,7 +321,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		}
 
 		private void versendeDatensaetze(Injector injector) {
-			while (!data2StoreQueue.isEmpty()) {
+			while (!data2Store.isEmpty()) {
 
 				try {
 					final List<OnlineDatum> liste = getOnlineDaten(injector);
@@ -365,7 +379,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 			final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonDatensatzConverter.class);
 
-			ResultData resultData = data2StoreQueue.take();
+			ResultData resultData = data2Store.take();
 
 			while (resultData != null && i++ < 1000) {
 
@@ -388,10 +402,10 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					}
 				}
 
-				if (data2StoreQueue.isEmpty()) {
+				if (data2Store.isEmpty()) {
 					break;
 				}
-				resultData = data2StoreQueue.take();
+				resultData = data2Store.take();
 			}
 			return result;
 		}
@@ -405,6 +419,21 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		LOGGER.info("Folgende Objekt-Converter wurden via Reflection gefunden: " + annotatedWith);
 
 		subscribeDavData();
+
+		final LocalDateTime now = LocalDateTime.now();
+		LocalDateTime twoOclock = now.withHour(2).withMinute(0).withSecond(0);
+
+		long until = now.until(twoOclock, ChronoUnit.MINUTES);
+		while (until < 0) {
+			twoOclock = twoOclock.plusDays(1);
+			until = now.until(twoOclock, ChronoUnit.MINUTES);
+		}
+
+		// täglich ca. um 2 werden die statischen Daten (SystemObjekte) neu übertragen.
+		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet.");
+			executor.execute(new RestSystemObjektSender(objects2Store));
+		}, until, 1440, TimeUnit.MINUTES);
 	}
 
 	private void subscribeDavData() {
@@ -427,7 +456,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		if (results != null) {
 			try {
 				for (final ResultData rd : results) {
-					data2StoreQueue.add(rd);
+					data2Store.add(rd);
 				}
 				executor.execute(new RestOnlineDatenSender());
 			} catch (final Exception e) {
