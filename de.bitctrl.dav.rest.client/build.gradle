@@ -1,4 +1,8 @@
+apply plugin: 'application'
+apply plugin: "com.github.spotbugs"
+apply plugin: 'checkstyle'
 
+   
 description = 'Dav3 REST Client'
 dependencies {
     implementation project(':de.bitctrl.dav.rest.api')
@@ -11,4 +15,18 @@ dependencies {
     implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:3.9.2'
     implementation 'org.reflections:reflections:0.9.11'
     testImplementation 'junit:junit:4.12'
+}
+
+mainClassName='de.bitctrl.dav.rest.client.Client'
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    ignoreFailures = true
+    
+    effort = 'max'
+    reportLevel = 'low'
+    
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
 }

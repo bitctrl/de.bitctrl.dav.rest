@@ -1,3 +1,6 @@
+apply plugin: 'application'
+apply plugin: "com.github.spotbugs"
+apply plugin: 'checkstyle'
 
 description = 'Dav3 REST Server'
 dependencies {
@@ -12,3 +15,5 @@ dependencies {
     testImplementation 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-bundle:2.27'
     testImplementation 'junit:junit:4.12'
 }
+
+mainClassName='de.bitctrl.dav.rest.server.DavRestServer'

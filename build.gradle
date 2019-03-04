@@ -3,10 +3,13 @@ buildscript {
     mavenLocal()
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
+    maven {  url "https://plugins.gradle.org/m2/"}
     mavenCentral()
   }
   dependencies {
     classpath "org.raml.jaxrs:raml-to-jaxrs-gradle-plugin:3.0.4"
+     classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:4.1.0"
+    classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.9"
   }
 }
 
@@ -28,6 +31,8 @@ subprojects {
    apply plugin: 'java'
    apply plugin: 'maven'
    apply plugin: 'maven-publish'
+   apply plugin: "biz.aQute.bnd.builder"
+
 
     sourceCompatibility = 1.8
   targetCompatibility = 1.8
