@@ -1,0 +1,30 @@
+apply plugin: 'ramltojaxrs'
+
+description = 'Dav3 REST API'
+
+sourceSets.main.java.srcDir "$buildDir/generated"
+
+ramltojaxrs {
+    sourcePaths = files('src/main/resources/de.bitctrl.dav.rest.raml')
+    outputDirectory = new File(buildDir,'generated')
+    supportPackageName = 'de.bitctrl.dav.rest.gen'
+    resourcePackageName = 'de.bitctrl.dav.rest.api'
+    modelPackageName = 'de.bitctrl.dav.rest.api.model'
+    generateTypesWith = ['jackson2','toString','javadoc','equalsAndHashCode','jsr303']
+}
+
+
+task taskX {
+    dependsOn 'build'
+    doFirst {
+        ramltojaxrs
+    }
+}
+
+dependencies {
+    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version:'2.1.1'
+    compile group: 'javax.validation', name: 'validation-api', version:'2.0.1.Final'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.8'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.8'
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+}
