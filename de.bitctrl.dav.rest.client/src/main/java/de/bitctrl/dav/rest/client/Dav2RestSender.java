@@ -30,12 +30,14 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.reflections.Reflections;
 
@@ -98,6 +100,12 @@ public class Dav2RestSender implements ClientReceiverInterface {
 	 * OnlineDaten versandt werden sollen.
 	 */
 	private final Set<DataIdentification> objects2Store = new ConcurrentSkipListSet<>();
+
+	/**
+	 * Queue für alle {@link OnlineDatum}, die nicht versand werden konnten und die
+	 * später Nachversand werden sollen.
+	 */
+	private final LinkedBlockingDeque<OnlineDatum> data2redirect = new LinkedBlockingDeque<>();
 
 	private final ExecutorService executor = Executors.newWorkStealingPool();
 	private Reflections reflections;
@@ -322,54 +330,17 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 		private void versendeDatensaetze(Injector injector) {
 			while (!data2Store.isEmpty()) {
-
+				final List<OnlineDatum> liste = new ArrayList<>();
 				try {
-					final List<OnlineDatum> liste = getOnlineDaten(injector);
+					liste.addAll(getOnlineDaten(injector));
 					versendeMQVerkehrsDatenKurzzeit(liste);
 					versendeAnzeigeEigenschaften(liste);
 					versendeAQAnzeigeEigenschaften(liste);
 					versendeAQHelligkeitsMeldungen(liste);
 				} catch (final Exception ex) {
-					LOGGER.error("OnlineDaten konnten nicht versendet werden.", ex);
-				} finally {
-
+					LOGGER.error("OnlineDaten konnten nicht versendet werden und werden später Nachversandt.", ex);
+					data2redirect.addAll(liste);
 				}
-			}
-		}
-
-		private void versendeAQHelligkeitsMeldungen(final List<OnlineDatum> liste) {
-			final List<OnlineDatum> aqHelligkeitsMeldungen = liste.stream()
-					.filter(o -> o instanceof AnzeigeQuerschnittHelligkeitsMeldung).collect(Collectors.toList());
-			if (!aqHelligkeitsMeldungen.isEmpty()) {
-				target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request()
-						.post(Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON));
-			}
-		}
-
-		private void versendeAQAnzeigeEigenschaften(final List<OnlineDatum> liste) {
-			final List<OnlineDatum> anzeigeQuerschnittEigenschaften = liste.stream()
-					.filter(o -> o instanceof AnzeigeQuerschnittEigenschaft).collect(Collectors.toList());
-			if (!anzeigeQuerschnittEigenschaften.isEmpty()) {
-				target.path("/onlinedaten/anzeigequerschnitteigenschaft").request()
-						.post(Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON));
-			}
-		}
-
-		private void versendeAnzeigeEigenschaften(final List<OnlineDatum> liste) {
-			final List<OnlineDatum> anzeigeEigenschaften = liste.stream().filter(o -> o instanceof AnzeigeEigenschaft)
-					.collect(Collectors.toList());
-			if (!anzeigeEigenschaften.isEmpty()) {
-				target.path("/onlinedaten/anzeigeeigenschaft").request()
-						.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
-			}
-		}
-
-		private void versendeMQVerkehrsDatenKurzzeit(final List<OnlineDatum> liste) {
-			final List<OnlineDatum> mqVerkehrsdatenKurzzeit = liste.stream()
-					.filter(o -> o instanceof VerkehrsdatenKurzzeit).collect(Collectors.toList());
-			if (!mqVerkehrsdatenKurzzeit.isEmpty()) {
-				target.path("/onlinedaten/verkehrsdatenkurzzeit").request()
-						.post(Entity.entity(mqVerkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
 			}
 		}
 
@@ -412,6 +383,51 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 	}
 
+	/**
+	 * Sender zum nachsenden der {@link OnlineDatum}, deren Versand fehlgeschlagen
+	 * ist.
+	 *
+	 * @author BitCtrl Systems GmbH, Christian Hoesel
+	 *
+	 */
+	private class RestOnlineDatenNachSender implements Runnable {
+
+		@Override
+		public void run() {
+			// Injector für das ClientDavInterface
+			final Injector injector = Guice.createInjector(new AbstractModule() {
+				@Override
+				protected void configure() {
+					bind(ClientDavInterface.class).toInstance(connection);
+				}
+			});
+			versendeDatensaetze(injector);
+		}
+
+		private void versendeDatensaetze(Injector injector) {
+			if(!data2redirect.isEmpty()) {
+				LOGGER.info("Zyklisches Nachsenden von dynamischen Daten (OnlineDatum) gestartet - "
+						+ data2redirect.size() + " Datensätze.");
+			}
+			
+			while (!data2redirect.isEmpty()) {
+				final List<OnlineDatum> liste = new ArrayList<>();
+				try {
+					data2redirect.drainTo(liste, 1000);
+					versendeMQVerkehrsDatenKurzzeit(liste);
+					versendeAnzeigeEigenschaften(liste);
+					versendeAQAnzeigeEigenschaften(liste);
+					versendeAQHelligkeitsMeldungen(liste);
+				} catch (final Exception ex) {
+					LOGGER.error("OnlineDaten konnten nicht (nach)versendet werden.", ex);
+					data2redirect.addAll(liste);
+					break;
+				}
+			}
+		}
+
+	}
+
 	public void anmelden() {
 		reflections = new Reflections(Dav2RestSender.class.getPackage().getName());
 		final Set<Class<?>> annotatedWith = reflections.getTypesAnnotatedWith(DavJsonObjektConverter.class);
@@ -430,10 +446,14 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		}
 
 		// täglich ca. um 2 werden die statischen Daten (SystemObjekte) neu übertragen.
-		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+		final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+		scheduledExecutor.scheduleAtFixedRate(() -> {
 			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet.");
 			executor.execute(new RestSystemObjektSender(objects2Store));
 		}, until, 1440, TimeUnit.MINUTES);
+
+		scheduledExecutor.scheduleAtFixedRate(new RestOnlineDatenNachSender(), 1, 1, TimeUnit.MINUTES);
+
 	}
 
 	private void subscribeDavData() {
@@ -463,6 +483,65 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				LOGGER.error("Archiv kann Datensatz nicht der Warteschlange hinzufügen.", e);
 			}
 		}
+	}
 
+	private void versendeAQHelligkeitsMeldungen(final List<OnlineDatum> liste) {
+		final List<OnlineDatum> aqHelligkeitsMeldungen = liste.stream()
+				.filter(o -> o instanceof AnzeigeQuerschnittHelligkeitsMeldung).collect(Collectors.toList());
+		if (!aqHelligkeitsMeldungen.isEmpty()) {
+			final Response response = target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request()
+					.post(Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON));
+			if (response.getStatus() < 200 || response.getStatus() >= 300) {
+				LOGGER.error(
+						"Der Versand von AnzeigeQuerschnittHelligkeitsMeldungen ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+						response);
+				data2redirect.addAll(aqHelligkeitsMeldungen);
+			}
+		}
+	}
+
+	private void versendeAQAnzeigeEigenschaften(final List<OnlineDatum> liste) {
+		final List<OnlineDatum> anzeigeQuerschnittEigenschaften = liste.stream()
+				.filter(o -> o instanceof AnzeigeQuerschnittEigenschaft).collect(Collectors.toList());
+		if (!anzeigeQuerschnittEigenschaften.isEmpty()) {
+			final Response response = target.path("/onlinedaten/anzeigequerschnitteigenschaft").request()
+					.post(Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON));
+			if (response.getStatus() < 200 || response.getStatus() >= 300) {
+				LOGGER.error(
+						"Der Versand von AnzeigeQuerschnittEigenschaften ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+						response);
+				data2redirect.addAll(anzeigeQuerschnittEigenschaften);
+			}
+		}
+	}
+
+	private void versendeAnzeigeEigenschaften(final List<OnlineDatum> liste) {
+		final List<OnlineDatum> anzeigeEigenschaften = liste.stream().filter(o -> o instanceof AnzeigeEigenschaft)
+				.collect(Collectors.toList());
+		if (!anzeigeEigenschaften.isEmpty()) {
+			final Response response = target.path("/onlinedaten/anzeigeeigenschaft").request()
+					.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
+			if (response.getStatus() < 200 || response.getStatus() >= 300) {
+				LOGGER.error(
+						"Der Versand von AnzeigeEigenschaften ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+						response);
+				data2redirect.addAll(anzeigeEigenschaften);
+			}
+		}
+	}
+
+	private void versendeMQVerkehrsDatenKurzzeit(final List<OnlineDatum> liste) {
+		final List<OnlineDatum> verkehrsdatenKurzzeit = liste.stream().filter(o -> o instanceof VerkehrsdatenKurzzeit)
+				.collect(Collectors.toList());
+		if (!verkehrsdatenKurzzeit.isEmpty()) {
+			final Response response = target.path("/onlinedaten/verkehrsdatenkurzzeit").request()
+					.post(Entity.entity(verkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
+			if (response.getStatus() < 200 || response.getStatus() >= 300) {
+				LOGGER.error(
+						"Der Versand von kurzzeit Verkehrsdaten ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+						response);
+				data2redirect.addAll(verkehrsdatenKurzzeit);
+			}
+		}
 	}
 }
