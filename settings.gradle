@@ -2,7 +2,3 @@ rootProject.name = 'de.bitctrl.dav.rest'
 include ':de.bitctrl.dav.rest.api'
 include ':de.bitctrl.dav.rest.client'
 include ':de.bitctrl.dav.rest.server'
-
-project(':de.bitctrl.dav.rest.api').projectDir = "$rootDir/de.bitctrl.dav.rest.api" as File
-project(':de.bitctrl.dav.rest.client').projectDir = "$rootDir/de.bitctrl.dav.rest.client" as File
-project(':de.bitctrl.dav.rest.server').projectDir = "$rootDir/de.bitctrl.dav.rest.server" as File

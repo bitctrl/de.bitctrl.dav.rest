@@ -2,6 +2,8 @@ apply plugin: 'ramltojaxrs'
 
 description = 'Dav3 REST API'
 
+compileJava.dependsOn 'ramltojaxrs'    
+    
 sourceSets.main.java.srcDir "$buildDir/generated"
 
 ramltojaxrs {
@@ -13,18 +15,10 @@ ramltojaxrs {
     generateTypesWith = ['jackson2','toString','javadoc','equalsAndHashCode','jsr303']
 }
 
-
-task taskX {
-    dependsOn 'build'
-    doFirst {
-        ramltojaxrs
-    }
-}
-
 dependencies {
-    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version:'2.1.1'
-    compile group: 'javax.validation', name: 'validation-api', version:'2.0.1.Final'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.8'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.8'
-    testCompile group: 'junit', name: 'junit', version:'4.12'
+    implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.8'
+    testImplementation 'junit:junit:4.12'
 }
