@@ -1,0 +1,4 @@
+rootProject.name = 'de.bitctrl.dav.rest'
+include ':de.bitctrl.dav.rest.api'
+include ':de.bitctrl.dav.rest.client'
+include ':de.bitctrl.dav.rest.server'

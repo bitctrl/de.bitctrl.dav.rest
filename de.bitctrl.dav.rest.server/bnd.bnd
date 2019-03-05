@@ -1,0 +1,8 @@
+-exportcontents: de.bitctrl.dav.rest.*
+-sources: true
+-snapshot: ${tstamp}
+
+Bundle-Name: Dav3 REST Server
+Import-Package: *
+Bundle-Vendor: BitCtrl Systems GmbH
+Automatic-Module-Name: de.bitctrl.dav.rest.server
