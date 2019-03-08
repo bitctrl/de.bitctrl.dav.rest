@@ -74,7 +74,7 @@ public class RestTest extends JerseyTest {
 	@Test
 	public void testAnzeige() {
 
-		WebTarget target = target("/systemobjekte/messquerschnitt");
+		WebTarget target = target("/systemobjekte/anzeige");
 
 		Anzeige obj = new AnzeigeImpl();
 		obj.setName("Test Anzeige");
