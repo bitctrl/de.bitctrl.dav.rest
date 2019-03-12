@@ -1,8 +1,9 @@
 apply plugin: 'ramltojaxrs'
 
+
 description = 'Dav3 REST API'
 
-compileJava.dependsOn 'ramltojaxrs'    
+compileJava.dependsOn 'ramltojaxrs'
     
 sourceSets.main.java.srcDir "$buildDir/generated"
 

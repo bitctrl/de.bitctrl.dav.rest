@@ -3,13 +3,14 @@ buildscript {
     mavenLocal()
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
-    maven {  url "https://plugins.gradle.org/m2/"}
+    maven { url "https://plugins.gradle.org/m2/"}
     mavenCentral()
   }
   dependencies {
     classpath "org.raml.jaxrs:raml-to-jaxrs-gradle-plugin:3.0.4"
-     classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:4.1.0"
+    classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:4.1.0"
     classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.9"
+    classpath "gradle.plugin.de.fntsoftware.gradle:markdown-to-pdf:1.1.0"
   }
 }
 

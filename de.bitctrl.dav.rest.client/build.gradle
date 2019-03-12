@@ -1,7 +1,10 @@
 apply plugin: 'application'
 apply plugin: "com.github.spotbugs"
 apply plugin: 'checkstyle'
+apply plugin: "de.fntsoftware.gradle.markdown-to-pdf"
 
+
+compileJava.dependsOn 'readmeToPdf'    
    
 description = 'Dav3 REST Client'
 dependencies {
@@ -28,5 +31,12 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
     reports {
         xml.enabled = true
         html.enabled = false
+    }
+}
+
+distZip {
+    into(project.name+"-"+project.version) {
+        from 'build'
+        include 'README.pdf'
     }
 }
