@@ -102,7 +102,7 @@ public class FahrstreifenJsonConverterTest {
 	@Test
 	public void testFS7Dav2Json() {
 		final SystemObject fs = dataModel.getObject("test.fs.7");
-		
+			
 		FahrstreifenJsonConverter converter = new FahrstreifenJsonConverter();
 		FahrStreifen result = converter.dav2Json(fs).iterator().next();
 		
