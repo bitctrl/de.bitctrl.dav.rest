@@ -63,11 +63,11 @@ public class GmaUmfeldDatenJsonConverter implements DavJsonConverter<ResultData,
 	}
 
 	private static List<UmfelddatenFuerFahrstreifen> extractedUfdFahrstreifen(final Data data) {
-		Data.Array arraysFsUmfeldDaten = data.getArray("UmfelddatenFuerFahrstreifen");
-		List<UmfelddatenFuerFahrstreifen> result = new ArrayList<>();
+		final Data.Array arraysFsUmfeldDaten = data.getArray("UmfelddatenFuerFahrstreifen");
+		final List<UmfelddatenFuerFahrstreifen> result = new ArrayList<>();
 		for (int i = 0; i < arraysFsUmfeldDaten.getLength(); i++) {
-			Data dataItem = arraysFsUmfeldDaten.getItem(i);
-			UmfelddatenFuerFahrstreifen ufdFahrstreifen = new UmfelddatenFuerFahrstreifenImpl();
+			final Data dataItem = arraysFsUmfeldDaten.getItem(i);
+			final UmfelddatenFuerFahrstreifen ufdFahrstreifen = new UmfelddatenFuerFahrstreifenImpl();
 
 			final Data.NumberArray arrayFahrBahnOberFlaechenTemperatur = dataItem
 					.getScaledArray("FahrBahnOberFlächenTemperatur");
@@ -178,8 +178,8 @@ public class GmaUmfeldDatenJsonConverter implements DavJsonConverter<ResultData,
 	}
 
 	private static Atmosphaerendaten extractedAtmosphaerenDaten(Data data) {
-		Data dataAtmoshpaere = data.getItem("Atmosphärendaten");
-		Atmosphaerendaten atmosphaerenDaten = new AtmosphaerendatenImpl();
+		final Data dataAtmoshpaere = data.getItem("Atmosphärendaten");
+		final Atmosphaerendaten atmosphaerenDaten = new AtmosphaerendatenImpl();
 		final Data.NumberArray arrayLuftTemperatur = dataAtmoshpaere.getScaledArray("LuftTemperatur");
 		if (arrayLuftTemperatur.getLength() >= 1 && arrayLuftTemperatur.getValue(0).isNumber()) {
 			atmosphaerenDaten.setLuftTemperatur(arrayLuftTemperatur.getValue(0).doubleValue());

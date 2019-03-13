@@ -58,7 +58,7 @@ public class GlaetteMeldeAnlageJsonConverter implements DavJsonConverter<SystemO
 		}
 
 		final AttributeGroup atgGma = dataModel.getAttributeGroup("atg.gma");
-		Data configurationData = davObj.getConfigurationData(atgGma);
+		final Data configurationData = davObj.getConfigurationData(atgGma);
 		result.setDwdKennung(configurationData.getTextValue("DWDKennung").getText());
 		result.setHHe(configurationData.getScaledValue("Höhe").intValue());
 

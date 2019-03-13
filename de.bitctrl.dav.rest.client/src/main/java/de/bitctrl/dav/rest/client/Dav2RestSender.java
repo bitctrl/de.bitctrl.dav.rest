@@ -308,7 +308,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				LOGGER.error("MessQuerschnitte konnten nicht versendet werden.", ex);
 			}
 		}
-		
+
 		private void versendeGlaetteMeldeAnlagen(final List<SystemObjekt> liste) {
 			try {
 				final List<SystemObjekt> gmas = liste.stream().filter(o -> o instanceof Glaettemeldeanlage)
@@ -422,11 +422,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		}
 
 		private void versendeDatensaetze(Injector injector) {
-			if(!data2redirect.isEmpty()) {
+			if (!data2redirect.isEmpty()) {
 				LOGGER.info("Zyklisches Nachsenden von dynamischen Daten (OnlineDatum) gestartet - "
 						+ data2redirect.size() + " Datensätze.");
 			}
-			
+
 			while (!data2redirect.isEmpty()) {
 				final List<OnlineDatum> liste = new ArrayList<>();
 				try {
@@ -562,7 +562,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			}
 		}
 	}
-	
+
 	private void versendeGMAUmfelddaten(final List<OnlineDatum> liste) {
 		final List<OnlineDatum> umfelddaten = liste.stream().filter(o -> o instanceof GmaUmfelddaten)
 				.collect(Collectors.toList());
