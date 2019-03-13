@@ -51,6 +51,8 @@ import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittHelligkeitsMeldung;
 import de.bitctrl.dav.rest.api.model.FahrStreifen;
+import de.bitctrl.dav.rest.api.model.Glaettemeldeanlage;
+import de.bitctrl.dav.rest.api.model.GmaUmfelddaten;
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bitctrl.dav.rest.api.model.OnlineDatum;
 import de.bitctrl.dav.rest.api.model.SystemObjekt;
@@ -248,6 +250,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					versendeMessQuerschnitte(liste);
 					versendeAnzeigen(liste);
 					versendeAnzeigeQuerschnitte(liste);
+					versendeGlaetteMeldeAnlagen(liste);
 				} catch (final InterruptedException e) {
 					LOGGER.error("DAV Objekte konnten nicht versendet werden.", e);
 				}
@@ -305,6 +308,19 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				LOGGER.error("MessQuerschnitte konnten nicht versendet werden.", ex);
 			}
 		}
+		
+		private void versendeGlaetteMeldeAnlagen(final List<SystemObjekt> liste) {
+			try {
+				final List<SystemObjekt> gmas = liste.stream().filter(o -> o instanceof Glaettemeldeanlage)
+						.collect(Collectors.toList());
+				if (!gmas.isEmpty()) {
+					target.path("/systemobjekte/glaettemeldeanlage").request()
+							.post(Entity.entity(gmas, MediaType.APPLICATION_JSON));
+				}
+			} catch (final Exception ex) {
+				LOGGER.error("GMA's konnten nicht versendet werden.", ex);
+			}
+		}
 
 	}
 
@@ -337,6 +353,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					versendeAnzeigeEigenschaften(liste);
 					versendeAQAnzeigeEigenschaften(liste);
 					versendeAQHelligkeitsMeldungen(liste);
+					versendeGMAUmfelddaten(liste);
 				} catch (final Exception ex) {
 					LOGGER.error("OnlineDaten konnten nicht versendet werden und werden später Nachversandt.", ex);
 					data2redirect.addAll(liste);
@@ -418,6 +435,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					versendeAnzeigeEigenschaften(liste);
 					versendeAQAnzeigeEigenschaften(liste);
 					versendeAQHelligkeitsMeldungen(liste);
+					versendeGMAUmfelddaten(liste);
 				} catch (final Exception ex) {
 					LOGGER.error("OnlineDaten konnten nicht (nach)versendet werden.", ex);
 					data2redirect.addAll(liste);
@@ -541,6 +559,21 @@ public class Dav2RestSender implements ClientReceiverInterface {
 						"Der Versand von kurzzeit Verkehrsdaten ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
 						response);
 				data2redirect.addAll(verkehrsdatenKurzzeit);
+			}
+		}
+	}
+	
+	private void versendeGMAUmfelddaten(final List<OnlineDatum> liste) {
+		final List<OnlineDatum> umfelddaten = liste.stream().filter(o -> o instanceof GmaUmfelddaten)
+				.collect(Collectors.toList());
+		if (!umfelddaten.isEmpty()) {
+			final Response response = target.path("/onlinedaten/gmaumfelddaten").request()
+					.post(Entity.entity(umfelddaten, MediaType.APPLICATION_JSON));
+			if (response.getStatus() < 200 || response.getStatus() >= 300) {
+				LOGGER.error(
+						"Der Versand von GMA Umfelddaten ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+						response);
+				data2redirect.addAll(umfelddaten);
 			}
 		}
 	}

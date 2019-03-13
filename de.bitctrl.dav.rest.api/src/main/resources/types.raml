@@ -324,7 +324,7 @@ types:
            - trocken
            - feucht
            - nass
-           - gefrorenesWasser
+           - gefrorenes Wasser
            - Schnee/Schneematsch
            - Eis
            - Raureif
@@ -334,7 +334,10 @@ types:
          type: number
          maximum: 200
          minimum: 0
-       tauStoffKonzentration: number
+       tauStoffKonzentration:
+         description: |
+           Prozentualer Anteil des gelösten Taustoffs im Wasser auf der Fahrbahn (bzw. auf der Fahrbahnsensorik).
+         type: number
        fahrBahnGlätte:
          description: |
           Ergebnisse der Glättewarnung und Prognose.
@@ -349,14 +352,10 @@ types:
            - Glätte vorhanden
            - Eis oder Schnee auf der Fahrbahn
        zeitreserveEisglätte:
-         type: string
-         enum:
-           - Alarm Glatteis
-           - keine Eisglätte vorhersehbar
-           - Eisglätte nicht ermittelbar
+         description: |
+           Gibt die Zeit bis zu einer möglichen Eisglätte in Minuten an.
+         type: integer
        zeitreserveReifglätte:
-         type: string
-         enum:
-           - Alarm Glatteis
-           - keine Reifglätte vorhersehbar
-           - Reifglätte nicht ermittelbar
+         description: |
+           Gibt die Zeit bis zu einer möglichen Reifglätte in Minuten an.
+         type: integer

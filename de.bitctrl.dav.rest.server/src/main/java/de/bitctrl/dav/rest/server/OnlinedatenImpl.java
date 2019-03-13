@@ -29,6 +29,7 @@ import de.bitctrl.dav.rest.api.Onlinedaten;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnittHelligkeitsMeldung;
+import de.bitctrl.dav.rest.api.model.GmaUmfelddaten;
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
 
 /**
@@ -61,6 +62,12 @@ public class OnlinedatenImpl implements Onlinedaten {
 	public void postOnlinedatenAnzeigequerschnitthelligkeitsmeldung(
 			@Valid List<AnzeigeQuerschnittHelligkeitsMeldung> entity) {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeQuerschnittHelligkeitsMeldung: " + entity);
+		
+	}
+
+	@Override
+	public void postOnlinedatenGmaumfelddaten(List<GmaUmfelddaten> entity) {
+		logger.log(Level.INFO, "Empfange " + entity.size() + " GMAUmfelddaten: " + entity);
 		
 	}
 
