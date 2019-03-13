@@ -75,7 +75,7 @@ public class AnzeigeJsonConverterTest {
 		Assert.assertThat(result.getFahrstreifen(),
 				CoreMatchers.hasItems(FahrstreifenLage._1FS, FahrstreifenLage._2FS));
 	}
-	
+
 	@Test
 	public void testSymbol1Links() {
 		SystemObject anz = dataModel.getObject("anz.test.symbol.1.links");
@@ -85,8 +85,32 @@ public class AnzeigeJsonConverterTest {
 
 		Assert.assertEquals("anz.test.symbol.1.links", result.getId());
 		Assert.assertEquals("Anzeige Test Symbol 1 Links", result.getName());
+		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage._1FS));
+	}
+
+	@Test
+	public void testWzgARechts() {
+		SystemObject anz = dataModel.getObject("ant.test.wzg.a.rechts");
+
+		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		Anzeige result = converter.dav2Json(anz).iterator().next();
+
+		Assert.assertEquals("ant.test.wzg.a.rechts", result.getId());
+		Assert.assertEquals("Anzeige Test WZG-A Rechts", result.getName());
+		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage.HFS));
+	}
+
+	@Test
+	public void testSymbol2_3UFS4UFS5UFS6UFS() {
+		SystemObject anz = dataModel.getObject("anz.test.symbol.2.3ufs.4ufs.5ufs.6ufs");
+
+		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		Anzeige result = converter.dav2Json(anz).iterator().next();
+
+		Assert.assertEquals("anz.test.symbol.2.3ufs.4ufs.5ufs.6ufs", result.getId());
+		Assert.assertEquals("Anzeige Test Symbol 2 3UFS 4UFS 5UFS 6UFS", result.getName());
 		Assert.assertThat(result.getFahrstreifen(),
-				CoreMatchers.hasItems(FahrstreifenLage._1FS));
+				CoreMatchers.hasItems(FahrstreifenLage._3FS, FahrstreifenLage._4FS, FahrstreifenLage._5FS, FahrstreifenLage._6FS));
 	}
 
 }
