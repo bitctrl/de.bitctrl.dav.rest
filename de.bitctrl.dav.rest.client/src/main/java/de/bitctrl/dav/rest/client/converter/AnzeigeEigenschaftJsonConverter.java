@@ -22,9 +22,12 @@ package de.bitctrl.dav.rest.client.converter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -80,20 +83,18 @@ public class AnzeigeEigenschaftJsonConverter implements DavJsonConverter<ResultD
 			result.setWvzInhalt(extraktWvzInhalt(dataModel, data));
 			byte[] grafikSymbol = extraktWzgGrafikSymbol(dataModel, data);
 			if (grafikSymbol != null && grafikSymbol.length > 0) {
-				File tempfile = null;
-				try {
-					tempfile = File.createTempFile(result.getWvzInhalt(), ".bmp");
-					try (FileOutputStream fos = new FileOutputStream(tempfile)) {
-						fos.write(grafikSymbol);
-					}
-					result.setGrafik(tempfile);
-				} catch (IOException e) {
-					LOGGER.warning("Symbol für Anzeige " + object.getPid() + " konnte nicht in eine temporäre Datei ("
-							+ tempfile + ") gespeichert werden.", e);
-				}
+				result.setGrafik(convertToIntList(grafikSymbol));
 			}
 		}
 		return Arrays.asList(result);
+	}
+
+	public static List<Integer> convertToIntList(byte[] input) {
+		List<Integer> ret = new ArrayList<>();
+		for (int i = 0; i < input.length; i++) {
+			ret.add(input[i] & 0xff); // Range 0 to 255, not -128 to 127
+		}
+		return ret;
 	}
 
 	private String extraktWvzInhalt(DataModel dataModel, final Data data) {
