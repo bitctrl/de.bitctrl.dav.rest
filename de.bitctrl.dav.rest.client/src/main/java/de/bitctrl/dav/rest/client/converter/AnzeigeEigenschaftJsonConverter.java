@@ -19,19 +19,29 @@
  */
 package de.bitctrl.dav.rest.client.converter;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+
+import javax.inject.Inject;
 
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft.StatusType;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaftImpl;
 import de.bitctrl.dav.rest.client.annotations.DavJsonDatensatzConverter;
+import de.bsvrz.dav.daf.main.ClientDavInterface;
 import de.bsvrz.dav.daf.main.Data;
+import de.bsvrz.dav.daf.main.Data.ReferenceArray;
+import de.bsvrz.dav.daf.main.DataDescription;
 import de.bsvrz.dav.daf.main.ResultData;
+import de.bsvrz.dav.daf.main.config.Aspect;
 import de.bsvrz.dav.daf.main.config.AttributeGroup;
 import de.bsvrz.dav.daf.main.config.DataModel;
 import de.bsvrz.dav.daf.main.config.SystemObject;
+import de.bsvrz.sys.funclib.debug.Debug;
 
 /**
  * Konverter von {@link ResultData} in {@link AnzeigeEigenschaft}.
@@ -40,6 +50,11 @@ import de.bsvrz.dav.daf.main.config.SystemObject;
  */
 @DavJsonDatensatzConverter(davAttributGruppe = { "atg.anzeigeEigenschaftIst" })
 public class AnzeigeEigenschaftJsonConverter implements DavJsonConverter<ResultData, AnzeigeEigenschaft> {
+
+	@Inject
+	private ClientDavInterface dav;
+
+	private static final Debug LOGGER = Debug.getLogger();
 
 	@Override
 	public Collection<AnzeigeEigenschaft> dav2Json(ResultData resultData) {
@@ -62,15 +77,26 @@ public class AnzeigeEigenschaftJsonConverter implements DavJsonConverter<ResultD
 				final String text = extraktDynWechseltext(dataModel, data);
 				result.setText(text);
 			}
-
 			result.setWvzInhalt(extraktWvzInhalt(dataModel, data));
-
+			byte[] grafikSymbol = extraktWzgGrafikSymbol(dataModel, data);
+			if (grafikSymbol != null && grafikSymbol.length > 0) {
+				File tempfile = null;
+				try {
+					tempfile = File.createTempFile(result.getWvzInhalt(), ".bmp");
+					try (FileOutputStream fos = new FileOutputStream(tempfile)) {
+						fos.write(grafikSymbol);
+					}
+					result.setGrafik(tempfile);
+				} catch (IOException e) {
+					LOGGER.warning("Symbol für Anzeige " + object.getPid() + " konnte nicht in eine temporäre Datei ("
+							+ tempfile + ") gespeichert werden.", e);
+				}
+			}
 		}
-
 		return Arrays.asList(result);
 	}
 
-	private static String extraktWvzInhalt(DataModel dataModel, final Data data) {
+	private String extraktWvzInhalt(DataModel dataModel, final Data data) {
 		String bildinhalt = null;
 		final Data eigenschaftData = data.getItem("Eigenschaft");
 		final long idAnzeigeInhalt = eigenschaftData.getReferenceValue("AnzeigeInhalt").getId();
@@ -79,10 +105,48 @@ public class AnzeigeEigenschaftJsonConverter implements DavJsonConverter<ResultD
 			if (wvzInhalt != null) {
 				final Data wvzInhaltData = wvzInhalt.getConfigurationData(dataModel.getAttributeGroup("atg.wvzInhalt"));
 				bildinhalt = wvzInhaltData.getTextValue("Bildinhalt").getText();
-			}
+				ReferenceArray array = wvzInhaltData.getReferenceArray("GrafikDarstellungen");
+				if (array.getLength() > 0) {
+					SystemObject grafikdarstellung = array.getSystemObject(0);
+					if (grafikdarstellung.isOfType("typ.wzgInhaltGrafikSymbol")) {
+						AttributeGroup atg = dataModel.getAttributeGroup("atg.wzgInhaltGrafikSymbol");
+						Aspect asp = dataModel.getAspect("asp.parameterSoll");
+						ResultData resultData = dav.getData(grafikdarstellung, new DataDescription(atg, asp), 6000);
+						if (resultData.hasData()) {
+							Data wzgInhalteGrafikSymbolData = resultData.getData();
+							bildinhalt = wzgInhalteGrafikSymbolData.getTextValue("SymbolName").getText();
+						}
+					}
+				}
 
+			}
 		}
 		return bildinhalt;
+	}
+
+	private byte[] extraktWzgGrafikSymbol(DataModel dataModel, final Data data) {
+		final Data eigenschaftData = data.getItem("Eigenschaft");
+		final long idAnzeigeInhalt = eigenschaftData.getReferenceValue("AnzeigeInhalt").getId();
+		if (idAnzeigeInhalt != 0) {
+			final SystemObject wvzInhalt = dataModel.getObject(idAnzeigeInhalt);
+			if (wvzInhalt != null) {
+				final Data wvzInhaltData = wvzInhalt.getConfigurationData(dataModel.getAttributeGroup("atg.wvzInhalt"));
+				ReferenceArray array = wvzInhaltData.getReferenceArray("GrafikDarstellungen");
+				if (array.getLength() > 0) {
+					SystemObject grafikdarstellung = array.getSystemObject(0);
+					if (grafikdarstellung.isOfType("typ.wzgInhaltGrafikSymbol")) {
+						AttributeGroup atg = dataModel.getAttributeGroup("atg.wzgInhaltGrafikSymbol");
+						Aspect asp = dataModel.getAspect("asp.parameterSoll");
+						ResultData resultData = dav.getData(grafikdarstellung, new DataDescription(atg, asp), 6000);
+						if (resultData.hasData()) {
+							Data wzgInhalteGrafikSymbolData = resultData.getData();
+							return wzgInhalteGrafikSymbolData.getArray("SymbolBitmap").asUnscaledArray().getByteArray();
+						}
+					}
+				}
+			}
+		}
+		return new byte[0];
 	}
 
 	private static String extraktDynWechseltext(DataModel dataModel, final Data data) {

@@ -19,6 +19,7 @@
  */
 package de.bitctrl.dav.rest.client;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -544,6 +545,9 @@ public class Dav2RestSender implements ClientReceiverInterface {
 						"Der Versand von AnzeigeEigenschaften ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
 						response);
 				data2redirect.addAll(anzeigeEigenschaften);
+			} else {
+				anzeigeEigenschaften.stream().map(a -> (AnzeigeEigenschaft) a).filter(a -> a.getGrafik() != null)
+						.forEach(a -> a.getGrafik().delete());
 			}
 		}
 	}
