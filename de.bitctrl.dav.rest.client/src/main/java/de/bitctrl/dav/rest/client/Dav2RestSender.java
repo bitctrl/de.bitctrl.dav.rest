@@ -214,7 +214,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 			SystemObject sysObj = systemObjekte.take();
 
-			while (sysObj != null && i++ < 1000) {
+			while (i++ < 1000) {
 
 				final SystemObjectType sysObjType = sysObj.getType();
 				final List<Class<?>> konverterKlassen = annotatedWith.stream()
@@ -369,7 +369,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 			ResultData resultData = data2Store.take();
 
-			while (resultData != null && i++ < 1000) {
+			while (i++ < 1000) {
 
 				final AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
 				final List<Class<?>> converterKlassen = annotatedWith.stream()
