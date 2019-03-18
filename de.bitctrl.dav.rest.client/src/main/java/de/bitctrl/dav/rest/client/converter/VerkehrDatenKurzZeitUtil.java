@@ -77,10 +77,10 @@ public final class VerkehrDatenKurzZeitUtil {
 		} else {
 			vKfz.setWert(data.getScaledValue("Wert").intValue());
 		}
-		if(data.getItem("Güte").getUnscaledValue("Index").isState()) {
+		if (data.getItem("Güte").getUnscaledValue("Index").isState()) {
 			vKfz.setGuete(data.getItem("Güte").getUnscaledValue("Index").doubleValue());
-		}else {
-			vKfz.setGuete(data.getItem("Güte").getScaledValue("Index").doubleValue());	
+		} else {
+			vKfz.setGuete(data.getItem("Güte").getScaledValue("Index").doubleValue());
 		}
 		return vKfz;
 	}
@@ -92,12 +92,12 @@ public final class VerkehrDatenKurzZeitUtil {
 		} else {
 			qKfz.setWert(data.getScaledValue("Wert").intValue());
 		}
-		if(data.getItem("Güte").getUnscaledValue("Index").isState()) {
+		if (data.getItem("Güte").getUnscaledValue("Index").isState()) {
 			qKfz.setGuete(data.getItem("Güte").getUnscaledValue("Index").doubleValue());
-		}else {
-			qKfz.setGuete(data.getItem("Güte").getScaledValue("Index").doubleValue());	
+		} else {
+			qKfz.setGuete(data.getItem("Güte").getScaledValue("Index").doubleValue());
 		}
-		
+
 		return qKfz;
 	}
 
