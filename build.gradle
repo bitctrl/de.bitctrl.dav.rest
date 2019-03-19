@@ -14,6 +14,7 @@ buildscript {
   }
 }
 
+apply plugin: "de.fntsoftware.gradle.markdown-to-pdf"
 
 allprojects  {
 
@@ -27,6 +28,19 @@ allprojects  {
     group = 'de.bitctrl.dav.rest'
     version = '0.0.1-SNAPSHOT'
 }
+
+markdownToPdf{
+}
+
+
+task testSpezifikationToPdf(type: de.fntsoftware.gradle.MarkdownToPdfTask){
+	inputFile = 'Test-Spezifikation.md'
+	outputFile = 'build/Test-Spezifikation.pdf'
+}
+
+apply plugin: 'base'
+
+assemble.dependsOn+='testSpezifikationToPdf'
 
 subprojects {
    apply plugin: 'java'
