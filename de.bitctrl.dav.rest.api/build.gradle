@@ -21,5 +21,6 @@ dependencies {
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.8'
+    implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
     testImplementation 'junit:junit:4.12'
 }
