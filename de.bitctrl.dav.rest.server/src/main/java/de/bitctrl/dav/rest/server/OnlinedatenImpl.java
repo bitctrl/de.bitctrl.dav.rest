@@ -19,7 +19,12 @@
  */
 package de.bitctrl.dav.rest.server;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,9 +54,24 @@ public class OnlinedatenImpl implements Onlinedaten {
 
 	@Override
 	public void postOnlinedatenAnzeigeeigenschaft(@Valid List<AnzeigeEigenschaft> entity) {
-		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeEigenschaft: " + entity);	
-		
-		
+		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeEigenschaft: " + entity);
+
+		entity.stream().filter(a -> a.getGrafik() != null && !a.getGrafik().isEmpty()).forEach(new Consumer<AnzeigeEigenschaft>() {
+			@Override
+			public void accept(AnzeigeEigenschaft a) {
+				try {
+					File file = File.createTempFile(a.getSystemObjektId() + a.getWvzInhalt(), ".bmp");
+					try (FileOutputStream fos = new FileOutputStream(file)) {
+						fos.write(Base64.getDecoder().decode(a.getGrafik()));
+					}
+					logger.log(Level.INFO, "Datei " + file + " für Anzeige " + a.getSystemObjektId() + " angelegt.");
+				} catch (IOException e) {
+					logger.log(Level.SEVERE,
+							"Erzeugung des Bildes " + a.getSystemObjektId() + a.getWvzInhalt() + " ist fehlgeschlagen", e);
+				}
+			}
+		});
+
 	}
 
 	@Override
@@ -63,14 +83,13 @@ public class OnlinedatenImpl implements Onlinedaten {
 	public void postOnlinedatenAnzeigequerschnitthelligkeitsmeldung(
 			@Valid List<AnzeigeQuerschnittHelligkeitsMeldung> entity) {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " AnzeigeQuerschnittHelligkeitsMeldung: " + entity);
-		
+
 	}
 
 	@Override
 	public void postOnlinedatenGmaumfelddaten(List<GmaUmfelddaten> entity) {
 		logger.log(Level.INFO, "Empfange " + entity.size() + " GMAUmfelddaten: " + entity);
-		
-	}
 
+	}
 
 }
