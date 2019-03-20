@@ -18,7 +18,6 @@ dependencies {
     implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.application:3.9.2'
     implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:3.9.2'
     implementation 'org.reflections:reflections:0.9.11'
-    implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
     testImplementation 'junit:junit:4.12'
     testImplementation 'de.bsvrz.puk:de.bsvrz.puk.config:3.9.2'
 }
