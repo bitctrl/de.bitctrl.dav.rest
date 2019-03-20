@@ -1,4 +1,4 @@
-# Dav REST Client
+# ClientDataExchange Client
 
 Client-Implementierung der REST API für Datenverteiler (Dav3)
 
