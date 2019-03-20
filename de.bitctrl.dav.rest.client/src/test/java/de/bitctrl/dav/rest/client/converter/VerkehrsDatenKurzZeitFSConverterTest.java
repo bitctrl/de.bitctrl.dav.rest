@@ -45,6 +45,13 @@ import de.bsvrz.dav.daf.main.config.AttributeGroup;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.puk.config.configFile.datamodel.ConfigDataModel;
 
+/**
+ * Tests zur Konvertierung von Verkehrdaten der Attributgruppe
+ * "atg.verkehrsDatenKurzZeitFs" eines Fahrstreifens in das JSON Modell.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 @RunWith(Parameterized.class)
 public class VerkehrsDatenKurzZeitFSConverterTest {
 
@@ -128,7 +135,6 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 		Assert.assertEquals(guete, result.getQKfz().getGuete());
 		Assert.assertEquals(guete, result.getQLkw().getGuete());
 		Assert.assertEquals(guete, result.getQPkw().getGuete());
-
 	}
 
 }

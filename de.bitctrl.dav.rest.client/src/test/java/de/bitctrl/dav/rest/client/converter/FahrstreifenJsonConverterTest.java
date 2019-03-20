@@ -31,6 +31,13 @@ import de.bitctrl.dav.rest.api.model.FahrstreifenLage;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.puk.config.configFile.datamodel.ConfigDataModel;
 
+/**
+ * Tests zur Konvertierung der Fahrstreifen vom Datenverteiler Modell in das
+ * JSON Modell.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 public class FahrstreifenJsonConverterTest {
 
 	private static ConfigDataModel dataModel;

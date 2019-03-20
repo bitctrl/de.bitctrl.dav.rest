@@ -32,6 +32,13 @@ import de.bitctrl.dav.rest.api.model.FahrstreifenLage;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.puk.config.configFile.datamodel.ConfigDataModel;
 
+/**
+ * Tests für die Konvertierung der Anzeigen vom Datenverteiler Modell ins Json
+ * Modell.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 public class AnzeigeJsonConverterTest {
 	private static ConfigDataModel dataModel;
 
@@ -120,7 +127,7 @@ public class AnzeigeJsonConverterTest {
 	}
 
 	@Test
-	public void testSymbol2_3UFS4UFS5UFS6UFS() {
+	public void testSymbol23UFS4UFS5UFS6UFS() {
 		final SystemObject anz = dataModel.getObject("anz.test.symbol.2.3ufs.4ufs.5ufs.6ufs");
 
 		final AnzeigeJsonConverter converter = new AnzeigeJsonConverter();

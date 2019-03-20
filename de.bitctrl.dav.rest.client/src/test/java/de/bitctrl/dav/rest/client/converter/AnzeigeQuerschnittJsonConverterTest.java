@@ -33,6 +33,13 @@ import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.puk.config.configFile.datamodel.ConfigDataModel;
 
+/**
+ * Tests für die Konvertierung der Anzeigequerschnitte vom Datenverteiler Modell
+ * in das JSon Modell.
+ * 
+ * @author BitCtrl Systems GmbH, ChHoesel
+ *
+ */
 public class AnzeigeQuerschnittJsonConverterTest {
 
 	private static ConfigDataModel dataModel;
