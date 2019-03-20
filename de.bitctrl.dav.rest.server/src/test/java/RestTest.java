@@ -1,4 +1,24 @@
 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,7 +55,7 @@ import de.bitctrl.dav.rest.server.SystemobjekteImpl;
 
 /**
  * Tests der REST Schnittstelle des Servers.
- * 
+ *
  * @author BitCtrl Systems GmbH, ChHoesel
  *
  */
@@ -49,14 +69,14 @@ public class RestTest extends JerseyTest {
 	@Test
 	public void testMessquerschnitt() {
 
-		WebTarget target = target("/systemobjekte/messquerschnitt");
+		final WebTarget target = target("/systemobjekte/messquerschnitt");
 
-		MessQuerschnitt obj = new MessQuerschnittImpl();
+		final MessQuerschnitt obj = new MessQuerschnittImpl();
 		obj.setName("Mein Messquerschnitt");
 		obj.setId("my.mq");
 		obj.setBreite(1d);
 		obj.setLaenge(12d);
-		ArrayList<SystemObjekt> list = new ArrayList<>();
+		final ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
 		Response response = target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
@@ -64,7 +84,7 @@ public class RestTest extends JerseyTest {
 		response = target.request().get();
 		response.bufferEntity();
 		response.readEntity(String.class);
-		Collection<MessQuerschnitt> objecte = response.readEntity(new GenericType<List<MessQuerschnitt>>() {
+		final Collection<MessQuerschnitt> objecte = response.readEntity(new GenericType<List<MessQuerschnitt>>() {
 		});
 		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		Assert.assertTrue(objecte.contains(obj));
@@ -74,19 +94,19 @@ public class RestTest extends JerseyTest {
 	@Test
 	public void testAnzeige() {
 
-		WebTarget target = target("/systemobjekte/anzeige");
+		final WebTarget target = target("/systemobjekte/anzeige");
 
-		Anzeige obj = new AnzeigeImpl();
+		final Anzeige obj = new AnzeigeImpl();
 		obj.setName("Test Anzeige");
 		obj.setId("test.anzeige");
 
-		ArrayList<SystemObjekt> list = new ArrayList<>();
+		final ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
 		Response response = target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
 		response = target.request().get();
-		Collection<Anzeige> objecte = response.readEntity(new GenericType<List<Anzeige>>() {
+		final Collection<Anzeige> objecte = response.readEntity(new GenericType<List<Anzeige>>() {
 		});
 		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		Assert.assertTrue(objecte.contains(obj));
@@ -96,20 +116,20 @@ public class RestTest extends JerseyTest {
 	@Test
 	public void testAnzeigequerschnitt() {
 
-		WebTarget target = target("/systemobjekte/anzeigequerschnitt");
+		final WebTarget target = target("/systemobjekte/anzeigequerschnitt");
 
-		AnzeigeQuerschnitt obj = new AnzeigeQuerschnittImpl();
+		final AnzeigeQuerschnitt obj = new AnzeigeQuerschnittImpl();
 		obj.setName("Test AQ");
 		obj.setId("test.aq");
 		obj.setAnzeigen(Arrays.asList("test.anzeige"));
 
-		ArrayList<SystemObjekt> list = new ArrayList<>();
+		final ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
 		Response response = target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
 		response = target.request().get();
-		Collection<AnzeigeQuerschnitt> objecte = response.readEntity(new GenericType<List<AnzeigeQuerschnitt>>() {
+		final Collection<AnzeigeQuerschnitt> objecte = response.readEntity(new GenericType<List<AnzeigeQuerschnitt>>() {
 		});
 		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		Assert.assertTrue(objecte.contains(obj));
@@ -119,19 +139,19 @@ public class RestTest extends JerseyTest {
 	@Test
 	public void testFahrstreifen() {
 
-		WebTarget target = target("/systemobjekte/fahrstreifen");
+		final WebTarget target = target("/systemobjekte/fahrstreifen");
 
-		FahrStreifen obj = new FahrStreifenImpl();
+		final FahrStreifen obj = new FahrStreifenImpl();
 		obj.setName("Test Fahrstreifen");
 		obj.setId("test.fs");
 
-		ArrayList<SystemObjekt> list = new ArrayList<>();
+		final ArrayList<SystemObjekt> list = new ArrayList<>();
 		list.add(obj);
 		Response response = target.request().post(Entity.entity(list, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
 		response = target.request().get();
-		Collection<FahrStreifen> objecte = response.readEntity(new GenericType<List<FahrStreifen>>() {
+		final Collection<FahrStreifen> objecte = response.readEntity(new GenericType<List<FahrStreifen>>() {
 		});
 
 		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -140,23 +160,25 @@ public class RestTest extends JerseyTest {
 
 	@Test
 	public void testSendeVerkehrsDatenKurzZeit() {
-		WebTarget target = target("/onlinedaten/verkehrsdatenkurzzeit");
+		final WebTarget target = target("/onlinedaten/verkehrsdatenkurzzeit");
 
-		VerkehrsdatenKurzzeit daten = new VerkehrsdatenKurzzeitImpl();
+		final VerkehrsdatenKurzzeit daten = new VerkehrsdatenKurzzeitImpl();
 
-		Response response = target.request().post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+		final Response response = target.request()
+				.post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
 
 		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
 	}
-	
+
 	@Test
 	public void testSendeAnzeigeEigenschaft() {
-		WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
+		final WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
 
-		AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
+		final AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
 
-		Response response = target.request().post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+		final Response response = target.request()
+				.post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
 
 		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 

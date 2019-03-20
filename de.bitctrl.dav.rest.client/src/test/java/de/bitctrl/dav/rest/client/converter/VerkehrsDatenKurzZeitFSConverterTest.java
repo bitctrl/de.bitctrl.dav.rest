@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 package de.bitctrl.dav.rest.client.converter;
 
 import java.io.File;
@@ -46,14 +65,14 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 	public static Collection<Object[]> data() {
 
 		return Arrays.asList(new Object[][] {
-				//anahl Fz, geschwindigkeit, güte, datum, belegung
-				{ -3, -3,0.2d, LocalDateTime.of(2019, 1, 1, 0, 0), 0 },
-				{ -2, -2,0.999d, LocalDateTime.of(2019,12, 31, 23, 59), 1 },
-				{ -2, -2,0.0,LocalDateTime.of(2019, 3, 31, 2, 0), 99 },
-				{ -1, -1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 }, 
-				{ 0, 0, 0.5d,LocalDateTime.of(2019, 9, 27, 12, 0), 1 },
-				{ 100, 254, 0.5d,LocalDateTime.of(2019, 3, 14, 12, 0), 55 }
-				
+				// anahl Fz, geschwindigkeit, güte, datum, belegung
+				{ -3, -3, 0.2d, LocalDateTime.of(2019, 1, 1, 0, 0), 0 },
+				{ -2, -2, 0.999d, LocalDateTime.of(2019, 12, 31, 23, 59), 1 },
+				{ -2, -2, 0.0, LocalDateTime.of(2019, 3, 31, 2, 0), 99 },
+				{ -1, -1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 },
+				{ 0, 0, 0.5d, LocalDateTime.of(2019, 9, 27, 12, 0), 1 },
+				{ 100, 254, 0.5d, LocalDateTime.of(2019, 3, 14, 12, 0), 55 }
+
 		});
 
 	}
@@ -63,10 +82,10 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 
 	@Parameter(1)
 	public int geschwindigkeit;
-	
+
 	@Parameter(2)
 	public double guete;
-	
+
 	@Parameter(3)
 	public LocalDateTime time;
 
@@ -76,10 +95,10 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 	@Test
 	public void test() {
 		final SystemObject fs = dataModel.getObject("test.fs1");
-		AttributeGroup atg = dataModel.getAttributeGroup("atg.verkehrsDatenKurzZeitFs");
-		Aspect asp = dataModel.getAspect("asp.externeErfassung");
+		final AttributeGroup atg = dataModel.getAttributeGroup("atg.verkehrsDatenKurzZeitFs");
+		final Aspect asp = dataModel.getAspect("asp.externeErfassung");
 
-		Data data = AttributeBaseValueDataFactory.createAdapter(atg, AttributeHelper.getAttributesValues(atg));
+		final Data data = AttributeBaseValueDataFactory.createAdapter(atg, AttributeHelper.getAttributesValues(atg));
 		data.getItem("qKfz").getUnscaledValue("Wert").set(anzahl);
 		data.getItem("qKfz").getItem("Güte").getScaledValue("Index").set(guete);
 		data.getItem("vKfz").getUnscaledValue("Wert").set(geschwindigkeit);
@@ -92,13 +111,13 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 		data.getItem("qPkw").getItem("Güte").getScaledValue("Index").set(guete);
 		data.getItem("vPkw").getUnscaledValue("Wert").set(geschwindigkeit);
 		data.getItem("vPkw").getItem("Güte").getScaledValue("Index").set(guete);
-		data.getItem("b").getScaledValue("Wert").set(belegung/1000d);
+		data.getItem("b").getScaledValue("Wert").set(belegung / 1000d);
 
-		ResultData rd = new ResultData(fs, new DataDescription(atg, asp),
+		final ResultData rd = new ResultData(fs, new DataDescription(atg, asp),
 				time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), data);
 
-		VerkehrsDatenKurzZeitFSConverter converter = new VerkehrsDatenKurzZeitFSConverter();
-		VerkehrsdatenKurzzeit result = converter.dav2Json(rd).iterator().next();
+		final VerkehrsDatenKurzZeitFSConverter converter = new VerkehrsDatenKurzZeitFSConverter();
+		final VerkehrsdatenKurzzeit result = converter.dav2Json(rd).iterator().next();
 
 		Assert.assertEquals(anzahl, result.getQKfz().getWert());
 		Assert.assertEquals(anzahl, result.getQLkw().getWert());
@@ -109,7 +128,7 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 		Assert.assertEquals(guete, result.getQKfz().getGuete());
 		Assert.assertEquals(guete, result.getQLkw().getGuete());
 		Assert.assertEquals(guete, result.getQPkw().getGuete());
-		
+
 	}
 
 }

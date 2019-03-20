@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 package de.bitctrl.dav.rest.client.converter;
 
 import java.io.File;
@@ -29,10 +48,10 @@ public class AnzeigeJsonConverterTest {
 
 	@Test
 	public void testFreitextAnzeige() {
-		SystemObject anz = dataModel.getObject("anz.test.freitext.224x24");
+		final SystemObject anz = dataModel.getObject("anz.test.freitext.224x24");
 
-		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
-		Anzeige result = converter.dav2Json(anz).iterator().next();
+		final AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		final Anzeige result = converter.dav2Json(anz).iterator().next();
 
 		Assert.assertEquals("anz.test.freitext.224x24", result.getId());
 		Assert.assertEquals("Anzeige Test Freitext 224x24", result.getName());
@@ -41,10 +60,10 @@ public class AnzeigeJsonConverterTest {
 
 	@Test
 	public void testWzgAHfs() {
-		SystemObject anz = dataModel.getObject("anz.test.wzg.a.hfs");
+		final SystemObject anz = dataModel.getObject("anz.test.wzg.a.hfs");
 
-		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
-		Anzeige result = converter.dav2Json(anz).iterator().next();
+		final AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		final Anzeige result = converter.dav2Json(anz).iterator().next();
 
 		Assert.assertEquals("anz.test.wzg.a.hfs", result.getId());
 		Assert.assertEquals("Anzeige Test WZG-A HFS", result.getName());
@@ -53,10 +72,10 @@ public class AnzeigeJsonConverterTest {
 
 	@Test
 	public void testWzgBHfs1Ufs() {
-		SystemObject anz = dataModel.getObject("anz.test.wzg.b.hfs1ufs");
+		final SystemObject anz = dataModel.getObject("anz.test.wzg.b.hfs1ufs");
 
-		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
-		Anzeige result = converter.dav2Json(anz).iterator().next();
+		final AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		final Anzeige result = converter.dav2Json(anz).iterator().next();
 
 		Assert.assertEquals("anz.test.wzg.b.hfs1ufs", result.getId());
 		Assert.assertEquals("Anzeige Test WZG-B HFS 1UFS", result.getName());
@@ -65,10 +84,10 @@ public class AnzeigeJsonConverterTest {
 
 	@Test
 	public void testWzgC1Ufs2Ufs() {
-		SystemObject anz = dataModel.getObject("anz.test.wzg.c.1ufs2ufs");
+		final SystemObject anz = dataModel.getObject("anz.test.wzg.c.1ufs2ufs");
 
-		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
-		Anzeige result = converter.dav2Json(anz).iterator().next();
+		final AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		final Anzeige result = converter.dav2Json(anz).iterator().next();
 
 		Assert.assertEquals("anz.test.wzg.c.1ufs2ufs", result.getId());
 		Assert.assertEquals("Anzeige Test WZG-C 1UFS2UFS", result.getName());
@@ -78,10 +97,10 @@ public class AnzeigeJsonConverterTest {
 
 	@Test
 	public void testSymbol1Links() {
-		SystemObject anz = dataModel.getObject("anz.test.symbol.1.links");
+		final SystemObject anz = dataModel.getObject("anz.test.symbol.1.links");
 
-		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
-		Anzeige result = converter.dav2Json(anz).iterator().next();
+		final AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		final Anzeige result = converter.dav2Json(anz).iterator().next();
 
 		Assert.assertEquals("anz.test.symbol.1.links", result.getId());
 		Assert.assertEquals("Anzeige Test Symbol 1 Links", result.getName());
@@ -90,10 +109,10 @@ public class AnzeigeJsonConverterTest {
 
 	@Test
 	public void testWzgARechts() {
-		SystemObject anz = dataModel.getObject("ant.test.wzg.a.rechts");
+		final SystemObject anz = dataModel.getObject("ant.test.wzg.a.rechts");
 
-		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
-		Anzeige result = converter.dav2Json(anz).iterator().next();
+		final AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		final Anzeige result = converter.dav2Json(anz).iterator().next();
 
 		Assert.assertEquals("ant.test.wzg.a.rechts", result.getId());
 		Assert.assertEquals("Anzeige Test WZG-A Rechts", result.getName());
@@ -102,15 +121,15 @@ public class AnzeigeJsonConverterTest {
 
 	@Test
 	public void testSymbol2_3UFS4UFS5UFS6UFS() {
-		SystemObject anz = dataModel.getObject("anz.test.symbol.2.3ufs.4ufs.5ufs.6ufs");
+		final SystemObject anz = dataModel.getObject("anz.test.symbol.2.3ufs.4ufs.5ufs.6ufs");
 
-		AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
-		Anzeige result = converter.dav2Json(anz).iterator().next();
+		final AnzeigeJsonConverter converter = new AnzeigeJsonConverter();
+		final Anzeige result = converter.dav2Json(anz).iterator().next();
 
 		Assert.assertEquals("anz.test.symbol.2.3ufs.4ufs.5ufs.6ufs", result.getId());
 		Assert.assertEquals("Anzeige Test Symbol 2 3UFS 4UFS 5UFS 6UFS", result.getName());
-		Assert.assertThat(result.getFahrstreifen(),
-				CoreMatchers.hasItems(FahrstreifenLage._3FS, FahrstreifenLage._4FS, FahrstreifenLage._5FS, FahrstreifenLage._6FS));
+		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage._3FS, FahrstreifenLage._4FS,
+				FahrstreifenLage._5FS, FahrstreifenLage._6FS));
 	}
 
 }
