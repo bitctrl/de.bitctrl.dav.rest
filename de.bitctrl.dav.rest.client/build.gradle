@@ -4,7 +4,8 @@ apply plugin: 'checkstyle'
 apply plugin: "de.fntsoftware.gradle.markdown-to-pdf"
 
 
-compileJava.dependsOn 'readmeToPdf'    
+
+assemble.dependsOn+='betriebshandbuchToPdf'    
    
 description = 'Dav3 REST Client'
 dependencies {
@@ -38,6 +39,6 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
 distZip {
     into(project.name+"-"+project.version) {
         from 'build'
-        include 'README.pdf'
+        include 'Betriebshandbuch.pdf'
     }
 }

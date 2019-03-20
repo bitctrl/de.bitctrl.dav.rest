@@ -2,16 +2,16 @@
 
 Client-Implementierung der REST API für Datenverteiler (Dav3)
 
-# Kurzbeschreibung der Funktionalität
+## Kurzbeschreibung der Funktionalität
 
 Die Software realisiert den Client einer REST API
  
  
-# Betriebsinformationen
+## Betriebsinformationen
 
-## Installation der Software
+### Installation der Software
 
-### Voraussetzungen
+#### Voraussetzungen
 
 Es muss eine Java Runtime Umgebung (JRE) ab Version 8.0 oder höher installiert und über den
 Suchpfad auffindbar sein [jre].
@@ -35,7 +35,7 @@ Unter Windows muss der Pfad im Dialog "Systemsteuerung/System/Erweitert/Umgebung
 angepasst werden. Der Wert der Variablen **PFAD** muss um den Text `;/pfad_zu_java/bin` ergänzt
 werden.
 
-### Erstinstalltion
+#### Erstinstalltion
 
 Der Inhalt der ZIP-Archive der SWE muss in das Verzeichnis `$PROJEKT_HOME/lib` kopiert werden.
 Unter Linux-Systemen werden die ZIP-Archive mit
@@ -55,7 +55,7 @@ Unter Windows kann ab Windows XP der Windows-Explorer sowohl für das Entpacken,
 das Kopieren verwendet werden. Für ältere Windows-Systeme muss ein zusätzliches Tool zum Entpacken
 des ZIP-Archivs verwendet werden (z.B. das kostenlose  [7-Zip](http://7-zip.org)).
 
-### Deinstallation der Software
+#### Deinstallation der Software
 
 Für die Deinstallation sollte die SWE gestoppt werden.
 
@@ -64,27 +64,27 @@ der Software" installiert bzw. kopiert wurden, gelöscht.
 
 Gleiches gilt für Dateien und Verzeichnisse, die bei der Installation angelegt bzw. kopiert wurden.
 
-### Aktualisierung der Software
+#### Aktualisierung der Software
 
 Für die Aktualisierung muss die SWE gestoppt werden.
 
 Die Aktualisierung entspricht der Deinstallation und anschließender Erstinstallation der SWE.
 
-## Einrichtung der Software
+### Einrichtung der Software
 
-### Konfiguration
+#### Konfiguration
 Folgende Konfigurationsbereiche müssen im Datenverteiler, mit dem sich die SWE verbindet vorhanden sein:
 * ''kb.systemModellGlobal'' aus dem KV ''kv.kappich'', mind. in Version 38
 
-### Parametrierung
+#### Parametrierung
 Die SWE benötigt zum Betrieb folgende Parameter:
 * ''atg.archiv'' an einem Objekt vom Typ ''typ.archiv''
 
 Über die Parametrierung der ''atg.archiv'' wird festgelegt, auf welche Datenidentifikationen sich die SWE anmeldet. Die Empfangenen Daten werden dann transformiert und via REST API an einen REST Server versandt (vgl. [Archivparameterierung](https://gitlab.nerz-ev.de/ERZ/SPEZ_de.bsvrz.ars/blob/master/06-BetrInf/BetrInf_ArS_FREI_V15.0_D2018-02-14.pdf)).  
 
-## Aufnahme des Betriebs
+### Aufnahme des Betriebs
 
-### Startparameter
+#### Startparameter
 Die SWE verwendet die Datenverteiler - Applikationsfunktionen zur Kommunikation mit dem Datenverteiler und unterstützt bzw. benötigt daher auch die entsprechenden Aufrugparameter (siehe [Betriebsinformationen DaV](https://gitlab.nerz-ev.de/ERZ/SPEZ_de.bsvrz.kernsoftware/blob/master/06-BetrInf/BetrInf_DaV-DAF_FREI_V6.0_D2018-10-30.pdf)).
 
 * `-objekt=<pid>` : Die PID des Applikationsobjektes (vom Typ `typ.archiv`)
