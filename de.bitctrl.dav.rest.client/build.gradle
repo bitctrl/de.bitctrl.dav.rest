@@ -10,9 +10,9 @@ assemble.dependsOn+='betriebshandbuchToPdf'
 description = 'Dav3 REST Client'
 dependencies {
     implementation project(':de.bitctrl.dav.rest.api')
-    implementation 'org.glassfish.jersey.core:jersey-client:2.27'
-    implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.27'
-    implementation 'org.glassfish.jersey.inject:jersey-hk2:2.27'
+    implementation 'org.glassfish.jersey.core:jersey-client:2.28'
+    implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.28'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:2.28'
     implementation 'com.google.inject:guice:4.2.2'
     implementation 'de.bsvrz.dav:de.bsvrz.dav.daf:3.9.2'
     implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.application:3.9.2'
