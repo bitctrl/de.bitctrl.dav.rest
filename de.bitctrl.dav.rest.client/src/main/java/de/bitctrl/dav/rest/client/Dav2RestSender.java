@@ -454,21 +454,29 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 		subscribeDavData();
 
-		final LocalDateTime now = LocalDateTime.now();
-		LocalDateTime twoOclock = now.withHour(2).withMinute(0).withSecond(0);
-
-		long until = now.until(twoOclock, ChronoUnit.MINUTES);
-		while (until < 0) {
-			twoOclock = twoOclock.plusDays(1);
-			until = now.until(twoOclock, ChronoUnit.MINUTES);
-		}
-
-		// täglich ca. um 2 werden die statischen Daten (SystemObjekte) neu übertragen.
+		//TODO: übergangsweise senden wir die symstemobjekte einmal stündlich
+//		final LocalDateTime now = LocalDateTime.now();
+//		LocalDateTime twoOclock = now.withHour(2).withMinute(0).withSecond(0);
+//
+//		long until = now.until(twoOclock, ChronoUnit.MINUTES);
+//		while (until < 0) {
+//			twoOclock = twoOclock.plusDays(1);
+//			until = now.until(twoOclock, ChronoUnit.MINUTES);
+//		}
+//
+//		// täglich ca. um 2 werden die statischen Daten (SystemObjekte) neu übertragen.
+//		final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+//		scheduledExecutor.scheduleAtFixedRate(() -> {
+//			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet.");
+//			executor.execute(new RestSystemObjektSender(objects2Store));
+//		}, until, 1440, TimeUnit.MINUTES);
+		
 		final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutor.scheduleAtFixedRate(() -> {
 			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet.");
 			executor.execute(new RestSystemObjektSender(objects2Store));
-		}, until, 1440, TimeUnit.MINUTES);
+		}, 1, 1, TimeUnit.HOURS);
+		
 
 		scheduledExecutor.scheduleAtFixedRate(new RestOnlineDatenNachSender(), 1, 1, TimeUnit.MINUTES);
 
