@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -46,7 +45,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import de.bitctrl.dav.rest.api.Onlinedaten;
 import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
@@ -118,46 +116,6 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		this.target = target;
 		this.archivObjekt = archivObjekt;
 		this.connection = connection;
-	}
-
-	/**
-	 * Callback, der für den ansynchronen Versand von {@link Onlinedaten} verwendet
-	 * wird.
-	 *
-	 * @author BitCtrl Systems GmbH, ChHoesel
-	 *
-	 */
-	private final class OnlineDatenInvocationCallback implements InvocationCallback<Response> {
-		private final LocalDateTime start;
-		private final List<OnlineDatum> daten;
-		private Class<? extends OnlineDatum> type;
-
-		private OnlineDatenInvocationCallback(LocalDateTime start, List<OnlineDatum> onlinedaten) {
-			this.start = start;
-			this.daten = onlinedaten;
-			if (daten != null && !daten.isEmpty()) {
-				type = daten.iterator().next().getClass();
-			}
-		}
-
-		@Override
-		public void completed(Response response) {
-			if (response.getStatus() < 200 || response.getStatus() >= 300) {
-				LOGGER.error("Der Versand von " + type.getName()
-						+ " ist fehlgeschlagen und wird per Nachversand erneut versucht. ", response);
-				data2redirect.addAll(daten);
-			} else {
-				LOGGER.fine("Versenden von " + daten.size() + " " + type.getName() + " Datensätzen dauerte "
-						+ Duration.between(start, LocalDateTime.now()));
-			}
-
-		}
-
-		@Override
-		public void failed(Throwable throwable) {
-			LOGGER.error(type.getName() + " konnten nicht (nach)versendet werden.", throwable);
-			data2redirect.addAll(daten);
-		}
 	}
 
 	/**
@@ -412,7 +370,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 			ResultData resultData = data2Store.take();
 
-			while (i++ < 1000) {
+			while (i++ < 10000) {
 
 				final AttributeGroup atg = resultData.getDataDescription().getAttributeGroup();
 				final List<Class<?>> converterKlassen = annotatedWith.stream()
@@ -558,9 +516,24 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				.filter(o -> o instanceof AnzeigeQuerschnittHelligkeitsMeldung).collect(Collectors.toList());
 		if (!aqHelligkeitsMeldungen.isEmpty()) {
 			final LocalDateTime start = LocalDateTime.now();
-			target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request().async().post(
-					Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON),
-					new OnlineDatenInvocationCallback(start, aqHelligkeitsMeldungen));
+			try {
+				final Response response = target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request()
+						.post(Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON));
+				if (response.getStatus() < 200 || response.getStatus() >= 300) {
+					LOGGER.error(
+							"Der Versand von AQHelligkeitsMeldungen ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+							response);
+					data2redirect.addAll(aqHelligkeitsMeldungen);
+				} else {
+					LOGGER.fine("Versenden von " + aqHelligkeitsMeldungen.size()
+							+ " AQHelligkeitsMeldungen Datensätzen dauerte "
+							+ Duration.between(start, LocalDateTime.now()));
+				}
+			} catch (final Exception e) {
+				LOGGER.error("Fehler beim Versand von AQHelligkeitsMeldungen es wird per Nachversand erneut versucht. ",
+						e);
+				data2redirect.addAll(aqHelligkeitsMeldungen);
+			}
 
 		}
 	}
@@ -570,9 +543,24 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				.filter(o -> o instanceof AnzeigeQuerschnittEigenschaft).collect(Collectors.toList());
 		if (!anzeigeQuerschnittEigenschaften.isEmpty()) {
 			final LocalDateTime start = LocalDateTime.now();
-			target.path("/onlinedaten/anzeigequerschnitteigenschaft").request().async().post(
-					Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON),
-					new OnlineDatenInvocationCallback(start, anzeigeQuerschnittEigenschaften));
+			try {
+				final Response response = target.path("/onlinedaten/anzeigequerschnitteigenschaft").request()
+						.post(Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON));
+				if (response.getStatus() < 200 || response.getStatus() >= 300) {
+					LOGGER.error(
+							"Der Versand von AQAnzeigeEigenschaften ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+							response);
+					data2redirect.addAll(anzeigeQuerschnittEigenschaften);
+				} else {
+					LOGGER.fine("Versenden von " + anzeigeQuerschnittEigenschaften.size()
+							+ " AQAnzeigeEigenschaften Datensätzen dauerte "
+							+ Duration.between(start, LocalDateTime.now()));
+				}
+			} catch (final Exception e) {
+				LOGGER.error("Fehler beim Versand von AQAnzeigeEigenschaften es wird per Nachversand erneut versucht. ",
+						e);
+				data2redirect.addAll(anzeigeQuerschnittEigenschaften);
+			}
 
 		}
 	}
@@ -582,9 +570,24 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				.collect(Collectors.toList());
 		if (!anzeigeEigenschaften.isEmpty()) {
 			final LocalDateTime start = LocalDateTime.now();
-			target.path("/onlinedaten/anzeigeeigenschaft").request().async().post(
-					Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON),
-					new OnlineDatenInvocationCallback(start, anzeigeEigenschaften));
+			try {
+				final Response response = target.path("/onlinedaten/anzeigeeigenschaft").request()
+						.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
+				if (response.getStatus() < 200 || response.getStatus() >= 300) {
+					LOGGER.error(
+							"Der Versand von AnzeigeEigenschaften ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+							response);
+					data2redirect.addAll(anzeigeEigenschaften);
+				} else {
+					LOGGER.fine("Versenden von " + anzeigeEigenschaften.size()
+							+ " AnzeigeEigenschaften Datensätzen dauerte "
+							+ Duration.between(start, LocalDateTime.now()));
+				}
+			} catch (final Exception e) {
+				LOGGER.error("Fehler beim Versand von AnzeigeEigenschaften es wird per Nachversand erneut versucht. ",
+						e);
+				data2redirect.addAll(anzeigeEigenschaften);
+			}
 
 		}
 	}
@@ -594,9 +597,24 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				.collect(Collectors.toList());
 		if (!verkehrsdatenKurzzeit.isEmpty()) {
 			final LocalDateTime start = LocalDateTime.now();
-			target.path("/onlinedaten/verkehrsdatenkurzzeit").request().async().post(
-					Entity.entity(verkehrsdatenKurzzeit, MediaType.APPLICATION_JSON),
-					new OnlineDatenInvocationCallback(start, verkehrsdatenKurzzeit));
+			try {
+				final Response response = target.path("/onlinedaten/verkehrsdatenkurzzeit").request()
+						.post(Entity.entity(verkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
+				if (response.getStatus() < 200 || response.getStatus() >= 300) {
+					LOGGER.error(
+							"Der Versand von MQVerkehrsDatenKurzzeit ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+							response);
+					data2redirect.addAll(verkehrsdatenKurzzeit);
+				} else {
+					LOGGER.fine("Versenden von " + verkehrsdatenKurzzeit.size()
+							+ " MQVerkehrsDatenKurzzeit Datensätzen dauerte "
+							+ Duration.between(start, LocalDateTime.now()));
+				}
+			} catch (final Exception e) {
+				LOGGER.error(
+						"Fehler beim Versand von MQVerkehrsDatenKurzzeit es wird per Nachversand erneut versucht. ", e);
+				data2redirect.addAll(verkehrsdatenKurzzeit);
+			}
 		}
 	}
 
@@ -605,9 +623,22 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				.collect(Collectors.toList());
 		if (!umfelddaten.isEmpty()) {
 			final LocalDateTime start = LocalDateTime.now();
-			target.path("/onlinedaten/gmaumfelddaten").request().async().post(
-					Entity.entity(umfelddaten, MediaType.APPLICATION_JSON),
-					new OnlineDatenInvocationCallback(start, umfelddaten));
+			try {
+				final Response response = target.path("/onlinedaten/gmaumfelddaten").request()
+						.post(Entity.entity(umfelddaten, MediaType.APPLICATION_JSON));
+				if (response.getStatus() < 200 || response.getStatus() >= 300) {
+					LOGGER.error(
+							"Der Versand von GMAUmfelddaten ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
+							response);
+					data2redirect.addAll(umfelddaten);
+				} else {
+					LOGGER.fine("Versenden von " + umfelddaten.size() + " GMAUmfelddaten Datensätzen dauerte "
+							+ Duration.between(start, LocalDateTime.now()));
+				}
+			} catch (final Exception e) {
+				LOGGER.error("Fehler beim Versand von GMAUmfelddaten es wird per Nachversand erneut versucht. ", e);
+				data2redirect.addAll(umfelddaten);
+			}
 
 		}
 	}

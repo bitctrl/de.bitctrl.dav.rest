@@ -84,8 +84,7 @@ public class Client implements StandardApplication, DavConnectionListener {
 
 		final ClientConfig config = new ClientConfig();
 		config.register(JacksonFeature.class);
-		config.property(ClientProperties.ASYNC_THREADPOOL_SIZE, 200);
-//		config.property(ClientProperties.READ_TIMEOUT, 10000);
+		config.property(ClientProperties.READ_TIMEOUT, 60000);
 
 //		ClientBuilder.newBuilder().sslContext(ctx);
 		client = ClientBuilder.newClient(config);
