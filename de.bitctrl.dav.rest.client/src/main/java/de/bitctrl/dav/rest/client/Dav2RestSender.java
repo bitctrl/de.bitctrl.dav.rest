@@ -19,6 +19,9 @@
  */
 package de.bitctrl.dav.rest.client;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -426,6 +429,29 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			if (!data2redirect.isEmpty()) {
 				LOGGER.info("Zyklisches Nachsenden von dynamischen Daten (OnlineDatum) gestartet - "
 						+ data2redirect.size() + " Datensätze.");
+
+				try {
+					final MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+					final MemoryUsage heapMemoryUsage = memoryMXBean.getHeapMemoryUsage();
+					final long max = heapMemoryUsage.getMax();
+					final long used = heapMemoryUsage.getUsed();
+					final double anteil = used / (max / 100d);
+
+					// Wenn der Heap zu 90% belegt ist, werfen wir 10% Prozent der noch zu
+					// versendenden Objekte aus der Warteschlange weg.
+					if (anteil > 90) {
+						final int anzahl = data2redirect.size() / 10;
+						LOGGER.warning("Der Heap ist zu mehr als 90% belegt, es werden " + anzahl
+								+ " Elemente aus der Warteschlange entfernt.");
+						for (int i = 0; i < anzahl; i++) {
+							data2redirect.poll();
+						}
+					}
+
+				} catch (final Exception e) {
+					LOGGER.error("Ermittlung des freien Heaps und das Verkürzen der Warteschlage ist fehlgeschlagen.",
+							e);
+				}
 			}
 
 			while (!data2redirect.isEmpty()) {
