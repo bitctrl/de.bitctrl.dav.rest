@@ -19,8 +19,8 @@
  */
 package de.bitctrl.dav.rest.client;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -45,6 +46,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import de.bitctrl.dav.rest.api.Onlinedaten;
 import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeEigenschaft;
 import de.bitctrl.dav.rest.api.model.AnzeigeQuerschnitt;
@@ -116,6 +118,46 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		this.target = target;
 		this.archivObjekt = archivObjekt;
 		this.connection = connection;
+	}
+
+	/**
+	 * Callback, der für den ansynchronen Versand von {@link Onlinedaten} verwendet
+	 * wird.
+	 *
+	 * @author BitCtrl Systems GmbH, ChHoesel
+	 *
+	 */
+	private final class OnlineDatenInvocationCallback implements InvocationCallback<Response> {
+		private final LocalDateTime start;
+		private final List<OnlineDatum> daten;
+		private Class<? extends OnlineDatum> type;
+
+		private OnlineDatenInvocationCallback(LocalDateTime start, List<OnlineDatum> onlinedaten) {
+			this.start = start;
+			this.daten = onlinedaten;
+			if (daten != null && !daten.isEmpty()) {
+				type = daten.iterator().next().getClass();
+			}
+		}
+
+		@Override
+		public void completed(Response response) {
+			if (response.getStatus() < 200 || response.getStatus() >= 300) {
+				LOGGER.error("Der Versand von " + type.getName()
+						+ " ist fehlgeschlagen und wird per Nachversand erneut versucht. ", response);
+				data2redirect.addAll(daten);
+			} else {
+				LOGGER.fine("Versenden von " + daten.size() + " " + type.getName() + " Datensätzen dauerte "
+						+ Duration.between(start, LocalDateTime.now()));
+			}
+
+		}
+
+		@Override
+		public void failed(Throwable throwable) {
+			LOGGER.error(type.getName() + " konnten nicht (nach)versendet werden.", throwable);
+			data2redirect.addAll(daten);
+		}
 	}
 
 	/**
@@ -355,8 +397,9 @@ public class Dav2RestSender implements ClientReceiverInterface {
 					versendeAQHelligkeitsMeldungen(liste);
 					versendeGMAUmfelddaten(liste);
 				} catch (final Exception ex) {
-					LOGGER.error("OnlineDaten konnten nicht versendet werden und werden später Nachversandt.", ex);
-					data2redirect.addAll(liste);
+					LOGGER.error(
+							"OnlineDaten konnten nicht für den Versand vorbereitet werden, es erfolgt kein Nachversand.",
+							ex);
 				}
 			}
 		}
@@ -430,7 +473,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			while (!data2redirect.isEmpty()) {
 				final List<OnlineDatum> liste = new ArrayList<>();
 				try {
-					data2redirect.drainTo(liste, 1000);
+					data2redirect.drainTo(liste, 10000);
 					versendeMQVerkehrsDatenKurzzeit(liste);
 					versendeAnzeigeEigenschaften(liste);
 					versendeAQAnzeigeEigenschaften(liste);
@@ -454,7 +497,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 		subscribeDavData();
 
-		//TODO: übergangsweise senden wir die symstemobjekte einmal stündlich
+		// TODO: übergangsweise senden wir die symstemobjekte einmal stündlich
 //		final LocalDateTime now = LocalDateTime.now();
 //		LocalDateTime twoOclock = now.withHour(2).withMinute(0).withSecond(0);
 //
@@ -470,13 +513,12 @@ public class Dav2RestSender implements ClientReceiverInterface {
 //			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet.");
 //			executor.execute(new RestSystemObjektSender(objects2Store));
 //		}, until, 1440, TimeUnit.MINUTES);
-		
+
 		final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutor.scheduleAtFixedRate(() -> {
 			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet.");
 			executor.execute(new RestSystemObjektSender(objects2Store));
 		}, 1, 1, TimeUnit.HOURS);
-		
 
 		scheduledExecutor.scheduleAtFixedRate(new RestOnlineDatenNachSender(), 1, 1, TimeUnit.MINUTES);
 
@@ -515,14 +557,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		final List<OnlineDatum> aqHelligkeitsMeldungen = liste.stream()
 				.filter(o -> o instanceof AnzeigeQuerschnittHelligkeitsMeldung).collect(Collectors.toList());
 		if (!aqHelligkeitsMeldungen.isEmpty()) {
-			final Response response = target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request()
-					.post(Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON));
-			if (response.getStatus() < 200 || response.getStatus() >= 300) {
-				LOGGER.error(
-						"Der Versand von AnzeigeQuerschnittHelligkeitsMeldungen ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
-						response);
-				data2redirect.addAll(aqHelligkeitsMeldungen);
-			}
+			final LocalDateTime start = LocalDateTime.now();
+			target.path("/onlinedaten/anzeigequerschnitthelligkeitsmeldung").request().async().post(
+					Entity.entity(aqHelligkeitsMeldungen, MediaType.APPLICATION_JSON),
+					new OnlineDatenInvocationCallback(start, aqHelligkeitsMeldungen));
+
 		}
 	}
 
@@ -530,14 +569,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		final List<OnlineDatum> anzeigeQuerschnittEigenschaften = liste.stream()
 				.filter(o -> o instanceof AnzeigeQuerschnittEigenschaft).collect(Collectors.toList());
 		if (!anzeigeQuerschnittEigenschaften.isEmpty()) {
-			final Response response = target.path("/onlinedaten/anzeigequerschnitteigenschaft").request()
-					.post(Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON));
-			if (response.getStatus() < 200 || response.getStatus() >= 300) {
-				LOGGER.error(
-						"Der Versand von AnzeigeQuerschnittEigenschaften ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
-						response);
-				data2redirect.addAll(anzeigeQuerschnittEigenschaften);
-			}
+			final LocalDateTime start = LocalDateTime.now();
+			target.path("/onlinedaten/anzeigequerschnitteigenschaft").request().async().post(
+					Entity.entity(anzeigeQuerschnittEigenschaften, MediaType.APPLICATION_JSON),
+					new OnlineDatenInvocationCallback(start, anzeigeQuerschnittEigenschaften));
+
 		}
 	}
 
@@ -545,14 +581,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		final List<OnlineDatum> anzeigeEigenschaften = liste.stream().filter(o -> o instanceof AnzeigeEigenschaft)
 				.collect(Collectors.toList());
 		if (!anzeigeEigenschaften.isEmpty()) {
-			final Response response = target.path("/onlinedaten/anzeigeeigenschaft").request()
-					.post(Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON));
-			if (response.getStatus() < 200 || response.getStatus() >= 300) {
-				LOGGER.error(
-						"Der Versand von AnzeigeEigenschaften ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
-						response);
-				data2redirect.addAll(anzeigeEigenschaften);
-			}
+			final LocalDateTime start = LocalDateTime.now();
+			target.path("/onlinedaten/anzeigeeigenschaft").request().async().post(
+					Entity.entity(anzeigeEigenschaften, MediaType.APPLICATION_JSON),
+					new OnlineDatenInvocationCallback(start, anzeigeEigenschaften));
+
 		}
 	}
 
@@ -560,14 +593,10 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		final List<OnlineDatum> verkehrsdatenKurzzeit = liste.stream().filter(o -> o instanceof VerkehrsdatenKurzzeit)
 				.collect(Collectors.toList());
 		if (!verkehrsdatenKurzzeit.isEmpty()) {
-			final Response response = target.path("/onlinedaten/verkehrsdatenkurzzeit").request()
-					.post(Entity.entity(verkehrsdatenKurzzeit, MediaType.APPLICATION_JSON));
-			if (response.getStatus() < 200 || response.getStatus() >= 300) {
-				LOGGER.error(
-						"Der Versand von kurzzeit Verkehrsdaten ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
-						response);
-				data2redirect.addAll(verkehrsdatenKurzzeit);
-			}
+			final LocalDateTime start = LocalDateTime.now();
+			target.path("/onlinedaten/verkehrsdatenkurzzeit").request().async().post(
+					Entity.entity(verkehrsdatenKurzzeit, MediaType.APPLICATION_JSON),
+					new OnlineDatenInvocationCallback(start, verkehrsdatenKurzzeit));
 		}
 	}
 
@@ -575,14 +604,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		final List<OnlineDatum> umfelddaten = liste.stream().filter(o -> o instanceof GmaUmfelddaten)
 				.collect(Collectors.toList());
 		if (!umfelddaten.isEmpty()) {
-			final Response response = target.path("/onlinedaten/gmaumfelddaten").request()
-					.post(Entity.entity(umfelddaten, MediaType.APPLICATION_JSON));
-			if (response.getStatus() < 200 || response.getStatus() >= 300) {
-				LOGGER.error(
-						"Der Versand von GMA Umfelddaten ist fehlgeschlagen und wird per Nachversand erneut versucht. ",
-						response);
-				data2redirect.addAll(umfelddaten);
-			}
+			final LocalDateTime start = LocalDateTime.now();
+			target.path("/onlinedaten/gmaumfelddaten").request().async().post(
+					Entity.entity(umfelddaten, MediaType.APPLICATION_JSON),
+					new OnlineDatenInvocationCallback(start, umfelddaten));
+
 		}
 	}
 }

@@ -26,6 +26,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import de.bsvrz.dav.daf.main.ClientDavInterface;
@@ -83,6 +84,8 @@ public class Client implements StandardApplication, DavConnectionListener {
 
 		final ClientConfig config = new ClientConfig();
 		config.register(JacksonFeature.class);
+		config.property(ClientProperties.ASYNC_THREADPOOL_SIZE, 200);
+//		config.property(ClientProperties.READ_TIMEOUT, 10000);
 
 //		ClientBuilder.newBuilder().sslContext(ctx);
 		client = ClientBuilder.newClient(config);
