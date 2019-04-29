@@ -14,12 +14,12 @@ dependencies {
     implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.28'
     implementation 'org.glassfish.jersey.inject:jersey-hk2:2.28'
     implementation 'com.google.inject:guice:4.2.2'
-    implementation 'de.bsvrz.dav:de.bsvrz.dav.daf:3.9.2'
-    implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.application:3.9.2'
-    implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:3.9.2'
+    implementation 'de.bsvrz.dav:de.bsvrz.dav.daf:3.11.0'
+    implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.application:3.11.0'
+    implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:3.11.0'
     implementation 'org.reflections:reflections:0.9.11'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'de.bsvrz.puk:de.bsvrz.puk.config:3.9.2'
+    testImplementation 'de.bsvrz.puk:de.bsvrz.puk.config:3.11.0'
 }
 
 mainClassName='de.bitctrl.dav.rest.client.Client'
