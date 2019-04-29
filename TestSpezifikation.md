@@ -57,7 +57,7 @@ Die Prüfumgebung setzt sich aus der ClientDataExchange Client - Implementierung
 
 ### Anzeigedaten
 
-#### Prüffall 3.1: Übertragen von dynamischen Anzeigedaten
+#### Prüffall 3.1: Übertragen von dynamischen Anzeigedaten (`atg.anzeigeEigenschaftIst`)
 
 ##### Prüfschritte
   1. Parametrierung einer einzelnen Anzeige und der Attributgruppe `atg.anzeigeEigenschaftIst` zur Übertragung.
@@ -68,7 +68,7 @@ Die Prüfumgebung setzt sich aus der ClientDataExchange Client - Implementierung
 * Im Log des Servers erscheint eine Meldung mit den statischen Daten der Anzeige (ID, Name, Lage).
 * Im Log des Servers erscheint eine Meldungen mit den Anzeigedaten (dynamischen Daten) der Anzeige. Wenn das Attribut "grafik" nicht leer oder `null` ist, dann wird eine Bilddatei (.bmp) auf dem Server abgelegt.
 
-#### Prüffall 4.1: Übertragen von dynamischen Anzeigequerschnittdaten
+#### Prüffall 4.1: Übertragen von dynamischen Anzeigequerschnittdaten (`atg.anzeigeQuerschnittEigenschaftIst`)
 
 ##### Prüfschritte
   1. Parametrierung eines einzelnen Anzeigequerschnitts und der Attributgruppe `atg.anzeigeQuerschnittEigenschaftIst` zur Übertragung.
@@ -79,7 +79,7 @@ Die Prüfumgebung setzt sich aus der ClientDataExchange Client - Implementierung
 * Im Log des Servers erscheint eine Meldung mit den statischen Daten des Anzeigequerschnitts (ID, Name, Anzeige-ID's).
 * Im Log des Servers erscheint eine Meldungen mit dem aktuellen Zustand des Anzeigequerschnitts (dynamischen Daten).
 
-#### Prüffall 4.1: Übertragen von Helligkeitsdaten von Anzeigequerschnitten
+#### Prüffall 4.2: Übertragen von Helligkeitsdaten von Anzeigequerschnitten (`atg.tlsUfdErgebnisMeldungHelligkeitHK`)
 
 ##### Prüfschritte
   1. Parametrierung einer DE zur Helligkeitssteuerung eines Anzeigequerschnitts und der Attributgruppe `atg.tlsUfdErgebnisMeldungHelligkeitHK` zur Übertragung.
