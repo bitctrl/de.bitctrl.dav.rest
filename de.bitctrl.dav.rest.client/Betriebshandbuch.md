@@ -35,7 +35,7 @@ Unter Windows muss der Pfad im Dialog "Systemsteuerung/System/Erweitert/Umgebung
 angepasst werden. Der Wert der Variablen **PATH** muss um den Text `;/pfad_zu_java/bin` ergänzt
 werden.
 
-#### Erstinstalltion
+#### Erstinstallation
 
 Der Inhalt der ZIP-Archive der SWE muss in das Verzeichnis `$PROJEKT_HOME/lib` kopiert werden.
 Unter Linux-Systemen werden die ZIP-Archive mit
@@ -92,7 +92,7 @@ Im dargestellten Beispiel werden die Daten der Attributgruppen `atg.anzeigeEigen
 ### Aufnahme des Betriebs
 
 #### Startparameter
-Die SWE verwendet die Datenverteiler - Applikationsfunktionen zur Kommunikation mit dem Datenverteiler und unterstützt bzw. benötigt daher auch die entsprechenden Aufrugparameter (siehe [Betriebsinformationen DaV](https://gitlab.nerz-ev.de/ERZ/SPEZ_de.bsvrz.kernsoftware/blob/master/06-BetrInf/BetrInf_DaV-DAF_FREI_V6.0_D2018-10-30.pdf)).
+Die SWE verwendet die Datenverteiler - Applikationsfunktionen zur Kommunikation mit dem Datenverteiler und unterstützt bzw. benötigt daher auch die entsprechenden Aufrufparameter (siehe [Betriebsinformationen DaV](https://gitlab.nerz-ev.de/ERZ/SPEZ_de.bsvrz.kernsoftware/blob/master/06-BetrInf/BetrInf_DaV-DAF_FREI_V6.0_D2018-10-30.pdf)).
 
 * `-objekt=<pid>` : Die PID des Applikationsobjektes (vom Typ `typ.archiv`)
 * `-url=http://localhost` : Die URL des REST Servers, der Standardwert ist `http://localhost`.
@@ -243,22 +243,22 @@ Einträge, die im Logfile als „FEHLER“ gekennzeichnet sind, bedürfen somit 
     </tr>
     <tr>
      <td><code>Instanziierung der Klasse X fehlgeschlagen.</code></td>
-     <td>Ein Objekt der Konverter-Klasse X (ERZ Datenformat nach JSON) konnte nicht instanziiert werden. Es gibt eine Vielzahl möglicher Fehlerursachen. Es könnten z.B. Bibliotheken im Klassenpfad fehlen.Nachfolgend wird der Text der Excpetion mit weiteren Informationen angezeigt.</td>
+     <td>Ein Objekt der Konverter-Klasse X (ERZ Datenformat nach JSON) konnte nicht instanziiert werden. Es gibt eine Vielzahl möglicher Fehlerursachen. Es könnten z.B. Bibliotheken im Klassenpfad fehlen. Nachfolgend wird der Text der Exception mit weiteren Informationen angezeigt.</td>
     </tr>
      <td><code>DAV Objekte konnten nicht versendet werden.</code></td>
      <td>Es liegt ein allgemeines Kommunikationsproblem zum REST Server vor.</td>
     </tr>
     <tr>
      <td><code>Objekttyp-X konnten nicht versendet werden.</code></td>
-     <td>Die statischen Informationen zu Objekten konnten nicht an den REST Server versandt werden. Jedoch ist eine prinzipielle Kommunikation möglich. REST Client und/oder Server sind nicht vollständig implementiert oder verwenden verschiedene Protokollversionen (RAML Schnittstellenbeschreibung). Nachfolgend wird der Text der Excpetion mit weiteren Informationen angezeigt.</td>
+     <td>Die statischen Informationen zu Objekten konnten nicht an den REST Server versandt werden. Jedoch ist eine prinzipielle Kommunikation möglich. REST Client und/oder Server sind nicht vollständig implementiert oder verwenden verschiedene Protokollversionen (RAML Schnittstellenbeschreibung). Nachfolgend wird der Text der Exception mit weiteren Informationen angezeigt.</td>
     </tr>
     <tr>
      <td><code>OnlineDaten konnten nicht für den Versand vorbereitet werden, es erfolgt kein Nachversand.</code></td>
-     <td>Die Konvertierung der ERZ Daten in JSON Objekte ist fehlgeschlagen. Nachfolgend wird der Text der Excpetion mit weiteren Informationen angezeigt.</td>
+     <td>Die Konvertierung der ERZ Daten in JSON Objekte ist fehlgeschlagen. Nachfolgend wird der Text der Exception mit weiteren Informationen angezeigt.</td>
     </tr>
     <tr>
      <td><code>Instanziierung und Konvertierung der Klasse X fehlgeschlagen (ResultData: resultData ).</code></td>
-     <td>Ein Objekt der Konverter-Klasse X (ERZ Datenformat nach JSON) konnte nicht instanziiert werden. Es gibt eine Vielzahl möglicher Fehlerursachen. Es könnten z.B. Bibliotheken im Klassenpfad fehlen. Nachfolgend wird der Text der Excpetion mit weiteren Informationen angezeigt.</td>
+     <td>Ein Objekt der Konverter-Klasse X (ERZ Datenformat nach JSON) konnte nicht instanziiert werden. Es gibt eine Vielzahl möglicher Fehlerursachen. Es könnten z.B. Bibliotheken im Klassenpfad fehlen. Nachfolgend wird der Text der Exception mit weiteren Informationen angezeigt.</td>
     </tr>
     <tr>
      <td><code>Ermittlung des freien Heaps und das Verkürzen der Warteschlage ist fehlgeschlagen.</code></td>
@@ -270,7 +270,7 @@ Einträge, die im Logfile als „FEHLER“ gekennzeichnet sind, bedürfen somit 
     </tr>
     <tr>
      <td><code>Archiv kann Datensatz nicht der Warteschlange hinzufügen.</code></td>
-     <td>Vom ERZ Datenverteiler empfange Daten können nicht für eine Weiterverarbeitung zwischengespeichert werden. Nachfolgend wird der Text der Excpetion mit weiteren Informationen angezeigt.</td>
+     <td>Vom ERZ Datenverteiler empfange Daten können nicht für eine Weiterverarbeitung zwischengespeichert werden. Nachfolgend wird der Text der Exception mit weiteren Informationen angezeigt.</td>
     </tr>
      <tr>
      <td><code>Der Versand von Datenart-X ist fehlgeschlagen und wird per Nachversand erneut versucht.</code></td>
@@ -278,7 +278,7 @@ Einträge, die im Logfile als „FEHLER“ gekennzeichnet sind, bedürfen somit 
     </tr>
     <tr>
      <td><code>Fehler beim Versand von Datenart-X es wird per Nachversand erneut versucht.</code></td>
-     <td>Für ein bestimmtes Onlinedatum (dynamische Daten) ist der Versand zum REST Server fehlgeschlagen. Es wird versucht die Informationen später erneut zu versenden. Nachfolgend wird der Text der Excpetion mit weiteren Informationen angezeigt.</td>
+     <td>Für ein bestimmtes Onlinedatum (dynamische Daten) ist der Versand zum REST Server fehlgeschlagen. Es wird versucht die Informationen später erneut zu versenden. Nachfolgend wird der Text der Exception mit weiteren Informationen angezeigt.</td>
     </tr>
 </table>
 
