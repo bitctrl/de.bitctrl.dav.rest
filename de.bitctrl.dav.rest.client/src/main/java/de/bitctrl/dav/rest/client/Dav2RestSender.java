@@ -500,11 +500,16 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 		final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutor.scheduleAtFixedRate(() -> {
-			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet.");
+			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet. - " + objects2Store.size()
+					+ " SystemObjekte.");
 			executor.execute(new RestSystemObjektSender(objects2Store));
 		}, 1, 1, TimeUnit.HOURS);
 
-		scheduledExecutor.scheduleAtFixedRate(new RestOnlineDatenNachSender(), 1, 1, TimeUnit.MINUTES);
+		scheduledExecutor.scheduleAtFixedRate(() -> {
+			LOGGER.info("Zyklisches Nachsenden von dynamischen Daten (OnlineDatum) gestartet - " + data2redirect.size()
+					+ " Datensätze.");
+			executor.execute(new RestOnlineDatenNachSender());
+		}, 1, 1, TimeUnit.MINUTES);
 
 	}
 
