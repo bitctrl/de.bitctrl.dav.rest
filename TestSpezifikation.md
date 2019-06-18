@@ -57,16 +57,29 @@ Die Prüfumgebung setzt sich aus der ClientDataExchange Client - Implementierung
 
 ### Anzeigedaten
 
-#### Prüffall 3.1: Übertragen von dynamischen Anzeigedaten (`atg.anzeigeEigenschaftIst`)
+#### Prüffall 3.1: Übertragen von dynamischen Anzeigedaten ohne Grafik (`atg.anzeigeEigenschaftIst`)
 
 ##### Prüfschritte
-  1. Parametrierung einer einzelnen Anzeige und der Attributgruppe `atg.anzeigeEigenschaftIst` zur Übertragung.
+  1. Parametrierung einer einzelnen Freitextanzeige und der Attributgruppe `atg.anzeigeEigenschaftIst` zur Übertragung.
+  2. Starten des ClientDataExchange Servers
+  3. Starten des ClientDataExchange Clients mit entsprechenden Verbindungsparametern
+
+##### Erwartetes Ergebnis
+* Im Log des Servers erscheint eine Meldung mit den statischen Daten der Anzeige (ID, Name, Lage).
+* Im Log des Servers wird der Stellzustand inkl. des Freitextes angezeigt.
+
+
+#### Prüffall 3.2: Übertragen von dynamischen Anzeigedaten mit Grafik (`atg.anzeigeEigenschaftIst`)
+
+##### Prüfschritte
+  1. Parametrierung eines einzelnen Symbols (Anzeige mit freiprogrammierbarer Grafik) und der Attributgruppe `atg.anzeigeEigenschaftIst` zur Übertragung.
   2. Starten des ClientDataExchange Servers
   3. Starten des ClientDataExchange Clients mit entsprechenden Verbindungsparametern
 
 ##### Erwartetes Ergebnis
 * Im Log des Servers erscheint eine Meldung mit den statischen Daten der Anzeige (ID, Name, Lage).
 * Im Log des Servers erscheint eine Meldungen mit den Anzeigedaten (dynamischen Daten) der Anzeige. Wenn das Attribut "grafik" nicht leer oder `null` ist, dann wird eine Bilddatei (.bmp) auf dem Server abgelegt.
+
 
 #### Prüffall 4.1: Übertragen von dynamischen Anzeigequerschnittdaten (`atg.anzeigeQuerschnittEigenschaftIst`)
 
