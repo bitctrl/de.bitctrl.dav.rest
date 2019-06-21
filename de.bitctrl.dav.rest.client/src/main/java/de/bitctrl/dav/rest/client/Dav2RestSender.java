@@ -189,6 +189,11 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 	}
 
+	/**
+	 * {@link Runnable} zum Versand der statischen Daten (Konfigurationsdaten).
+	 * @author BitCtrl Systems GmbH, ChHoesel
+	 *
+	 */
 	private class RestSystemObjektSender implements Runnable {
 
 		private final LinkedBlockingDeque<SystemObject> systemObjekte = new LinkedBlockingDeque<>();
@@ -328,7 +333,12 @@ public class Dav2RestSender implements ClientReceiverInterface {
 	}
 
 	/**
-	 * {@link Runnable} zum Versenden der {@link OnlineDatum}.
+	 * {@link Runnable} zum Versenden der {@link OnlineDatum}. Dieser Runner wird
+	 * immer dann gestartet, wenn neue Daten vom Datenverteiler empfangen wurden.
+	 * Dadurch kann es passieren, dass mehrere Runner die Menge der zu versendenden
+	 * Daten abarbeiten und als Request verschicken. Die Folge ist, dass nicht
+	 * sicher gestellt werden kann, dass die Daten in der selben Reihenfolge via
+	 * REST API versand werden, in der sie vom Datenverteiler empfangen wurden.
 	 *
 	 * @author BitCtrl Systems GmbH, Christian Hösel
 	 *
