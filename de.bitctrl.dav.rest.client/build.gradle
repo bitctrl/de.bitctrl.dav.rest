@@ -21,6 +21,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'de.bsvrz.puk:de.bsvrz.puk.config:3.11.0'
     
+     // JAX-B dependencies for JDK 9+
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+    
     runtimeOnly fileTree('lib') { include '*.jar' }
 }
 
