@@ -26,16 +26,4 @@ spotbugs {
   excludeFilter = file("$projectDir/config/spotbugsExclude.xml")
 }
 
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-    ignoreFailures = true
-    
-    effort = 'max'
-    reportLevel = 'low'
-    
-    reports {
-        xml.enabled = true
-        html.enabled = false
-    }
-}
-
 mainClassName='de.bitctrl.dav.rest.server.DavRestServer'

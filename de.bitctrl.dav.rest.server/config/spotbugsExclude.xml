@@ -7,7 +7,7 @@
   <!-- Match all doublecheck violations in these methods of "AnotherClass". -->
   <Match>
     <Class name="RestTest" />
-    <Bug code="OBL" />
+    <!-- <Bug code="RCN" /> -->
   </Match>
 
 </FindBugsFilter>
