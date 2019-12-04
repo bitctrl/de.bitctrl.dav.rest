@@ -19,8 +19,15 @@
  *
  */
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
@@ -182,6 +189,116 @@ public class RestTest extends JerseyTest {
 
 		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
+	}
+
+	@Test
+	public void testSendeAnzeigeEigenschaftFreitext() {
+		final WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
+
+		final AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
+		daten.setSystemObjektId("test.anzeige.freitext");
+		daten.setZeitstempel(
+				Date.from(LocalDateTime.of(2019, 12, 2, 12, 12).atZone(ZoneId.systemDefault()).toInstant()));
+		daten.setStatus(AnzeigeEigenschaft.StatusType.OK);
+		daten.setDatenStatus("Nutzdaten");
+		daten.setText("Hello DLR!");
+		daten.setWvzInhalt(null);
+
+		final Response response = target.request()
+				.post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
+	}
+
+	private static byte[] toByteArray(InputStream is) throws IOException {
+		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+			byte[] b = new byte[4096];
+			int n = 0;
+			while ((n = is.read(b)) != -1) {
+				output.write(b, 0, n);
+			}
+			return output.toByteArray();
+		}
+	}
+
+	@Test
+	public void testSendeAnzeigeEigenschaftSymbol() throws IOException {
+		final WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
+
+		final AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
+		daten.setSystemObjektId("test.anzeige.grafik");
+		daten.setZeitstempel(
+				Date.from(LocalDateTime.of(2019, 12, 1, 12, 12).atZone(ZoneId.systemDefault()).toInstant()));
+		daten.setStatus(AnzeigeEigenschaft.StatusType.OK);
+		daten.setDatenStatus("Nutzdaten");
+		daten.setWvzInhalt("Fußball");
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		try (InputStream in = classLoader.getResourceAsStream("Fußball_32x32.bmp")){
+			byte[] byteArray = toByteArray(in);
+			if (byteArray != null && byteArray.length > 0) {
+				daten.setGrafik(Base64.getEncoder().encodeToString(byteArray));
+			}	
+		}
+
+		final Response response = target.request()
+				.post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
+	}
+	
+	@Test
+	public void testSendeAnzeigenEigenschaftNurStellcode() {
+		final WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
+
+		final AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
+		daten.setSystemObjektId("test.anzeige.nur.stellcode");
+		daten.setZeitstempel(
+				Date.from(LocalDateTime.of(2019, 12, 3, 12, 12).atZone(ZoneId.systemDefault()).toInstant()));
+		daten.setStatus(AnzeigeEigenschaft.StatusType.OK);
+		daten.setDatenStatus("Nutzdaten");
+		daten.setWvzInhalt("Code 42");
+
+		final Response response = target.request()
+				.post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
+	}
+	
+	@Test
+	public void testSendeAnzeigenEigenschaftStellcodeDunkel() {
+		final WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
+
+		final AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
+		daten.setSystemObjektId("test.anzeige.nur.stellcode");
+		daten.setZeitstempel(
+				Date.from(LocalDateTime.of(2019, 12, 3, 12, 13).atZone(ZoneId.systemDefault()).toInstant()));
+		daten.setStatus(AnzeigeEigenschaft.StatusType.OK);
+		daten.setDatenStatus("Nutzdaten");
+		daten.setWvzInhalt("Code 0");
+
+		final Response response = target.request()
+				.post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
+	}
+	
+	@Test
+	public void testSendeAnzeigenEigenschaftGestört() {
+		final WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
+
+		final AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
+		daten.setSystemObjektId("test.anzeige.nur.stellcode");
+		daten.setZeitstempel(
+				Date.from(LocalDateTime.of(2019, 12, 3, 12, 14).atZone(ZoneId.systemDefault()).toInstant()));
+		daten.setStatus(AnzeigeEigenschaft.StatusType.GESTRT);
+		daten.setDatenStatus("Nutzdaten");
+		daten.setWvzInhalt("Code 42");
+
+		final Response response = target.request()
+				.post(Entity.entity(Arrays.asList(daten), MediaType.APPLICATION_JSON));
+
+		Assert.assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 	}
 
 }
