@@ -7,4 +7,4 @@ jdk:
 
 install: true
 script:
-  - ./gradlew build
+  - ./gradlew build --debug
