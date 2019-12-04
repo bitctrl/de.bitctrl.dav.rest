@@ -32,6 +32,17 @@ allprojects  {
 markdownToPdf{
 }
 
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    ignoreFailures = true
+    
+    effort = 'max'
+    reportLevel = 'low'
+    
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+}
 
 apply plugin: 'base'
 
