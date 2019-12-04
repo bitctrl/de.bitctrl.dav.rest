@@ -284,7 +284,7 @@ public class RestTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testSendeAnzeigenEigenschaftGestört() {
+	public void testSendeAnzeigenEigenschaftGestoert() {
 		final WebTarget target = target("/onlinedaten/anzeigeeigenschaft");
 
 		final AnzeigeEigenschaft daten = new AnzeigeEigenschaftImpl();
