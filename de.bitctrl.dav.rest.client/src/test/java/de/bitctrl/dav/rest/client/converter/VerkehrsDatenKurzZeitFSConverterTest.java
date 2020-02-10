@@ -68,17 +68,23 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 		dataModel.close();
 	}
 
-	@Parameters(name = "{index}: anzahl->{0}, geschwindigkeit->{1}, guete->{2}, datum->{3}, belegung->{4}")
+	@Parameters(name = "{index}: anzahl->{0}, geschwindigkeit->{1}, guete->{2}, datum->{3}, belegung->{4}, atg->{5}, asp->{6}")
 	public static Collection<Object[]> data() {
 
 		return Arrays.asList(new Object[][] {
 				// anahl Fz, geschwindigkeit, güte, datum, belegung
-				{ -3, -3, 0.2d, LocalDateTime.of(2019, 1, 1, 0, 0), 0 },
-				{ -2, -2, 0.999d, LocalDateTime.of(2019, 12, 31, 23, 59), 1 },
-				{ -2, -2, 0.0, LocalDateTime.of(2019, 3, 31, 2, 0), 99 },
-				{ -1, -1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 },
-				{ 0, 0, 0.5d, LocalDateTime.of(2019, 9, 27, 12, 0), 1 },
-				{ 100, 254, 0.5d, LocalDateTime.of(2019, 3, 14, 12, 0), 55 }
+				{ -3, -3, 0.2d, LocalDateTime.of(2019, 1, 1, 0, 0), 0,"atg.verkehrsDatenKurzZeitFs","asp.externeErfassung","" },
+				{ 3, 3, 0.9d, LocalDateTime.of(2019, 1, 1, 0, 0), 1,"atg.verkehrsDatenKurzZeitFs","asp.externeErfassung","Fz/h" },
+				{ -2, -2, 0.999d, LocalDateTime.of(2019, 12, 31, 23, 59), 1 ,"atg.verkehrsDatenKurzZeitFs","asp.analyse",""},
+				{ 2, 2, 0.999d, LocalDateTime.of(2019, 12, 31, 23, 59), 1 ,"atg.verkehrsDatenKurzZeitFs","asp.analyse","Fz/h"},
+				{ -2, -2, 0.0, LocalDateTime.of(2019, 3, 31, 2, 0), 99 ,"atg.verkehrsDatenKurzZeitFs","asp.agregation1Minute",""},
+				{ 2, 2, 0.0, LocalDateTime.of(2019, 3, 31, 2, 0), 99 ,"atg.verkehrsDatenKurzZeitFs","asp.agregation1Minute","Fz/h"},
+				{ -1, -1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 ,"atg.verkehrsDatenKurzZeitFs","asp.agregation5Minuten",""},
+				{ 1, 1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 ,"atg.verkehrsDatenKurzZeitFs","asp.agregation5Minuten","Fz/h"},
+				{ 0, 0, 0.5d, LocalDateTime.of(2019, 9, 27, 12, 0), 1 ,"atg.verkehrsDatenKurzZeitFs","asp.analyse","Fz/h"},
+				{ 100, 254, 0.5d, LocalDateTime.of(2019, 3, 14, 12, 0), 55,"atg.verkehrsDatenKurzZeitFs","asp.analyse","Fz/h" },
+				{ 30, 111, 1d, LocalDateTime.of(2020, 2, 10, 12, 0), 12,"atg.verkehrsDatenKurzZeitIntervall","asp.externeErfassung","Fz/Intervall" },
+				{ 45, 22, 0.1d, LocalDateTime.of(2020,1, 10, 12, 0), 33,"atg.verkehrsDatenKurzZeitIntervall","asp.messWertErsetzung","Fz/Intervall" }
 
 		});
 
@@ -98,12 +104,21 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 
 	@Parameter(4)
 	public int belegung;
+	
+	@Parameter(5)
+	public String atgPid;
+	
+	@Parameter(6)
+	public String aspPid;
+	
+	@Parameter(7)
+	public String dimension; 
 
 	@Test
 	public void test() {
 		final SystemObject fs = dataModel.getObject("test.fs1");
-		final AttributeGroup atg = dataModel.getAttributeGroup("atg.verkehrsDatenKurzZeitFs");
-		final Aspect asp = dataModel.getAspect("asp.externeErfassung");
+		final AttributeGroup atg = dataModel.getAttributeGroup(atgPid);
+		final Aspect asp = dataModel.getAspect(aspPid);
 
 		final Data data = AttributeBaseValueDataFactory.createAdapter(atg, AttributeHelper.getAttributesValues(atg));
 		data.getItem("qKfz").getUnscaledValue("Wert").set(anzahl);
@@ -122,13 +137,17 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 
 		final ResultData rd = new ResultData(fs, new DataDescription(atg, asp),
 				time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), data);
-
+		
+		
 		final VerkehrsDatenKurzZeitFSConverter converter = new VerkehrsDatenKurzZeitFSConverter();
 		final VerkehrsdatenKurzzeit result = converter.dav2Json(rd).iterator().next();
 
 		Assert.assertEquals(anzahl, result.getQKfz().getWert());
+		Assert.assertEquals(dimension, result.getQKfz().getDimension());
 		Assert.assertEquals(anzahl, result.getQLkw().getWert());
+		Assert.assertEquals(dimension, result.getQLkw().getDimension());
 		Assert.assertEquals(anzahl, result.getQPkw().getWert());
+		Assert.assertEquals(dimension, result.getQPkw().getDimension());
 		Assert.assertEquals(geschwindigkeit, result.getVKfz().getWert());
 		Assert.assertEquals(geschwindigkeit, result.getVLkw().getWert());
 		Assert.assertEquals(geschwindigkeit, result.getVPkw().getWert());

@@ -26,6 +26,7 @@ import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit.AspektType;
 import de.bitctrl.dav.rest.api.model.Verkehrsstaerke;
 import de.bitctrl.dav.rest.api.model.VerkehrsstaerkeImpl;
 import de.bsvrz.dav.daf.main.Data;
+import de.bsvrz.dav.daf.main.Data.NumberValue;
 import de.bsvrz.dav.daf.main.ResultData;
 import de.bsvrz.dav.daf.main.config.Aspect;
 
@@ -88,16 +89,20 @@ public final class VerkehrDatenKurzZeitUtil {
 	static Verkehrsstaerke extraktVerkehrsStaerke(Data data) {
 		final Verkehrsstaerke qKfz = new VerkehrsstaerkeImpl();
 		if (data.getUnscaledValue("Wert").isState()) {
-			qKfz.setWert(data.getUnscaledValue("Wert").intValue());
+			NumberValue unscaledValue = data.getUnscaledValue("Wert");
+			qKfz.setWert(unscaledValue.intValue());
+			qKfz.setDimension("");
 		} else {
-			qKfz.setWert(data.getScaledValue("Wert").intValue());
+			NumberValue scaledValue = data.getScaledValue("Wert");
+			qKfz.setWert(scaledValue.intValue());
+			qKfz.setDimension(scaledValue.getSuffixText());
 		}
 		if (data.getItem("Güte").getUnscaledValue("Index").isState()) {
 			qKfz.setGuete(data.getItem("Güte").getUnscaledValue("Index").doubleValue());
 		} else {
 			qKfz.setGuete(data.getItem("Güte").getScaledValue("Index").doubleValue());
 		}
-
+		
 		return qKfz;
 	}
 

@@ -4,6 +4,9 @@
 ### Changed
 - ...
 
+## [1.0.2] - 2020-02-10
+- die Verkehrsstaerke hat jetzt ein Attribut "dimension" mit dem ersichtlich wird, ob es sich um "Fz/h" oder "Fz/Intervall" handelt. Bei fehlerhaften Daten, wird das Attribut "dimension" leer gelassen.
+
 ## [1.0.0] - 2019-01-31
 ### Added
 - ...

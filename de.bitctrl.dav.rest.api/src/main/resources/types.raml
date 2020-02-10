@@ -70,12 +70,15 @@ types:
       datenStatus: string
       zeitstempel: datetime
   Verkehrsstaerke:
-    description: Anzahl der Fahrzeuge pro Intervall
+    description: Anzahl der Fahrzeuge pro Intervall.
     type: object
     additionalProperties: false
     properties:
       wert: integer
       guete: number
+      dimension:
+        type: string
+        description: Die Dimension für die Verkehrsstärke. Normalersweise "Fz/h" oder "Fz/Intervall". Bei ungültigen Daten "".
   Geschwindigkeit:
     description: Geschwindigkeit (von Fahrzeugen) in km/h.
     type: object
