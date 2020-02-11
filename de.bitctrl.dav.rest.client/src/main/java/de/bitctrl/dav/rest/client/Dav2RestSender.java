@@ -191,6 +191,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 	/**
 	 * {@link Runnable} zum Versand der statischen Daten (Konfigurationsdaten).
+	 * 
 	 * @author BitCtrl Systems GmbH, ChHoesel
 	 *
 	 */

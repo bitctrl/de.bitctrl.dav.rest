@@ -29,6 +29,9 @@ import de.bitctrl.dav.rest.api.model.Anzeige;
 import de.bitctrl.dav.rest.api.model.AnzeigeImpl;
 import de.bitctrl.dav.rest.api.model.FahrstreifenLage;
 import de.bitctrl.dav.rest.client.annotations.DavJsonObjektConverter;
+import de.bsvrz.dav.daf.main.config.AttributeGroup;
+import de.bsvrz.dav.daf.main.config.ConfigurationObject;
+import de.bsvrz.dav.daf.main.config.ObjectSet;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 
 /**
@@ -49,7 +52,26 @@ public class AnzeigeJsonConverter implements DavJsonConverter<SystemObject, Anze
 		result.setVersion(new Date(davObj.getConfigurationArea().getTimeOfLastActiveConfigurationChange()));
 
 		result.setFahrstreifen(fahrstreifenErmitteln(davObj));
+		result.setWvzInhalte(wvzInhalteErmitteln(davObj));
 		return Arrays.asList(result);
+	}
+
+	private List<String> wvzInhalteErmitteln(SystemObject davObj) {
+		final List<String> result = new ArrayList<>();
+
+		final AttributeGroup atgAnzeige = davObj.getDataModel().getAttributeGroup("atg.anzeige");
+		final AttributeGroup atgWvzInhalt = davObj.getDataModel().getAttributeGroup("atg.wvzInhalt");
+		final SystemObject anzeigeTyp = davObj.getConfigurationData(atgAnzeige).getReferenceValue("AnzeigeTyp")
+				.getSystemObject();
+
+		final ObjectSet wvzInhalteSet = ((ConfigurationObject) anzeigeTyp).getObjectSet("WvzInhalt");
+		if (wvzInhalteSet != null) {
+			wvzInhalteSet.getElements().stream()
+					.map(o -> o.getConfigurationData(atgWvzInhalt).getTextValue("Bildinhalt"))
+					.forEach(t -> result.add(t.getText()));
+		}
+
+		return result;
 	}
 
 	/**

@@ -15,6 +15,7 @@
         <version nr="6" zeitpunkt="13.03.2019 10:16:39,590"/>
         <version nr="7" zeitpunkt="13.03.2019 10:28:00,785"/>
         <version nr="8" zeitpunkt="13.03.2019 11:32:11,734"/>
+        <version nr="10" zeitpunkt="11.02.2020 10:01:44,974"/>
     </konfigurationsbereich>
     <konfigurationsbereich pid="kb.basissystem.objekteBenutzer" verzeichnis="kv.basissystem/config">
         <version nr="1" zeitpunkt="25.03.2009 10:03:42,406"/>

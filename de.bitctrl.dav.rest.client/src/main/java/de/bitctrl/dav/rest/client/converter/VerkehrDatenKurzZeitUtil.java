@@ -89,11 +89,11 @@ public final class VerkehrDatenKurzZeitUtil {
 	static Verkehrsstaerke extraktVerkehrsStaerke(Data data) {
 		final Verkehrsstaerke qKfz = new VerkehrsstaerkeImpl();
 		if (data.getUnscaledValue("Wert").isState()) {
-			NumberValue unscaledValue = data.getUnscaledValue("Wert");
+			final NumberValue unscaledValue = data.getUnscaledValue("Wert");
 			qKfz.setWert(unscaledValue.intValue());
 			qKfz.setDimension("");
 		} else {
-			NumberValue scaledValue = data.getScaledValue("Wert");
+			final NumberValue scaledValue = data.getScaledValue("Wert");
 			qKfz.setWert(scaledValue.intValue());
 			qKfz.setDimension(scaledValue.getSuffixText());
 		}
@@ -102,7 +102,7 @@ public final class VerkehrDatenKurzZeitUtil {
 		} else {
 			qKfz.setGuete(data.getItem("Güte").getScaledValue("Index").doubleValue());
 		}
-		
+
 		return qKfz;
 	}
 

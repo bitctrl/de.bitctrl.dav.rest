@@ -68,23 +68,23 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 		dataModel.close();
 	}
 
-	@Parameters(name = "{index}: anzahl->{0}, geschwindigkeit->{1}, guete->{2}, datum->{3}, belegung->{4}, atg->{5}, asp->{6}")
+	@Parameters(name = "{index}: anzahl->{0}, geschwindigkeit->{1}, guete->{2}, datum->{3}, belegung->{4}, asp->{5}")
 	public static Collection<Object[]> data() {
 
 		return Arrays.asList(new Object[][] {
 				// anahl Fz, geschwindigkeit, güte, datum, belegung
-				{ -3, -3, 0.2d, LocalDateTime.of(2019, 1, 1, 0, 0), 0,"atg.verkehrsDatenKurzZeitFs","asp.externeErfassung","" },
-				{ 3, 3, 0.9d, LocalDateTime.of(2019, 1, 1, 0, 0), 1,"atg.verkehrsDatenKurzZeitFs","asp.externeErfassung","Fz/h" },
-				{ -2, -2, 0.999d, LocalDateTime.of(2019, 12, 31, 23, 59), 1 ,"atg.verkehrsDatenKurzZeitFs","asp.analyse",""},
-				{ 2, 2, 0.999d, LocalDateTime.of(2019, 12, 31, 23, 59), 1 ,"atg.verkehrsDatenKurzZeitFs","asp.analyse","Fz/h"},
-				{ -2, -2, 0.0, LocalDateTime.of(2019, 3, 31, 2, 0), 99 ,"atg.verkehrsDatenKurzZeitFs","asp.agregation1Minute",""},
-				{ 2, 2, 0.0, LocalDateTime.of(2019, 3, 31, 2, 0), 99 ,"atg.verkehrsDatenKurzZeitFs","asp.agregation1Minute","Fz/h"},
-				{ -1, -1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 ,"atg.verkehrsDatenKurzZeitFs","asp.agregation5Minuten",""},
-				{ 1, 1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 ,"atg.verkehrsDatenKurzZeitFs","asp.agregation5Minuten","Fz/h"},
-				{ 0, 0, 0.5d, LocalDateTime.of(2019, 9, 27, 12, 0), 1 ,"atg.verkehrsDatenKurzZeitFs","asp.analyse","Fz/h"},
-				{ 100, 254, 0.5d, LocalDateTime.of(2019, 3, 14, 12, 0), 55,"atg.verkehrsDatenKurzZeitFs","asp.analyse","Fz/h" },
-				{ 30, 111, 1d, LocalDateTime.of(2020, 2, 10, 12, 0), 12,"atg.verkehrsDatenKurzZeitIntervall","asp.externeErfassung","Fz/Intervall" },
-				{ 45, 22, 0.1d, LocalDateTime.of(2020,1, 10, 12, 0), 33,"atg.verkehrsDatenKurzZeitIntervall","asp.messWertErsetzung","Fz/Intervall" }
+				{ -3, -3, 0.2d, LocalDateTime.of(2019, 1, 1, 0, 0), 0,"asp.analyse","" },
+				{ 3, 3, 0.9d, LocalDateTime.of(2019, 1, 1, 0, 0), 1,"asp.analyse","Fz/h" },
+				{ -2, -2, 0.999d, LocalDateTime.of(2019, 12, 31, 23, 59), 1 ,"asp.analyse",""},
+				{ 2, 2, 0.999d, LocalDateTime.of(2019, 12, 31, 23, 59), 1 ,"asp.analyse","Fz/h"},
+				{ -2, -2, 0.0, LocalDateTime.of(2019, 3, 31, 2, 0), 99 ,"asp.agregation1Minute",""},
+				{ 2, 2, 0.0, LocalDateTime.of(2019, 3, 31, 2, 0), 99 ,"asp.agregation1Minute","Fz/h"},
+				{ -1, -1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 ,"asp.agregation5Minuten",""},
+				{ 1, 1, 1d, LocalDateTime.of(2019, 2, 28, 12, 0), 100 ,"asp.agregation5Minuten","Fz/h"},
+				{ 0, 0, 0.5d, LocalDateTime.of(2019, 9, 27, 12, 0), 1 ,"asp.analyse","Fz/h"},
+				{ 100, 254, 0.5d, LocalDateTime.of(2019, 3, 14, 12, 0), 55,"asp.analyse","Fz/h" },
+				{ 30, 111, 1d, LocalDateTime.of(2020, 2, 10, 12, 0), 12,"asp.agregation30Minuten","Fz/h" },
+				{ 45, 22, 0.1d, LocalDateTime.of(2020,1, 10, 12, 0), 33,"asp.agregation60Minuten","Fz/h" }
 
 		});
 
@@ -106,18 +106,15 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 	public int belegung;
 	
 	@Parameter(5)
-	public String atgPid;
-	
-	@Parameter(6)
 	public String aspPid;
 	
-	@Parameter(7)
+	@Parameter(6)
 	public String dimension; 
 
 	@Test
 	public void test() {
 		final SystemObject fs = dataModel.getObject("test.fs1");
-		final AttributeGroup atg = dataModel.getAttributeGroup(atgPid);
+		final AttributeGroup atg = dataModel.getAttributeGroup("atg.verkehrsDatenKurzZeitFs");
 		final Aspect asp = dataModel.getAspect(aspPid);
 
 		final Data data = AttributeBaseValueDataFactory.createAdapter(atg, AttributeHelper.getAttributesValues(atg));

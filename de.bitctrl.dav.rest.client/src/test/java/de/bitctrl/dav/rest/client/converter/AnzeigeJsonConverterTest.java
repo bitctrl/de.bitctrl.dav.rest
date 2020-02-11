@@ -62,6 +62,7 @@ public class AnzeigeJsonConverterTest {
 
 		Assert.assertEquals("anz.test.freitext.224x24", result.getId());
 		Assert.assertEquals("Anzeige Test Freitext 224x24", result.getName());
+		Assert.assertTrue(result.getWvzInhalte().isEmpty());
 		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage.values()));
 	}
 
@@ -74,6 +75,8 @@ public class AnzeigeJsonConverterTest {
 
 		Assert.assertEquals("anz.test.wzg.a.hfs", result.getId());
 		Assert.assertEquals("Anzeige Test WZG-A HFS", result.getName());
+		Assert.assertThat(result.getWvzInhalte(),
+				CoreMatchers.hasItems("100 km/h", "StVO-Nr. 280 + 1049-13", "Schleudergefahr", "Stau", "unfall"));
 		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage.HFS));
 	}
 
@@ -86,6 +89,7 @@ public class AnzeigeJsonConverterTest {
 
 		Assert.assertEquals("anz.test.wzg.b.hfs1ufs", result.getId());
 		Assert.assertEquals("Anzeige Test WZG-B HFS 1UFS", result.getName());
+		Assert.assertThat(result.getWvzInhalte(), CoreMatchers.hasItems("StVO-Nr. 280 + 1049-13", "Schleudergefahr"));
 		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage.HFS, FahrstreifenLage._1FS));
 	}
 
@@ -98,6 +102,7 @@ public class AnzeigeJsonConverterTest {
 
 		Assert.assertEquals("anz.test.wzg.c.1ufs2ufs", result.getId());
 		Assert.assertEquals("Anzeige Test WZG-C 1UFS2UFS", result.getName());
+		Assert.assertThat(result.getWvzInhalte(), CoreMatchers.hasItems("100 km/h"));
 		Assert.assertThat(result.getFahrstreifen(),
 				CoreMatchers.hasItems(FahrstreifenLage._1FS, FahrstreifenLage._2FS));
 	}
@@ -111,6 +116,7 @@ public class AnzeigeJsonConverterTest {
 
 		Assert.assertEquals("anz.test.symbol.1.links", result.getId());
 		Assert.assertEquals("Anzeige Test Symbol 1 Links", result.getName());
+		Assert.assertTrue(result.getWvzInhalte().isEmpty());
 		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage._1FS));
 	}
 
@@ -123,6 +129,8 @@ public class AnzeigeJsonConverterTest {
 
 		Assert.assertEquals("ant.test.wzg.a.rechts", result.getId());
 		Assert.assertEquals("Anzeige Test WZG-A Rechts", result.getName());
+		Assert.assertThat(result.getWvzInhalte(),
+				CoreMatchers.hasItems("100 km/h", "StVO-Nr. 280 + 1049-13", "Schleudergefahr", "Stau", "unfall"));
 		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage.HFS));
 	}
 
@@ -135,6 +143,7 @@ public class AnzeigeJsonConverterTest {
 
 		Assert.assertEquals("anz.test.symbol.2.3ufs.4ufs.5ufs.6ufs", result.getId());
 		Assert.assertEquals("Anzeige Test Symbol 2 3UFS 4UFS 5UFS 6UFS", result.getName());
+		Assert.assertTrue(result.getWvzInhalte().isEmpty());
 		Assert.assertThat(result.getFahrstreifen(), CoreMatchers.hasItems(FahrstreifenLage._3FS, FahrstreifenLage._4FS,
 				FahrstreifenLage._5FS, FahrstreifenLage._6FS));
 	}
