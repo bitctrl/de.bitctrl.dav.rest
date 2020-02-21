@@ -519,7 +519,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 		}
 
 		scheduledExecutor.scheduleAtFixedRate(() -> {
-			LOGGER.warning("Tägliches versenden dynamischer Daten gestartet.");
+			LOGGER.info("Tägliches versenden dynamischer Daten gestartet.");
 			executor.execute(() -> {
 				subscribeDavData();
 			});
