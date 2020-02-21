@@ -24,6 +24,7 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -114,6 +115,7 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 	private final ExecutorService executor = Executors.newWorkStealingPool();
 	private Reflections reflections;
+	private SettingsManager settingsManager;
 
 	public Dav2RestSender(WebTarget target, ClientDavInterface connection, SystemObject archivObjekt) {
 		this.target = target;
@@ -492,23 +494,6 @@ public class Dav2RestSender implements ClientReceiverInterface {
 
 		subscribeDavData();
 
-		// TODO: übergangsweise senden wir die symstemobjekte einmal stündlich
-//		final LocalDateTime now = LocalDateTime.now();
-//		LocalDateTime twoOclock = now.withHour(2).withMinute(0).withSecond(0);
-//
-//		long until = now.until(twoOclock, ChronoUnit.MINUTES);
-//		while (until < 0) {
-//			twoOclock = twoOclock.plusDays(1);
-//			until = now.until(twoOclock, ChronoUnit.MINUTES);
-//		}
-//
-//		// täglich ca. um 2 werden die statischen Daten (SystemObjekte) neu übertragen.
-//		final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-//		scheduledExecutor.scheduleAtFixedRate(() -> {
-//			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet.");
-//			executor.execute(new RestSystemObjektSender(objects2Store));
-//		}, until, 1440, TimeUnit.MINUTES);
-
 		final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 		scheduledExecutor.scheduleAtFixedRate(() -> {
 			LOGGER.info("Zyklisches versenden statischer Daten (SystemOjekte) gestartet. - " + objects2Store.size()
@@ -522,15 +507,38 @@ public class Dav2RestSender implements ClientReceiverInterface {
 			executor.execute(new RestOnlineDatenNachSender());
 		}, 1, 1, TimeUnit.MINUTES);
 
+		final LocalDateTime now = LocalDateTime.now();
+		LocalDateTime twoOclock = now.withHour(3).withMinute(33).withSecond(0);
+
+		// täglich ca. um 3:33 Uhr werden die dynamischen Daten neu
+		// übertragen.
+		long until = now.until(twoOclock, ChronoUnit.MINUTES);
+		while (until < 0) {
+			twoOclock = twoOclock.plusDays(1);
+			until = now.until(twoOclock, ChronoUnit.MINUTES);
+		}
+
+		scheduledExecutor.scheduleAtFixedRate(() -> {
+			LOGGER.warning("Tägliches versenden dynamischer Daten gestartet.");
+			executor.execute(() -> {
+				subscribeDavData();
+			});
+		}, until, 1440, TimeUnit.MINUTES);
+
 	}
 
 	private void subscribeDavData() {
-
 		final AttributeGroup atgArchiv = connection.getDataModel().getAttributeGroup("atg.archiv");
 		final Aspect aspParameterSoll = connection.getDataModel().getAspect("asp.parameterSoll");
 		final DataDescription desc = new DataDescription(atgArchiv, aspParameterSoll);
 		final DataIdentification dataId = new DataIdentification(archivObjekt, desc);
-		final SettingsManager settingsManager = new SettingsManager(connection, dataId);
+		
+		if(settingsManager!=null) {
+			//ggf. dem alten SettingsManager anhalten
+			settingsManager.stop();
+		}
+		
+		settingsManager = new SettingsManager(connection, dataId);
 
 		final SettingsManagerUpdateListener settingsManagerUpdateListener = new SettingsManagerUpdateListener();
 		settingsManager.addUpdateListener(settingsManagerUpdateListener);
