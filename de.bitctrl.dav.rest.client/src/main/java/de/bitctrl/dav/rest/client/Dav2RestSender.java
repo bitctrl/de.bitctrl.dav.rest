@@ -631,7 +631,9 @@ public class Dav2RestSender implements ClientReceiverInterface {
 				} else {
 					LOGGER.fine("Versenden von " + anzeigeEigenschaften.size()
 							+ " AnzeigeEigenschaften Datensätzen dauerte "
-							+ Duration.between(start, LocalDateTime.now()));
+							+ Duration.between(start, LocalDateTime.now()) + "(Response Status " + response.getStatus()
+							+ ")\n\t" + anzeigeEigenschaften.stream().map(Object::toString)
+									.collect(Collectors.joining(",\n\t ")));
 				}
 			} catch (final Exception e) {
 				LOGGER.error("Fehler beim Versand von AnzeigeEigenschaften es wird per Nachversand erneut versucht. ",
