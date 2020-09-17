@@ -1,0 +1,18 @@
+[
+	{
+		"id": "test.mq1",
+		"name": "Test Messquerschnitt 1",
+		"version": "2020-02-11T09:01:50.521Z",
+		"breite": 53.029455,
+		"laenge": 8.8609,
+		"fahrstreifen": [
+			"test.fs1",
+			"test.fs.2",
+			"test.fs.3",
+			"test.fs.4",
+			"test.fs.5",
+			"test.fs.6",
+			"test.fs.7"
+		]
+	}
+]

@@ -1,0 +1,34 @@
+{
+	"systemObjektId": "test.fs1",
+	"datenStatus": "Nutzdaten",
+	"zeitstempel": "2020-01-10T11:00:00.000Z",
+	"aspekt": "MesswertErsetzung",
+	"qKfz": {
+		"wert": 45,
+		"guete": 0.1,
+		"dimension": "Fz/Intervall"
+	},
+	"vKfz": {
+		"wert": 22,
+		"guete": 0.1
+	},
+	"qLkw": {
+		"wert": 45,
+		"guete": 0.1,
+		"dimension": "Fz/Intervall"
+	},
+	"vLkw": {
+		"wert": 22,
+		"guete": 0.1
+	},
+	"qPkw": {
+		"wert": 45,
+		"guete": 0.1,
+		"dimension": "Fz/Intervall"
+	},
+	"vPkw": {
+		"wert": 22,
+		"guete": 0.1
+	},
+	"b": 0.0
+}

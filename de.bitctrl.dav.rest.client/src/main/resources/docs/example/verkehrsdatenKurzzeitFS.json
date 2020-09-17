@@ -1,0 +1,34 @@
+{
+	"systemObjektId": "test.fs1",
+	"datenStatus": "Nutzdaten",
+	"zeitstempel": "2020-02-10T11:00:00.000Z",
+	"aspekt": "Aggregation30Minuten",
+	"qKfz": {
+		"wert": 30,
+		"guete": 1.0,
+		"dimension": "Fz/h"
+	},
+	"vKfz": {
+		"wert": 111,
+		"guete": 1.0
+	},
+	"qLkw": {
+		"wert": 30,
+		"guete": 1.0,
+		"dimension": "Fz/h"
+	},
+	"vLkw": {
+		"wert": 111,
+		"guete": 1.0
+	},
+	"qPkw": {
+		"wert": 30,
+		"guete": 1.0,
+		"dimension": "Fz/h"
+	},
+	"vPkw": {
+		"wert": 111,
+		"guete": 1.0
+	},
+	"b": 0.0
+}

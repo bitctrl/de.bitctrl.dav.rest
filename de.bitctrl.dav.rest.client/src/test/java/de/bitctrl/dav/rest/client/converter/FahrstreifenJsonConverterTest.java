@@ -26,6 +26,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import de.bitctrl.dav.rest.api.model.FahrStreifen;
 import de.bitctrl.dav.rest.api.model.FahrstreifenLage;
 import de.bsvrz.dav.daf.main.config.SystemObject;
@@ -126,11 +128,13 @@ public class FahrstreifenJsonConverterTest {
 	}
 
 	@Test
-	public void testFS7Dav2Json() {
+	public void testFS7Dav2Json() throws JsonProcessingException {
 		final SystemObject fs = dataModel.getObject("test.fs.7");
 
 		final FahrstreifenJsonConverter converter = new FahrstreifenJsonConverter();
 		final FahrStreifen result = converter.dav2Json(fs).iterator().next();
+		
+//		System.out.println( new ObjectMapper().writeValueAsString(result));
 
 		Assert.assertEquals("test.fs.7", result.getId());
 		Assert.assertEquals("Test Fahrstreifen 7", result.getName());

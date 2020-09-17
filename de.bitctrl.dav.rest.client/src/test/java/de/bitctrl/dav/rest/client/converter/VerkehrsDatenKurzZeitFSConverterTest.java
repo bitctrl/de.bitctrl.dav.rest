@@ -34,6 +34,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import de.bitctrl.dav.rest.api.model.VerkehrsdatenKurzzeit;
 import de.bsvrz.dav.daf.communication.dataRepresentation.AttributeBaseValueDataFactory;
 import de.bsvrz.dav.daf.communication.dataRepresentation.AttributeHelper;
@@ -112,7 +114,7 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 	public String dimension; 
 
 	@Test
-	public void test() {
+	public void test() throws JsonProcessingException {
 		final SystemObject fs = dataModel.getObject("test.fs1");
 		final AttributeGroup atg = dataModel.getAttributeGroup("atg.verkehrsDatenKurzZeitFs");
 		final Aspect asp = dataModel.getAspect(aspPid);
@@ -138,6 +140,8 @@ public class VerkehrsDatenKurzZeitFSConverterTest {
 		
 		final VerkehrsDatenKurzZeitFSConverter converter = new VerkehrsDatenKurzZeitFSConverter();
 		final VerkehrsdatenKurzzeit result = converter.dav2Json(rd).iterator().next();
+		
+//		System.out.println( new ObjectMapper().writeValueAsString(result));
 
 		Assert.assertEquals(anzahl, result.getQKfz().getWert());
 		Assert.assertEquals(dimension, result.getQKfz().getDimension());

@@ -28,6 +28,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import de.bitctrl.dav.rest.api.model.MessQuerschnitt;
 import de.bsvrz.dav.daf.main.config.SystemObject;
 import de.bsvrz.puk.config.configFile.datamodel.ConfigDataModel;
@@ -55,11 +57,13 @@ public class MessQuerschnittJsonConverterTest {
 	}
 
 	@Test
-	public void testMQDav2Json() {
+	public void testMQDav2Json() throws JsonProcessingException {
 		final SystemObject mq1 = dataModel.getObject("test.mq1");
 
 		final MessQuerschnittJsonConverter konverter = new MessQuerschnittJsonConverter();
 		final Collection<MessQuerschnitt> resultSet = konverter.dav2Json(mq1);
+		
+//		System.out.println( new ObjectMapper().writeValueAsString(resultSet));
 
 		Assert.assertEquals(1, resultSet.size());
 		final MessQuerschnitt resultMq = resultSet.iterator().next();
