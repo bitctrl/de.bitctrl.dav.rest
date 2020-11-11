@@ -1,5 +1,5 @@
 apply plugin: 'application'
-apply plugin: "com.github.spotbugs"
+apply plugin: 'com.github.spotbugs'
 apply plugin: 'checkstyle'
 
 description = 'Dav3 REST Server'
