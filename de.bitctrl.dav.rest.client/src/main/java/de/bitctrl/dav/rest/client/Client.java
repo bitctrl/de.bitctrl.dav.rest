@@ -27,6 +27,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import de.bsvrz.dav.daf.main.ClientDavInterface;
@@ -56,12 +57,16 @@ public class Client implements StandardApplication, DavConnectionListener {
 	private String serverUrl;
 	private String port;
 	private javax.ws.rs.client.Client client;
+	private String authUser;
+	private String authPassword;
 
 	@Override
 	public void parseArguments(ArgumentList argumentList) throws Exception {
 		archivObjektPid = argumentList.fetchArgument("-objekt=").asString();
 		serverUrl = argumentList.fetchArgument("-url=http://localhost").asString();
 		port = argumentList.fetchArgument("-port=9998").asString();
+		authUser = argumentList.fetchArgument("-authUser=").asString();
+		authPassword = argumentList.fetchArgument("-authPassword=").asString();
 
 	}
 
@@ -84,6 +89,9 @@ public class Client implements StandardApplication, DavConnectionListener {
 
 		final ClientConfig config = new ClientConfig();
 		config.register(JacksonFeature.class);
+		if (!authPassword.isEmpty()) {
+			config.register(HttpAuthenticationFeature.basic(authUser, authPassword));
+		}
 		config.property(ClientProperties.READ_TIMEOUT, 60000);
 
 //		ClientBuilder.newBuilder().sslContext(ctx);
@@ -98,7 +106,6 @@ public class Client implements StandardApplication, DavConnectionListener {
 	@Override
 	public void connectionClosed(ClientDavInterface connection) {
 		client.close();
-
 	}
 
 }

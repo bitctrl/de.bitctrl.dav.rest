@@ -97,6 +97,8 @@ Die SWE verwendet die Datenverteiler - Applikationsfunktionen zur Kommunikation 
 * `-objekt=<pid>` : Die PID des Applikationsobjektes (vom Typ `typ.archiv`)
 * `-url=http://localhost` : Die URL des REST Servers, der Standardwert ist `http://localhost`.
 * `-port=80` : Der Port des REST Servers, der Standardwert ist `9998`.
+* `-authUser=` : Nutzername für die Authentifizierung am REST Server (optional). 
+* `-authPassword=` : Passwort für die Authentifizierung am REST Server (optional). 
 
 #### Unterstützte Datenspezifikationen
 
