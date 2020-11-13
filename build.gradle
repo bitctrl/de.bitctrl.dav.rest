@@ -25,11 +25,11 @@ allprojects  {
         mavenLocal()
         maven { url "https://dl.bintray.com/bitctrl/maven" }
         mavenCentral()
-        maven { url "http://h2727649.stratoserver.net:8081/repository/nerz-maven-public/" }
+        maven { url "https://repo.nerz-ev.de" }
     }
 
     group = 'de.bitctrl.dav.rest'
-    version = '1.0.2-SNAPSHOT'
+    version = '1.1.0-SNAPSHOT'
 }
 
 markdownToPdf{
