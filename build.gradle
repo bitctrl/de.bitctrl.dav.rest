@@ -24,7 +24,7 @@ allprojects  {
    repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "https://repo.nerz-ev.de" }
+        maven { url "https://repo.nerz-ev.de/repository/nerz-maven-public/" }
     }
 
     group = 'de.bitctrl.dav.rest'
