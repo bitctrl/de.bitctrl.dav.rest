@@ -28,6 +28,7 @@ dependencies {
     testImplementation 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-bundle:2.35'
     testImplementation 'junit:junit:4.13.2'
 
+
 }
 
 spotbugs {
