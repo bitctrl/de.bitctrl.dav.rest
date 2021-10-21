@@ -20,6 +20,6 @@ dependencies {
     implementation 'jakarta.ws.rs:jakarta.ws.rs-api:2.1.5'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.8'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
     testImplementation 'junit:junit:4.12'
 }
