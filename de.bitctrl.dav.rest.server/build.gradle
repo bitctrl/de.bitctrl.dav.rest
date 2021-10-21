@@ -22,7 +22,7 @@ dependencies {
     testImplementation 'jakarta.ws.rs:jakarta.ws.rs-api:2.1.6'
 
     testImplementation 'org.glassfish.jersey.test-framework:jersey-test-framework-util:2.35'
-    testImplementation 'org.glassfish.jersey.test-framework:jersey-test-framework-core:2.35'
+    testImplementation 'org.glassfish.jersey.test-framework:jersey-test-framework-core:3.0.3'
     testImplementation 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.35'
 
     testImplementation 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-bundle:2.35'
