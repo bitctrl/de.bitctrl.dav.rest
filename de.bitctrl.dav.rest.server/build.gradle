@@ -5,6 +5,7 @@ apply plugin: 'checkstyle'
 description = 'Dav3 REST Server'
 dependencies {
   implementation project(':de.bitctrl.dav.rest.api')
+
     implementation 'org.glassfish.jersey.core:jersey-client:2.35'
 
     implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.35'
