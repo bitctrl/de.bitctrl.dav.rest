@@ -6,18 +6,24 @@ apply plugin: "de.fntsoftware.gradle.markdown-to-pdf"
 assemble.dependsOn+='betriebshandbuchToPdf'    
    
 description = 'Dav3 REST Client'
+
+ext {
+
+	datenverteiler_version = "3.14.0"
+}
+
 dependencies {
     implementation project(':de.bitctrl.dav.rest.api')
     implementation 'org.glassfish.jersey.core:jersey-client:2.28'
     implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.28'
     implementation 'org.glassfish.jersey.inject:jersey-hk2:2.28'
     implementation 'com.google.inject:guice:4.2.2'
-    implementation 'de.bsvrz.dav:de.bsvrz.dav.daf:3.11.0'
-    implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.application:3.11.0'
-    implementation 'de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:3.11.0'
+    implementation "de.bsvrz.dav:de.bsvrz.dav.daf:$datenverteiler_version"
+    implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.application:$datenverteiler_version"
+    implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:$datenverteiler_version"
     implementation 'org.reflections:reflections:0.9.11'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'de.bsvrz.puk:de.bsvrz.puk.config:3.11.0'
+    testImplementation "de.bsvrz.puk:de.bsvrz.puk.config:$datenverteiler_version"
     
      // JAX-B dependencies for JDK 9+
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
