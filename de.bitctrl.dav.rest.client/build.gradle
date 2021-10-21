@@ -22,7 +22,7 @@ dependencies {
     implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.application:$datenverteiler_version"
     implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:$datenverteiler_version"
     implementation 'org.reflections:reflections:0.10.1'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation "de.bsvrz.puk:de.bsvrz.puk.config:$datenverteiler_version"
     
      // JAX-B dependencies for JDK 9+
