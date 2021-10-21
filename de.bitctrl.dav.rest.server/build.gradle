@@ -23,7 +23,7 @@ dependencies {
 
     testImplementation 'org.glassfish.jersey.test-framework:jersey-test-framework-util:2.35'
     testImplementation 'org.glassfish.jersey.test-framework:jersey-test-framework-core:2.35'
-    testImplementation 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.35'
+    testImplementation 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:3.0.3'
 
     testImplementation 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-bundle:2.35'
     testImplementation 'junit:junit:4.13.2'
