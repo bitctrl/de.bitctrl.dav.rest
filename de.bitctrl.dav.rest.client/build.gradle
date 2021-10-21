@@ -17,7 +17,7 @@ dependencies {
     implementation 'org.glassfish.jersey.core:jersey-client:2.28'
     implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.28'
     implementation 'org.glassfish.jersey.inject:jersey-hk2:2.28'
-    implementation 'com.google.inject:guice:4.2.2'
+    implementation 'com.google.inject:guice:4.2.3'
     implementation "de.bsvrz.dav:de.bsvrz.dav.daf:$datenverteiler_version"
     implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.application:$datenverteiler_version"
     implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:$datenverteiler_version"
