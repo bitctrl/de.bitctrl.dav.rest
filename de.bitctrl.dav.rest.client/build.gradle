@@ -1,3 +1,4 @@
+
 apply plugin: 'application'
 apply plugin: "com.github.spotbugs"
 apply plugin: 'checkstyle'
@@ -9,7 +10,7 @@ description = 'Dav3 REST Client'
 
 ext {
 
-	datenverteiler_version = "3.14.0"
+	datenverteiler_version = "3.17.1"
 }
 
 dependencies {
