@@ -21,7 +21,7 @@ dependencies {
     implementation "de.bsvrz.dav:de.bsvrz.dav.daf:$datenverteiler_version"
     implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.application:$datenverteiler_version"
     implementation "de.bsvrz.sys:de.bsvrz.sys.funclib.dataIdentificationSettings:$datenverteiler_version"
-    implementation 'org.reflections:reflections:0.9.11'
+    implementation 'org.reflections:reflections:0.10.1'
     testImplementation 'junit:junit:4.12'
     testImplementation "de.bsvrz.puk:de.bsvrz.puk.config:$datenverteiler_version"
     
