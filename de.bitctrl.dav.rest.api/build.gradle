@@ -7,6 +7,12 @@ compileJava.dependsOn 'ramltojaxrs'
     
 sourceSets.main.java.srcDir "$buildDir/generated"
 
+
+ext {
+
+	jackson_version = "2.13.0"
+}
+
 ramltojaxrs {
     sourcePaths = files('src/main/resources/de.bitctrl.dav.rest.raml')
     outputDirectory = new File(buildDir,'generated')
@@ -19,10 +25,10 @@ ramltojaxrs {
 dependencies {
     implementation 'jakarta.ws.rs:jakarta.ws.rs-api:2.1.6'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
 
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
-    testImplementation 'junit:junit:4.13.2'
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+    testImplementation "junit:junit:$junit_version"
 
 }
 
