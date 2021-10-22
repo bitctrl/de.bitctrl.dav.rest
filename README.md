@@ -3,7 +3,8 @@
 REST API für den Datenverteiler
  
  
-[![Build Status](https://travis-ci.org/bitctrl/de.bitctrl.dav.rest.svg?branch=master)](https://travis-ci.org/bitctrl/de.bitctrl.dav.rest)
+[![Renovate](https://github.com/bitctrl/de.bitctrl.dav.rest/actions/workflows/renovate.yml/badge.svg)](https://github.com/bitctrl/de.bitctrl.dav.rest/actions/workflows/renovate.yml)
+[![Gradle Package](https://github.com/bitctrl/de.bitctrl.dav.rest/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/bitctrl/de.bitctrl.dav.rest/actions/workflows/gradle-publish.yml)
 
 
 ## Entwicklungsdokumentation
