@@ -10,7 +10,7 @@ description = 'Dav3 REST Client'
 
 ext {
 
-	datenverteiler_version = "3.17.1"
+	datenverteiler_version = "3.18.0"
 }
 
 dependencies {
