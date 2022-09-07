@@ -43,7 +43,7 @@ apply plugin: 'base'
 assemble.dependsOn+='testspezifikationToPdf'
 
 ext {
-	jersey_version = "2.36"
+	jersey_version = "2.37"
 	junit_version ="4.13.2"
 }
 
