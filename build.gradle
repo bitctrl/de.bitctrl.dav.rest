@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-  id "com.github.spotbugs" version "4.8.0"
+  id "com.github.spotbugs" version "5.2.5"
 }
 
 apply plugin: "de.fntsoftware.gradle.markdown-to-pdf"
