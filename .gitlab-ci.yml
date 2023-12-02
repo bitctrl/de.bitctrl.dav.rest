@@ -5,6 +5,6 @@ stages:
 rest-build:
  stage: build
  image:
-      maven:3.5-jdk-8-alpine
+      maven:3.6-jdk-8-alpine
  script:
       - mvn verify -Dmaven.test.failure.ignore=true
