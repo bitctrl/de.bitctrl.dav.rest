@@ -23,7 +23,7 @@ ramltojaxrs {
 }
 
 dependencies {
-    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:2.1.6'
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
 
